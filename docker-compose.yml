@@ -1,0 +1,18 @@
+services:
+  backend:
+    build: ./backend/wizard-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+    volumes:
+      - ./shared:/shared
+    command: npm start
+
+  frontend:
+    build: ./frontend/wizard-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./shared:/shared
+    command: npm start
