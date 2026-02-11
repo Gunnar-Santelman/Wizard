@@ -3,8 +3,8 @@ services:
     build: ./backend/wizard-backend
     ports:
       - "5000:5000"
-    environment:
-      - CLIENT_URL=http://frontend:3000
+    env_file:
+      - .env
     volumes:
       - ./backend/wizard-backend:/app
       - /app/node_modules
@@ -22,3 +22,13 @@ services:
       - ./frontend/wizard-frontend:/app
       - /app/node_modules
     command: npm start
+  
+  mongo:
+    image: mongo:7
+    container_name: wizard-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data:
