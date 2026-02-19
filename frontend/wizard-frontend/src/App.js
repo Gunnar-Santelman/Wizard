@@ -4,14 +4,32 @@ import './App.css';
 /*
 import * as gameApi from "./api/gameApi.js";
 import { useEffect } from 'react';
+import socket from "./socket";
 */
 
 function App() {
+  // API TEST
   /*
   useEffect(() => {
     window.gameApi = gameApi;
     console.log("gameApi attached to window");
   }, []);
+  */
+
+  // WEBSOCKET TEST
+  /*
+  useEffect(() => {
+    socket.emit("pingTest", "Hello backend");
+
+    socket.on("pongTest", (msg) => {
+      console.log(msg);
+    });
+
+    return () => {
+      socket.off("pongTest");
+    }
+  }, []);
+  return <div>WebSocket Test</div>
   */
 
   return (
