@@ -18,10 +18,19 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
+  
+  socket.on("joinGame", ({ gameId, playerName }) => {
+    console.log(`${playerName} joining ${gameId}`);
 
-  socket.on("pingTest", (data) => {
-    console.log("Received from client:", data);
-    socket.emit("pongTest", "Hello from server");
+    socket.join(gameId);
+    socket.emit("joinedGame", {
+      message: "Succesfully joined game",
+      gameId
+    });
+
+    socket.to(gameId).emit("playerJoined", {
+      playerName
+    });
   });
 
   socket.on("disconnect", () => {

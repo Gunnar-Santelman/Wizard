@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 
-/*
-import * as gameApi from "./api/gameApi.js";
+
+// import * as gameApi from "./api/gameApi.js";
 import { useEffect } from 'react';
 import socket from "./socket";
-*/
+
 
 function App() {
   // API TEST
@@ -18,19 +18,25 @@ function App() {
 
   // WEBSOCKET TEST
   /*
+  socket.emit("joinGame", {
+      gameId: "abc123",
+      playerName: "Nick"
+  })
   useEffect(() => {
-    socket.emit("pingTest", "Hello backend");
-
-    socket.on("pongTest", (msg) => {
-      console.log(msg);
+    socket.on("joinedGame", (data) => {
+      console.log("Joined:", data);
+    });
+    socket.on("playerJoined", (data) => {
+      console.log("Another player joined:", data);
     });
 
     return () => {
-      socket.off("pongTest");
+      socket.off("joinedGame");
+      socket.off("playerJoined");
     }
   }, []);
   return <div>WebSocket Test</div>
-  */
+*/
 
   return (
     <div className="App">
