@@ -7,14 +7,18 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        password: {
-            type: String,
-            required: true,
-            unique: false
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        wins: {
+            type: Number, 
+            default: 0
+        },
+        losses: {
+            type: Number,
+            default: 0
         }
-    },
-    {
-        timestamp: true
     }
 );
 

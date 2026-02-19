@@ -1,7 +1,19 @@
 import logo from './logo.svg';
 import './App.css';
 
+/*
+import * as gameApi from "./api/gameApi.js";
+import { useEffect } from 'react';
+*/
+
 function App() {
+  /*
+  useEffect(() => {
+    window.gameApi = gameApi;
+    console.log("gameApi attached to window");
+  }, []);
+  */
+
   return (
     <div className="App">
       <header className="App-header">
