@@ -1,26 +1,55 @@
 class WizardGame {
     constructor (gameId) {
+        this.id = gameId;
+        this.host = null;
         this.players = [];
         this.maxRounds = 0;
         this.round = 0;
         this.deck = [];
-        this.gameId = gameId;
         this.status = "waiting";
     }
 
-    addPlayer(additionalPlayer) {
-        this.players.push(additionalPlayer);
+    joinGame(playerName, socketId) {
+        if (this.players.length === 0) {
+            this.host = socketId;
+        }
+
+        const alreadyExists = this.players.find(
+            p => p.socketId === socketId
+        );
+
+        if (alreadyExists) {
+            return;
+        }
+        
+        this.players.push({
+            name: playerName,
+            socketId
+        });
     }
+    
+    removePlayer(socketId) {
+        this.players = this.players.filter(
+            p => p.socketId !== socketId
+        );
+    }
+
     startGame() {
         this.status = "running";
         //this.deck = createDeck();
     }
+
+    isEmpty() {
+        return this.players.length === 0;
+    }
+    
     getGameState() {
         return  {
+            id: this.id,
             players : this.players,
-            round : this.round,
-            status : this.status
-        }
+            status : this.status,
+            host: this.host
+        };
     }
 }
 
