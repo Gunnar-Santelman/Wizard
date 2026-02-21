@@ -13,8 +13,8 @@ const gameSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["open", "in-play", "finished", "abandoned"],
-            default: "open"
+            enum: ["waiting", "running", "finished", "abandoned"],
+            default: "waiting"
         },
         winner: {
             type: [String],
