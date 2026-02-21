@@ -56,4 +56,15 @@ class Rules{
     // if all fall through, return numeric difference
     return a.value-b.value;
     }
+    isValidPlay(card,hand,leadSuit){
+        // you can always play a special card
+        if(card.value==0||card.value==15) return true;
+        
+        if(!leadSuit) return true; //for the first card played
+        const canFollow=hand.some(c=>c.suit==leadSuit); // if some card in your hand can follow suit
+        if(canFollow){
+            return card.suit==leadSuit; // it will return true if you follow suit then, false if you can but dont
+        }
+        return true; // if you can't its always valid
+    }
 }
