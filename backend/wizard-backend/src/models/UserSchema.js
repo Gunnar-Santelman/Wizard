@@ -53,7 +53,8 @@ const userSchema = new mongoose.Schema(
         },
         profilePic: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "ProfilePicture"
+            ref: "ProfilePicture",
+            default: null
         }
     },
     { timestamps: true } // Creates createdAt and updatedAt automatically
