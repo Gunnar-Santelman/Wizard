@@ -29,6 +29,14 @@ io.on("connection", (socket) => {
       socket.emit("joinError", "Game not found");
       return;
     }
+    if (game.getGameState().players.length == 6) {
+      socket.emit("joinError", "Game already full");
+      return;
+    }
+    if (game.getGameState().status === "running") {
+      socket.emit("joinError", "Game already started");
+      return;
+    }
 
     socket.join(gameId);
     game.joinGame(playerName, socket.id);
@@ -59,6 +67,22 @@ io.on("connection", (socket) => {
     if (game.isEmpty()) {
       GameManager.deleteGame(gameId);
     }
+  });
+
+  socket.on("startGame", ({gameId}) => {
+    const game = GameManager.getGame(gameId);
+    if (!game) {
+      return;
+    }
+
+    // Will need to make it so that only the host can start the game.
+    // if (socket.id !== game.hostId) {
+    //   return;
+    // }
+
+    game.status = "running";
+
+    io.to(gameId).emit("gameStarted", {gameId});
   })
 
   socket.on("disconnect", () => {

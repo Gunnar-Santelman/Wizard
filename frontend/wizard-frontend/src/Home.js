@@ -20,7 +20,7 @@ export default function Home() {
             playerName
         });
 
-        navigate(`/game/${game.id}`, {
+        navigate(`/lobby/${game.id}`, {
             state: {playerName}
         });
     }
@@ -34,7 +34,7 @@ export default function Home() {
 
     useEffect(() => {
         function handleSuccess({gameId}) {
-            navigate(`/game/${gameId}`, {
+            navigate(`/lobby/${gameId}`, {
                 state: {playerName}
             });
         }
