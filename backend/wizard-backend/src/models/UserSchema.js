@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 const userAchievementSchema = new mongoose.Schema(
     {
         achievementId: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Achievement",
             required: true
         },
         achievedAt: {
@@ -51,8 +52,8 @@ const userSchema = new mongoose.Schema(
             default: []
         },
         profilePic: {
-            type: String,
-            default: ""
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProfilePicture"
         }
     },
     { timestamps: true } // Creates createdAt and updatedAt automatically
