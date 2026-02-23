@@ -15,6 +15,10 @@ const profilePictureSchema = new mongoose.Schema(
             type: Boolean,
             required: true,
             default: false
+        },
+        owner: {
+            type: String,
+            default: null
         }
     }
 );

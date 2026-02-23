@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
             type: [userAchievementSchema],
             default: []
         },
-        profilePic: {
+        profilePicture: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "ProfilePicture",
             default: null
