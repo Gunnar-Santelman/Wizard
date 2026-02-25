@@ -3,6 +3,7 @@ import './App.css';
 
 /*
 import * as gameApi from "./api/gameApi.js";
+import { auth } from './services/firebase.js'
 import { useEffect } from 'react';
 */
 
@@ -11,6 +12,14 @@ function App() {
   useEffect(() => {
     window.gameApi = gameApi;
     console.log("gameApi attached to window");
+  }, []);
+  */
+
+  /*
+  useEffect(() => {
+    console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
+    console.log("Firebase Auth object:", auth);
+    console.log("Current user:", auth.currentUser)
   }, []);
   */
 
