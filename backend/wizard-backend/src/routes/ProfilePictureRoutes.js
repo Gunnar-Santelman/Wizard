@@ -1,15 +1,15 @@
 import express from "express";
-import upload from "../config/upload.js";
-import ProfilePictureSchema from "../models/ProfilePictureSchema.js";
+import upload from "../middleware/upload.js";
+import ProfilePicture from "../models/ProfilePictureSchema.js";
 import User from "../models/UserSchema.js";
 import cloudinary from "../config/cloudinary.js";
+import authenticate from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/upload", upload.single("image"), async (req, res) => {
+router.post("/upload", authenticate, upload.single("image"), async (req, res) => {
     try {
-        // TODO: Use Firebase authentication
-        const userId = req.body.userId;
+        const userId = req.user.uid
 
         const user = await User.findById(userId).populate("profilePicture");
         if (!user) {
@@ -34,27 +34,38 @@ router.post("/upload", upload.single("image"), async (req, res) => {
         user.profilePicture = newPic._id;
         await user.save();
 
-        res.json(newPic);
+        res.json({
+            message: "Profile picture uploaded",
+            profilePicture: newPic
+        });
+        
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ message: "Upload failed" });
     }
 });
 
-router.post("/select-default", async (req, res) => {
-    // TODO: Use Firebase authentication
-    const { userId, profilePictureId } = req.body;
+router.post("/select-default", authenticate, async (req, res) => {
+    try {
+        const { profilePictureId } = req.body;
+        const userId = req.user.uid;
 
-    const pic = await ProfilePicture.findById(profilePictureId);
+        const pic = await ProfilePicture.findById(profilePictureId);
 
-    if (!pic || !pic.isDefault) {
-        return res.status(400).json({ message: "Invalid default picture" });
+        if (!pic || !pic.isDefault) {
+            return res.status(400).json({ message: "Invalid default picture" });
+        }
+
+        await User.findByIdAndUpdate(userId, {
+            profilePicture: pic._id
+        });
+
+        res.json({ message: "Profile picture updated" });
+
+    } catch (err) {
+        res.status(500).json({message: "Failed to update profile picture"});
     }
-
-    await User.findByIdAndUpdate(userId, {
-        profilePicture: pic._id
-    });
-
-    res.json({ message: "Profile picture updated" });
 });
+
+
 
 export default router;
