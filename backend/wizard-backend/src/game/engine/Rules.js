@@ -15,28 +15,31 @@ class Rules{
         }
         return TRUMP;
     }
-    determineTrickWinner(Trick)
+    /**
+     * Determines the winner of a trick.
+     * @param {Trick} Trick The trick being played.
+     * @returns a pair object that goes {card,player} that won the trick
+     */
+    static determineTrickWinner(Trick)
     {
         let cards=Trick.cards;
-        let values=cards.map(card=>card.value);
+        
         let lead=Trick.leadSuit;
-        if(values.includes(15)){
-            return cards.find(card=>card.value==15);
-            // first wizard wins if its a wizard
-        }
-        else{
+        const firstWizard= cards.find(({card})=>card.value==15);
+        if(firstWizard) return firstWizard.player;
+        
             // this loops through the array, comparing each to a best value, and updates it if the comparator is positive
-            winner=cards.reduce((best,card)=>{
-                return this.compareCard(card,best,lead)>0
-                ?card 
+           const winner=cards.reduce((best,curr)=>{
+                return this.compareCard(curr.card,best.card,lead)>0
+                ?curr 
                 :best;
 
             })
             return winner;
-        }
+        
         
     }   
-    compareCard(a,b,leadSuit){
+    static compareCard(a,b,leadSuit){
     //wizards
     if (a.value==15&&b.value!==15) return 1;
     if (b.value === 15 && a.value !== 15) return -1;
@@ -56,7 +59,7 @@ class Rules{
     // if all fall through, return numeric difference
     return a.value-b.value;
     }
-    isValidPlay(card,hand,leadSuit){
+    static isValidPlay(card,hand,leadSuit){
         // you can always play a special card
         if(card.value==0||card.value==15) return true;
         
