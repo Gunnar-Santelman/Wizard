@@ -4,7 +4,11 @@ const router = express.Router();
 
 router.post("/create", (req, res) => {
     const gameId = gameManager.createGame();
-    res.json({gameId});
+
+    const io = req.app.get("io");
+    io.emit("gameCreated", gameId);
+
+    res.json({id: gameId});
 })
 
 router.post("/:id/join", (req, res) => {
@@ -18,7 +22,7 @@ router.post("/:id/join", (req, res) => {
         return res.status(400).json({error: "Name required"});
     }
 
-    game.addPlayer(name);
+    game.joinGame(name);
     res.json(game.getGameState());
 })
 

@@ -15,7 +15,7 @@ class GameManager {
     getGame(id) {
         return this.activeGames.get(id);
     }
-    deleteGame() {
+    deleteGame(id) {
         this.activeGames.delete(id);
     }
 }

@@ -1,19 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
 
-/*
-import * as gameApi from "./api/gameApi.js";
-import { auth } from './services/firebase.js'
-import { useEffect } from 'react';
-*/
+
+import {Routes, Route} from "react-router-dom";
+import Home from "./Home";
+import LobbyPage from "./LobbyPage";
+import GamePage from "./GamePage";
+//import {auth} from "./services/firebase.js";
 
 function App() {
-  /*
-  useEffect(() => {
-    window.gameApi = gameApi;
-    console.log("gameApi attached to window");
-  }, []);
-  */
+
+  // useEffect(() => {
+  //   console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
+  //   console.log("Firebase Auth object:", auth);
+  //   console.log("Current user:", auth.currentUser)
+  // }, []);
 
   /*
   useEffect(() => {
@@ -24,23 +25,11 @@ function App() {
   */
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>Hot Reload Test</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path = "/" element = {<Home />} />
+      <Route path = "/lobby/:gameId" element = {<LobbyPage />} />
+      <Route path = "/game/:gameId" element = {<GamePage />} />
+    </Routes>
   );
 }
 
