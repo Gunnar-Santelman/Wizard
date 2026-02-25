@@ -8,6 +8,7 @@ class Round{
     #cutCard;
     #game;
     #deck;
+    #trickCards;
     constructor(roundNo,game){
         
         this.#roundNo=roundNo;
@@ -17,6 +18,7 @@ class Round{
         this.#dealer=this.#game.players[dealerInd];
         this.#currentPlayer=game.players[(dealerInd+1)%this.#game.players.length()];
         this.#trickNo=0;
+        this.#trickCards=[];
         this.#deck=new Deck();
         this.#cutCard=this.#deck.cutCard();
         this.dealCards();
@@ -27,6 +29,13 @@ class Round{
     get currentPlayer(){return this.#currentPlayer};
     get trickNo(){return this.#trickNo};
     get cutCard(){return this.#cutCard};
+    /**
+     * for the front end, returns an object of the encapsulated state of a round
+     * @returns  an object with fields for each of the class variables of the round.
+     */
+    getRoundState(){
+        return new Object(this.#dealer,this.#currentPlayer,this.#roundNo,this.#cutCard,this.#deck,this.#trickCards);
+    }
     /**
      * Sets the current dealer.
      * @param {Player} player the player object of the player.
@@ -88,6 +97,7 @@ class Round{
         {
              
             const trick=new Trick(trump);
+            this.#trickCards=[]
             let count=0;
             for( const player of this.#reorderPlayers(this.#currentPlayer))
             {
@@ -101,6 +111,7 @@ class Round{
                }
                // then it will fall through and place the card in the trick
                trick.addCard(null);
+               this.#trickCards.push(null)
                count++;
 
             }
