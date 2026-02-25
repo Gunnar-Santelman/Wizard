@@ -26,7 +26,7 @@ const gameSchema = new mongoose.Schema(
         },
         isPublic: { 
             type: Boolean,
-            required: true
+            default: true
         },
         passwordHash: {
             type: String, // Uses bcrypt

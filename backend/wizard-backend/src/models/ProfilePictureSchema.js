@@ -13,11 +13,10 @@ const profilePictureSchema = new mongoose.Schema(
         },
         isDefault: {
             type: Boolean,
-            required: true,
             default: false
         },
         owner: {
-            type: String,
+            type: String, // Firebase UID
             default: null
         }
     }
