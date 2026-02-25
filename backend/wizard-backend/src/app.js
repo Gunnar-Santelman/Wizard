@@ -1,5 +1,6 @@
 import express from "express";
 import gameRoutes from "./routes/GameRoutes.js";
+import profilePictureRoutes from "./routes/ProfilePictureRoutes.js";
 import cors from "cors";
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/game", gameRoutes);
+app.use("/api/profile-picture", profilePictureRoutes)
 
 app.get("/", (req, res) => {
   res.json({ message: "Wizard API is ruinng"});
