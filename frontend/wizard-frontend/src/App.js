@@ -16,6 +16,14 @@ function App() {
   //   console.log("Current user:", auth.currentUser)
   // }, []);
 
+  /*
+  useEffect(() => {
+    console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
+    console.log("Firebase Auth object:", auth);
+    console.log("Current user:", auth.currentUser)
+  }, []);
+  */
+
   return (
     <Routes>
       <Route path = "/" element = {<Home />} />
