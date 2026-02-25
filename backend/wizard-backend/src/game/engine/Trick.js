@@ -3,12 +3,13 @@ class Trick{
     #ledCard;
     #currTrump;
     #leader;
-    get ledCard(){return this.ledCard};
-    get leader(){return this.leader};
+    get ledCard(){return this.#ledCard};
+    get leader(){return this.#leader};
     get currTrump(){return this.#currTrump};
-    get cards(){return this.cards};
-    constructor()
+    get cards(){return this.#cards};
+    constructor(trump)
     {
+        this.#currTrump=trump;
         this.cards=[];
     }
     setTrump(suit){
@@ -20,8 +21,8 @@ class Trick{
     setLed(card){
         this.ledCard=card;
     }
-    addCard(card){
-        this.#cards.append(card);
+    addCard(card,player){
+        this.#cards.push({card,player});
     }
 
 }
