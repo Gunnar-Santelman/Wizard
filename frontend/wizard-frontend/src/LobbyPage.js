@@ -41,7 +41,7 @@ export default function LobbyPage() {
         return () => {
             socket.off("gameStarted", handleStart)
         }
-    }, [navigate]);
+    }, [navigate,gameId]);
 
     return (
         <div style ={{padding : 40}}>

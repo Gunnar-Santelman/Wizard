@@ -18,7 +18,7 @@
     "jade": "~1.11.0",
     "mongoose": "^9.1.6",
     "morgan": "~1.9.1",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0"
   },
