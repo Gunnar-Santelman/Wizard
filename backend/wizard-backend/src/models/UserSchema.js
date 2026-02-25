@@ -20,8 +20,7 @@ const userSchema = new mongoose.Schema(
     {
         _id: { // Must pass in Firebase UID when creating user/finding user
             type: String,
-            required: true,
-            unique: true
+            required: true
         },
         username: {
             type: String,
