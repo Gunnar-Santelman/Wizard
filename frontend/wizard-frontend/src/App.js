@@ -6,7 +6,8 @@ import {Routes, Route} from "react-router-dom";
 import Home from "./Home";
 import LobbyPage from "./LobbyPage";
 import GamePage from "./GamePage";
-//import {auth} from "./services/firebase.js";
+import {auth} from "./services/firebase.js";
+import {useEffect} from "react"
 
 function App() {
 
@@ -16,13 +17,11 @@ function App() {
   //   console.log("Current user:", auth.currentUser)
   // }, []);
 
-  /*
-  useEffect(() => {
-    console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
-    console.log("Firebase Auth object:", auth);
-    console.log("Current user:", auth.currentUser)
-  }, []);
-  */
+  // useEffect(() => {
+  //   console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
+  //   console.log("Firebase Auth object:", auth);
+  //   console.log("Current user:", auth.currentUser)
+  // }, []);
 
   return (
     <Routes>
