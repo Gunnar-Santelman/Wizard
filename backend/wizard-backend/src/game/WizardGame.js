@@ -32,6 +32,9 @@ class WizardGame {
         this.players = this.players.filter(
             p => p.socketId !== socketId
         );
+        if (socketId === this.host && this.players.length !== 0 && this.status === "waiting") {
+            this.host = this.players[0].socketId;
+        }
     }
 
     startGame() {

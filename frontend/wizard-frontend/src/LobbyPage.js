@@ -7,6 +7,8 @@ import socket from "./socket";
 export default function LobbyPage() {
     const {gameId} = useParams();
     const [players, setPlayers] = useState([]);
+    const [host, setHost] = useState([]); 
+    const isHost = host === socket.id;
     const navigate = useNavigate();
 
     function handleLeave() {
@@ -16,12 +18,21 @@ export default function LobbyPage() {
     function handleStartButton() {
         socket.emit("startGame", {gameId});
     }
+    function listPlayer(player) {
+        if (player.socketId === host) {
+            return <li key = {player.socketId}>Host: {player.name}</li>
+        }
+        else {
+            return <li key = {player.socketId}>{player.name}</li>
+        }
+    }
     
     useEffect(() => {
         socket.emit("requestGameState", { gameId });
 
         function handleGameState(game) {
             setPlayers(game.players);
+            setHost(game.host);
         }
 
         socket.on("gameState", handleGameState);
@@ -50,11 +61,11 @@ export default function LobbyPage() {
             <h3>{players.length} Players:</h3>
             <ul>
                 {players.map((p) => (
-                    <li key = {p.socketId}>{p.name}</li>
+                    listPlayer(p)
                 ))}
             </ul>
 
-            <button onClick = {handleStartButton} disabled={players.length < 3}>
+            <button onClick = {handleStartButton} disabled={players.length < 3 || !isHost}>
                 Start Game
             </button>
 
