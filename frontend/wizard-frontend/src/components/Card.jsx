@@ -19,10 +19,16 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true }) {
     const [isValidPlay, setIsValidPlay] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
    
+    const handleClick = () => {
+        // Put stuff here!
+        console.log('Card was clicked!')
+    };
+
     return (
         <img
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={handleClick}
 
             // Shows either front or back of card, if it's in the player's hand or not
             src={inPlayersHand ? "https://clipart-library.com/images/5TRrdzGjc.png" : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
