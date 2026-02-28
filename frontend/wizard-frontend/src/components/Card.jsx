@@ -18,7 +18,7 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true }) {
 
     const [isValidPlay, setIsValidPlay] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
-   
+    console.log(suit, value);
     const handleClick = () => {
         // Put stuff here!
         console.log('Card was clicked!')

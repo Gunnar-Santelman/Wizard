@@ -52,7 +52,22 @@ io.on("connection", (socket) => {
       return;
     }
 
-    socket.emit("gameState", game.getGameState());
+    const player = game.players.find(
+      p => p.socketId === socket.id
+    );
+
+    socket.emit("gameState", {
+      players: game.players.map(p => ({
+        socketId:p.socketId,
+        name: p.name,
+        cardCount: p.hand.length
+      })),
+      hand: player ? player.hand : [],
+      host: game.host,
+      status: game.status,
+      currentRound: game.currentRound
+    })
+    // socket.emit("gameState", game.getGameState());
   });
 
   socket.on("leaveGame", ({gameId}) => {
@@ -74,11 +89,6 @@ io.on("connection", (socket) => {
     if (!game) {
       return;
     }
-
-    // Will need to make it so that only the host can start the game.
-    // if (socket.id !== game.hostId) {
-    //   return;
-    // }
 
     game.status = "running";
 

@@ -1,12 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from '../logo.svg';
+import '../styling/App.css';
 
 
 import {Routes, Route} from "react-router-dom";
-import Home from "./Home";
-import LobbyPage from "./LobbyPage";
-import GamePage from "./GamePage";
-import {auth} from "./services/firebase.js";
+import Home from "./Home.js";
+import LobbyPage from "./LobbyPage.js";
+import GamePage from "./GamePage.js";
+import {auth} from "../services/firebase.js";
 import {useEffect} from "react"
 
 function App() {
