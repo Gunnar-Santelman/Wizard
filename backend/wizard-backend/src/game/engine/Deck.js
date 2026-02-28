@@ -12,13 +12,13 @@ class Deck{
      */
     populateDeck(){
         for(const suit of Object.values(SUIT)){
-            for(let i=1;i<15;i++)
+            for(let i=2;i<15;i++)
             {
                 // push all your numbered and face cards
                 this.#cards.push(new Card(suit,i));
             }
             // push a wizard and a jester for every suit as well
-            this.#cards.push(new Card(null,0));
+            this.#cards.push(new Card(null,1));
             this.#cards.push(new Card(null,15));
         }
         

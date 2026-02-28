@@ -4,7 +4,7 @@ class Rules{
        let TRUMP;
         if(card.value==15 ){ //wizard case
            // present a choice to the player who dealt
-        } else if(card.value==0)
+        } else if(card.value==1)
         {
             // if jester, no trump
             TRUMP=null;
@@ -44,8 +44,8 @@ class Rules{
     if (a.value==15&&b.value!==15) return 1;
     if (b.value === 15 && a.value !== 15) return -1;
     //jesters
-    if (a.value==0&&b.value!==0) return -1;
-    if (b.value==0&&a.value!==0) return 1;
+    if (a.value==1&&b.value!==1) return -1;
+    if (b.value==1&&a.value!==1) return 1;
 
     //Trump suit
     
@@ -61,7 +61,7 @@ class Rules{
     }
     static isValidPlay(card,hand,leadSuit){
         // you can always play a special card
-        if(card.value==0||card.value==15) return true;
+        if(card.value==1||card.value==15) return true;
         
         if(!leadSuit) return true; //for the first card played
         const canFollow=hand.some(c=>c.suit==leadSuit); // if some card in your hand can follow suit
