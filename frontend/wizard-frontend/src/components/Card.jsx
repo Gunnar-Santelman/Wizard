@@ -14,7 +14,7 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true }) {
+export default function Card({ suit="spades", value=14, inPlayersHand=true, index, rotation }) {
 
     const [isValidPlay, setIsValidPlay] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
@@ -40,8 +40,13 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true }) {
                 height: '168px',
                 border: inPlayersHand && isHovered && isValidPlay ? "thick ridge lemonchiffon" : "thick ridge transparent",
                 borderRadius: '5px',
+                transform: `
+                    rotate(${rotation}deg)
+                    ${isHovered && inPlayersHand ? "translateY(-30px)": ""}
+                    ${inPlayersHand && isHovered && isValidPlay ? "scale(1.1)" : "scale(1)"}
+                `,
+                zIndex: isHovered && inPlayersHand ? 100 : index,
                 filter: inPlayersHand && isHovered && !isValidPlay ? "contrast(50%)" : "none",
-                transform: inPlayersHand && isHovered && isValidPlay ? "scale(1.1)" : "scale(1)",
                 transition: "transform 0.3s ease, border 0.3s ease, filter 0.3s ease",
                 cursor:inPlayersHand && isHovered && isValidPlay ? 'pointer' : 'not-allowed'
              }}

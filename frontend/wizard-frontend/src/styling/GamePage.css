@@ -15,9 +15,28 @@
 
 .player-hand {
     position: absolute;
-    bottom: 20px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 1px;
+    align-items: flex-end;
+}
+.player-hand .card {
+    margin-left: -90px;
+    transition: transform 0.2s ease, z-index 0.2s ease;
+}
+.player-hand .card:first-child {
+    margin-left: 0;
+}
+
+.opponent-hand {
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+}
+.opponent-hand .card {
+    margin-left: -90px;
+}
+.opponent-hand .card:first-child {
+    margin-left:0;
 }

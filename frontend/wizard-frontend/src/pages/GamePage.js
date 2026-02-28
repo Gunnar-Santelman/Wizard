@@ -40,7 +40,7 @@ export default function GamePage() {
         const {x, y, angle} = getOpponentPosition(index, opponents.length);
         const rotation = (angle * 180) / Math.PI + 90;
         return (
-            <div
+            <div className = "opponent-hand"
             key = {player.socketId}
             style = {{
                 position: "absolute",
@@ -69,14 +69,20 @@ export default function GamePage() {
             {opponents.map(renderOpponent)}
 
             <div className = "player-hand">
-                {hand.map((card, index) => (
-                    <Card
-                        key = {index}
-                        suit = {card.suit}
-                        value = {card.value}
-                        inPlayersHand={true}
-                    />
-                ))}
+                {hand.map((card, index) => {
+                    const middle = hand.length / 2;
+                    const rotation = (index - middle) * 4;
+                    return (
+                        <Card
+                            key = {index}
+                            suit = {card.suit}
+                            value = {card.value}
+                            inPlayersHand={true}
+                            index = {index}
+                            rotation = {rotation}
+                        />
+                    )
+                })}
             </div>
         </div>
     )
