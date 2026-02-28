@@ -6,7 +6,6 @@ export default function PlayerInfocard({
   bidsMade = 4,
   avatarUrl = "https://wl-brightside.cf.tsp.li/resize/728x/jpg/af0/e0b/73c3f25248a70ded2a09db1e1b.jpg",
 }) {
-  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
@@ -60,7 +59,7 @@ export default function PlayerInfocard({
       >
         {tricksTaken}/{bidsMade}
       </div>
-      
+
     </div>
   );
 }
