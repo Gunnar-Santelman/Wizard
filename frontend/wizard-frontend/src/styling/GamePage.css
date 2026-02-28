@@ -35,7 +35,7 @@
     align-items: flex-end;
 }
 .opponent-hand .card {
-    margin-left: -90px;
+    margin-left: -110px;
 }
 .opponent-hand .card:first-child {
     margin-left:0;

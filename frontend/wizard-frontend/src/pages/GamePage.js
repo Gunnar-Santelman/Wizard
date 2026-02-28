@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Card from "../components/Card.jsx";
 import { useParams } from "react-router-dom";
 import socket from "../socket.js";
 import "../styling/GamePage.css";
 
 export default function GamePage() {
+    const containerRef = useRef(null);
+    const [radii, setRadii] = useState({rx: 300, ry: 200});
     const {gameId} = useParams();
     const [players, setPlayers] = useState([]);
     const [hand, setHand] = useState([]);
@@ -24,14 +26,30 @@ export default function GamePage() {
         }
     }, [gameId]);
 
+    useEffect(() => {
+        function updateRadii() {
+            if (!containerRef.current) {
+                return;
+            }
+
+            const {width, height} = containerRef.current.getBoundingClientRect();
+            const rx = width * 0.38;
+            const ry = height * 0.45;
+
+            setRadii({rx, ry});
+        }
+
+        updateRadii();
+        window.addEventListener("resize", updateRadii);
+        return () => window.removeEventListener("resize", updateRadii);
+    }, [])
 
     const opponents = players.filter(p => p.socketId !== socket.id);
 
     function getOpponentPosition(index, total) {
         const angle = ((Math.PI / (total-1)) * index);
-        const radius = 300;
-        const x = -Math.cos(angle) * radius;
-        const y = -Math.sin(angle) * radius;
+        const x = -Math.cos(angle) * (radii.rx);
+        const y = -Math.sin(angle) * radii.ry;
         
         return {x, y, angle};
     }
@@ -46,7 +64,7 @@ export default function GamePage() {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                transform: `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${rotation}deg)`,
+                transform: `translate(-50%, -15%) translate(${x}px, ${y}px) rotate(${rotation}deg)`,
                 transformOrigin: "center center"
             }}
             >
@@ -61,7 +79,7 @@ export default function GamePage() {
     }
 
     return (
-        <div className = "game-container">
+        <div className = "game-container" ref = {containerRef}>
             <div className = "table-center">
 
             </div>
