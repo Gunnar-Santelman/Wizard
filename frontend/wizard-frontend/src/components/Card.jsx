@@ -31,7 +31,7 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true }) {
             onClick={handleClick}
 
             // Shows either front or back of card, if it's in the player's hand or not
-            src={inPlayersHand ? "https://clipart-library.com/images/5TRrdzGjc.png" : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
+            src={inPlayersHand ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
 
             alt={value + " of " + suit}
             className="card"

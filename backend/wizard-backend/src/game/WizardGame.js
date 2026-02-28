@@ -26,7 +26,7 @@ class WizardGame {
             name: playerName,
             socketId: socketId,
             // test hand
-            hand: [{suit: "hearts", value: 10}, {suit: "spades", value:9}, {suit: "clubs", value:1}]
+            hand: [ {suit: "spades", value:2}, {suit: "hearts", value:14}, {suit: "clubs", value:3}, {suit: "diamonds", value:4}, {suit: "spades", value:13}, {suit: "diamonds", value:12}, {suit: "clubs", value:11}, {suit: "hearts", value:10},]
         });
     }
     
