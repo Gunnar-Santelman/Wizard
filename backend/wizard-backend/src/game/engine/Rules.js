@@ -4,7 +4,7 @@ class Rules{
        let TRUMP;
         if(card.value==15 ){ //wizard case
            // present a choice to the player who dealt
-        } else if(card.value==0)
+        } else if(card.value==1)
         {
             // if jester, no trump
             TRUMP=null;
@@ -15,34 +15,37 @@ class Rules{
         }
         return TRUMP;
     }
-    determineTrickWinner(Trick)
+    /**
+     * Determines the winner of a trick.
+     * @param {Trick} Trick The trick being played.
+     * @returns a pair object that goes {card,player} that won the trick
+     */
+    static determineTrickWinner(Trick)
     {
         let cards=Trick.cards;
-        let values=cards.map(card=>card.value);
+        
         let lead=Trick.leadSuit;
-        if(values.includes(15)){
-            return cards.find(card=>card.value==15);
-            // first wizard wins if its a wizard
-        }
-        else{
+        const firstWizard= cards.find(({card})=>card.value==15);
+        if(firstWizard) return firstWizard.player;
+        
             // this loops through the array, comparing each to a best value, and updates it if the comparator is positive
-            winner=cards.reduce((best,card)=>{
-                return this.compareCard(card,best,lead)>0
-                ?card 
+           const winner=cards.reduce((best,curr)=>{
+                return this.compareCard(curr.card,best.card,lead)>0
+                ?curr 
                 :best;
 
             })
             return winner;
-        }
+        
         
     }   
-    compareCard(a,b,leadSuit){
+    static compareCard(a,b,leadSuit){
     //wizards
     if (a.value==15&&b.value!==15) return 1;
     if (b.value === 15 && a.value !== 15) return -1;
     //jesters
-    if (a.value==0&&b.value!==0) return -1;
-    if (b.value==0&&a.value!==0) return 1;
+    if (a.value==1&&b.value!==1) return -1;
+    if (b.value==1&&a.value!==1) return 1;
 
     //Trump suit
     
@@ -56,9 +59,9 @@ class Rules{
     // if all fall through, return numeric difference
     return a.value-b.value;
     }
-    isValidPlay(card,hand,leadSuit){
+    static isValidPlay(card,hand,leadSuit){
         // you can always play a special card
-        if(card.value==0||card.value==15) return true;
+        if(card.value==1||card.value==15) return true;
         
         if(!leadSuit) return true; //for the first card played
         const canFollow=hand.some(c=>c.suit==leadSuit); // if some card in your hand can follow suit
