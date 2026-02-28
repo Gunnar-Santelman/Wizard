@@ -64,12 +64,15 @@ export default function GamePage() {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                transform: `translate(-50%, -15%) translate(${x}px, ${y}px) rotate(${rotation}deg)`,
+                transform: `translate(-50%, -15%) translate(${x}px, ${y}px)`,
                 transformOrigin: "center center"
             }}
             >
                 <p>{player.name}</p>
-                <div style = {{display: "flex", gap: 1}}>
+                <div style = {{display: "flex",
+                    gap: 1,
+                    transform: `rotate(${rotation}deg)`
+                }}>
                     {Array.from({length: player.cardCount}).map((_, i) => (
                         <Card key ={i} inPlayersHand = {false} />
                     ))}

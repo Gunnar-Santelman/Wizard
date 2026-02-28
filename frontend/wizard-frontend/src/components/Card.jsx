@@ -45,7 +45,6 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, inde
                     ${isHovered && inPlayersHand ? "translateY(-30px)": ""}
                     ${inPlayersHand && isHovered && isValidPlay ? "scale(1.1)" : "scale(1)"}
                 `,
-                zIndex: isHovered && inPlayersHand ? 100 : index,
                 filter: inPlayersHand && isHovered && !isValidPlay ? "contrast(50%)" : "none",
                 transition: "transform 0.3s ease, border 0.3s ease, filter 0.3s ease",
                 cursor:inPlayersHand && isHovered && isValidPlay ? 'pointer' : 'not-allowed'
