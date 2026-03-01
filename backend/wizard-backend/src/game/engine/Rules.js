@@ -1,6 +1,6 @@
-class Rules{
+export default class Rules{
     
-    determineTrump(card){
+    static determineTrump(card){
        let TRUMP;
         if(card.value==15 ){ //wizard case
            // present a choice to the player who dealt

@@ -1,5 +1,8 @@
 import WizardGame from "../WizardGame.js";
 import Deck from "./Deck.js";
+import Card from "./Card.js";
+import Rules from "./Rules.js";
+import Trick from "./Trick.js";
 
 export default class Round{
     #dealer;
@@ -23,7 +26,7 @@ export default class Round{
         this.#deck=new Deck();
         this.#cutCard=this.#deck.cutCard();
         this.dealCards();
-
+        this.trumpCard = null;
     }
     get dealer(){return this.#dealer};
     get roundNo(){return this.#roundNo};
@@ -91,10 +94,13 @@ export default class Round{
         // this splits the array at the index, then appends the rest before it so it wraps around
         return [...players.slice(starting),...players.slice(0,starting)]
     }
-    determineValidCards() {
+
+    determineValidCards(hand) {
         return;
     }
+
     playRound(){
+        this.trumpCard = new Card(this.cutCard.suit, this.cutCard.value);
         let trump=Rules.determineTrump(this.cutCard);
         this.collectBids();
         for(let tricks=0;tricks<this.roundNo;tricks++)
@@ -110,7 +116,7 @@ export default class Round{
                if(count===0){
                 trick.setLed(null);
                }
-               while(!Rules.isValidMove(null)){
+               while(!Rules.isValidPlay(null)){
                 // change the choice var
                 
                }

@@ -13,6 +13,7 @@ export default function GamePage() {
   const [players, setPlayers] = useState([]);
   const [hand, setHand] = useState([]);
   const [trick, setTrick] = useState([]);
+  const [trump, setTrump] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,8 @@ export default function GamePage() {
       setPlayers(game.players);
       setHand(game.hand);
       setTrick(game.trick);
+      setTrump(game.trumpCard);
+      console.log(trump);
     }
 
     socket.on("gameState", handleGameState);
@@ -167,6 +170,16 @@ export default function GamePage() {
           {trick?.map((card, index) => 
             renderTrickCard(card, index)
           )}
+        </div>
+
+        <div className = "trump-card">
+          <Card
+            key = {"trump"}
+            suit = {trump?.suit}
+            value = {trump?.value}
+            inPlayersHand = {false}
+            isPlayed = {true}
+          />
         </div>
 
         <div className="player-hand">
