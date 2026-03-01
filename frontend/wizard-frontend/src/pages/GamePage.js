@@ -127,7 +127,6 @@ export default function GamePage() {
 
   async function handleLeave() {
     socket.emit("leaveGame", { gameId });
-    navigate("/");
   }
 
   return (
