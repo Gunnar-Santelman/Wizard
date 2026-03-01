@@ -4,7 +4,7 @@ class WizardGame {
         this.host = null;
         this.players = [];
         this.maxRounds = 0;
-        this.round = 0;
+        this.currentRound = 0;
         this.deck = [];
         this.status = "waiting";
     }
@@ -24,7 +24,9 @@ class WizardGame {
         
         this.players.push({
             name: playerName,
-            socketId
+            socketId: socketId,
+            // test hand
+            hand: [ {suit: "spades", value:2}, {suit: "hearts", value:14}, {suit: "clubs", value:3}, {suit: "diamonds", value:4}, {suit: "spades", value:13}, {suit: "diamonds", value:12}, {suit: "clubs", value:11}, {suit: "hearts", value:10},]
         });
     }
     

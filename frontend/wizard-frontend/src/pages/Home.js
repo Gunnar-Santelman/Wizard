@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import * as gameApi from "./api/gameApi";
-import socket from "./socket";
+import * as gameApi from "../api/gameApi";
+import socket from "../socket";
 
 function generatePlayerName() {
     return "Player_" + Math.floor(Math.random() * 10000);

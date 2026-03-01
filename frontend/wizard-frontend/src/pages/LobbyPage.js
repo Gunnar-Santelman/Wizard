@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import socket from "./socket";
+import socket from "../socket";
 
 
 export default function LobbyPage() {
@@ -12,7 +12,7 @@ export default function LobbyPage() {
     const navigate = useNavigate();
 
     function handleLeave() {
-        socket.emit("leaveGame", {gameId});
+        socket.emit("leaveLobby", {gameId});
         navigate("/");
     }
     function handleStartButton() {
