@@ -12,6 +12,7 @@ export default function GamePage() {
   const { gameId } = useParams();
   const [players, setPlayers] = useState([]);
   const [hand, setHand] = useState([]);
+  const [trick, setTrick] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export default function GamePage() {
     function handleGameState(game) {
       setPlayers(game.players);
       setHand(game.hand);
+      setTrick(game.trick);
     }
 
     socket.on("gameState", handleGameState);
@@ -125,6 +127,31 @@ export default function GamePage() {
     );
   }
 
+  function renderTrickCard(card, index) {
+    const total = trick.length;
+    const spacing = 60;
+    const offsetX = (index - (total - 1) / 2) * spacing;
+
+    return (
+      <div key = {index}
+        style = {{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: `translate(-50%, -50%) translate(${offsetX}px, 0px)`,
+          transition: "all 0.3s ease",
+          zIndex: index
+        }}
+      >
+        <Card
+          suit = {card.suit}
+          value = {card.value}
+          inPlayersHand = {false}
+          isPlayed = {true}/>
+      </div>
+    )
+  }
+
   async function handleLeave() {
     socket.emit("leaveGame", { gameId });
   }
@@ -135,6 +162,12 @@ export default function GamePage() {
         <div className="table-center"></div>
 
         {opponents && opponents.map(renderOpponent)}
+
+        <div className = "trick-area">
+          {trick?.map((card, index) => 
+            renderTrickCard(card, index)
+          )}
+        </div>
 
         <div className="player-hand">
           {hand.map((card, index) => {

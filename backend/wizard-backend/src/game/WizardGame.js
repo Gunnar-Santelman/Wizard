@@ -1,10 +1,12 @@
-class WizardGame {
+import Round from "./engine/Round.js";
+
+export class WizardGame {
     constructor (gameId) {
         this.id = gameId;
         this.host = null;
         this.players = [];
         this.maxRounds = 0;
-        this.currentRound = 0;
+        this.currentRound = null;
         this.deck = [];
         this.status = "waiting";
     }
@@ -41,7 +43,19 @@ class WizardGame {
 
     startGame() {
         this.status = "running";
-        //this.deck = createDeck();
+        this.maxRounds = 60 / this.players.length;
+        // test trick
+        this.currentRound = new Round(1, this);
+        this.currentRound.trickCards = [{suit: "hearts", value: 10}, {suit: "clubs", value: 11}];
+        console.log(this.currentRound.trickCards)
+        // this.playGame();
+    }
+
+    playGame() {
+        for (let i = 0; i <= this.maxRounds; i++) {
+            this.currentRound = new this.maxRounds(i, this);
+            this.currentRound.playRound();
+        }
     }
 
     isEmpty() {

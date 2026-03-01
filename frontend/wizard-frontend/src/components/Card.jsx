@@ -14,7 +14,7 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, index, rotation }) {
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, index, rotation }) {
 
     const [isValidPlay, setIsValidPlay] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
@@ -31,7 +31,7 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, inde
             onClick={handleClick}
 
             // Shows either front or back of card, if it's in the player's hand or not
-            src={inPlayersHand ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
+            src={inPlayersHand || isPlayed ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
 
             alt={value + " of " + suit}
             className="card"

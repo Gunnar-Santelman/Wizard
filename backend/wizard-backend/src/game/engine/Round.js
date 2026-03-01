@@ -1,6 +1,7 @@
-import WizardGame from "../WizardGame";
+import WizardGame from "../WizardGame.js";
+import Deck from "./Deck.js";
 
-class Round{
+export default class Round{
     #dealer;
     #roundNo;
     #currentPlayer;
@@ -14,9 +15,9 @@ class Round{
         this.#roundNo=roundNo;
         this.#game=game;
         // rotates dealer and sets player to the left of the dealer 
-        const dealerInd=(this.#roundNo-1)%this.#game.players.length();
+        const dealerInd=(this.#roundNo-1)%this.#game.players.length;
         this.#dealer=this.#game.players[dealerInd];
-        this.#currentPlayer=game.players[(dealerInd+1)%this.#game.players.length()];
+        this.#currentPlayer=game.players[(dealerInd+1)%this.#game.players.length];
         this.#trickNo=0;
         this.#trickCards=[];
         this.#deck=new Deck();
@@ -86,9 +87,9 @@ class Round{
      */
     #reorderPlayers(start){
         const players=this.#game.players;
-        const start=players.indexOf(start);
+        const starting=players.indexOf(start);
         // this splits the array at the index, then appends the rest before it so it wraps around
-        return [...players.slice(start),...players.slice(0,start)]
+        return [...players.slice(starting),...players.slice(0,starting)]
     }
     playRound(){
         let trump=Rules.determineTrump(this.cutCard);
@@ -102,7 +103,8 @@ class Round{
             for( const player of this.#reorderPlayers(this.#currentPlayer))
             {
                //TODO:  offer the player a choice to play as a pair object {card,player}
-               if(count==0){
+
+               if(count===0){
                 trick.setLed(null);
                }
                while(!Rules.isValidMove(null)){
@@ -110,7 +112,7 @@ class Round{
                 
                }
                // then it will fall through and place the card in the trick
-               trick.addCard(null);
+               trick.addCard(null, player.id);
                this.#trickCards.push(null)
                count++;
 

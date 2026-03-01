@@ -1,18 +1,21 @@
+import SUIT from "./Suit.js";
+import Card from "./Card.js";
 
-
-class Deck{
+export default class Deck{
     #cards;
     constructor(){
         this.#cards=[];
         this.populateDeck();
         this.shuffleDeck();
     }
+    
     /**
      * Populates an empty deck with a standard wizard deck.
      */
     populateDeck(){
         for(const suit of Object.values(SUIT)){
             for(let i=2;i<15;i++)
+
             {
                 // push all your numbered and face cards
                 this.#cards.push(new Card(suit,i));

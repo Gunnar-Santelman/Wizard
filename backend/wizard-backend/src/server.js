@@ -66,7 +66,8 @@ io.on("connection", (socket) => {
       hand: player ? player.hand : [],
       host: game.host,
       status: game.status,
-      currentRound: game.currentRound
+      currentRound: game.currentRound,
+      trick: game?.currentRound?.trickCards
     })
     // socket.emit("gameState", game.getGameState());
   });
@@ -91,7 +92,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    game.status = "running";
+    game.startGame();
 
     io.to(gameId).emit("gameStarted", {gameId});
   })
