@@ -14,9 +14,7 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, index, rotation }) {
-
-    const [isValidPlay, setIsValidPlay] = useState(false)
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, index, rotation }) {
     const [isHovered, setIsHovered] = useState(false)
     console.log(suit, value);
     const handleClick = () => {
@@ -38,7 +36,7 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, isPl
             style={{
                 width: '120px',
                 height: '168px',
-                border: inPlayersHand && isHovered && isValidPlay ? "thick ridge lemonchiffon" : "thick ridge transparent",
+                border: inPlayersHand && isHovered && isValidPlay ? "thick ridge gold" : "thick ridge transparent",
                 borderRadius: '5px',
                 transform: `
                     rotate(${rotation}deg)

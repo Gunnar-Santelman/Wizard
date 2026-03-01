@@ -1,4 +1,5 @@
 import Round from "./engine/Round.js";
+import Player from "./engine/Player.js";
 
 export class WizardGame {
     constructor (gameId) {
@@ -23,13 +24,13 @@ export class WizardGame {
         if (alreadyExists) {
             return;
         }
-        
-        this.players.push({
-            name: playerName,
-            socketId: socketId,
-            // test hand
-            hand: [ {suit: "spades", value:2}, {suit: "hearts", value:14}, {suit: "clubs", value:3}, {suit: "diamonds", value:4}, {suit: "spades", value:13}, {suit: "diamonds", value:12}, {suit: "clubs", value:11}, {suit: "hearts", value:10},]
-        });
+        // const testCard1 = new Card("clubs", 14);
+        // testCard1.setValid(true);
+        // const testCard2 = new Card("spades", 2);
+        // testCard2.setValid(false);
+        this.players.push(
+            new Player(socketId, playerName)
+        );
     }
     
     removePlayer(socketId) {
@@ -46,8 +47,6 @@ export class WizardGame {
         this.maxRounds = 60 / this.players.length;
         // test trick
         this.currentRound = new Round(1, this);
-        this.currentRound.trickCards = [{suit: "hearts", value: 10}, {suit: "clubs", value: 11}];
-        console.log(this.currentRound.trickCards)
         // this.playGame();
     }
 

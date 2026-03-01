@@ -1,22 +1,18 @@
-class Player {
-    constructor(playerId) {
-        this.id = playerId;
+export default class Player {
+    constructor(playerId, name) {
+        this.name = name;
+        this.socketId = playerId;
         this.hand = [];
         this.bid = -1;
+        this.score = 0;
     }
 
     setBid(bid) {
         this.bid = bid;
     }
-    getBid() {
-        return this.bid;
-    }
 
     setHand(hand) {
         this.hand = hand;
-    }
-    getHand(hand) {
-        return hand;
     }
 
     playCard(playedCard) {

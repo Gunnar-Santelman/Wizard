@@ -179,6 +179,7 @@ export default function GamePage() {
                 suit={card.suit}
                 value={card.value}
                 inPlayersHand={true}
+                isValidPlay = {card.isValid}
                 index={index}
                 rotation={rotation}
               />

@@ -91,6 +91,9 @@ export default class Round{
         // this splits the array at the index, then appends the rest before it so it wraps around
         return [...players.slice(starting),...players.slice(0,starting)]
     }
+    determineValidCards() {
+        return;
+    }
     playRound(){
         let trump=Rules.determineTrump(this.cutCard);
         this.collectBids();
