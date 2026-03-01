@@ -31,12 +31,12 @@ export default function GamePage() {
 
   useEffect(() => {
     socket.on("gameEnded", () => {
-        alert("A player left the game!");
-        navigate("/");
+      alert("A player left the game!");
+      navigate("/");
     });
 
     return () => {
-        socket.off("gameEnded");
+      socket.off("gameEnded");
     };
   }, [navigate]);
 
@@ -125,28 +125,34 @@ export default function GamePage() {
     );
   }
 
+  async function handleLeave() {
+    socket.emit("leaveGame", { gameId });
+    navigate("/");
+  }
+
   return (
-    <div className="game-container" ref={containerRef}>
-      <div className="table-center"></div>
+      <div className="game-container" ref={containerRef}>
+        <button onClick={handleLeave}>Leave Game</button>
+        <div className="table-center"></div>
 
-      {opponents && opponents.map(renderOpponent)}
+        {opponents && opponents.map(renderOpponent)}
 
-      <div className="player-hand">
-        {hand.map((card, index) => {
-          const middle = hand.length / 2;
-          const rotation = (index - middle) * 4;
-          return (
-            <Card
-              key={index}
-              suit={card.suit}
-              value={card.value}
-              inPlayersHand={true}
-              index={index}
-              rotation={rotation}
-            />
-          );
-        })}
+        <div className="player-hand">
+          {hand.map((card, index) => {
+            const middle = hand.length / 2;
+            const rotation = (index - middle) * 4;
+            return (
+              <Card
+                key={index}
+                suit={card.suit}
+                value={card.value}
+                inPlayersHand={true}
+                index={index}
+                rotation={rotation}
+              />
+            );
+          })}
+        </div>
       </div>
-    </div>
   );
 }

@@ -12,7 +12,7 @@ export default function LobbyPage() {
     const navigate = useNavigate();
 
     function handleLeave() {
-        socket.emit("leaveGame", {gameId});
+        socket.emit("leaveLobby", {gameId});
         navigate("/");
     }
     function handleStartButton() {

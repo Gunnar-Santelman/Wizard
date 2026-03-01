@@ -27,6 +27,12 @@ class GameManager {
 
     deleteGame(id) {
         delete this.activeGames[id];
+
+        for (const socketId in this.socketToGame) {
+            if (this.socketToGame[socketId] === id) {
+                delete this.socketToGame[socketId];
+            }
+        }
     }
 }
 

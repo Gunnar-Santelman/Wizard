@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
     // socket.emit("gameState", game.getGameState());
   });
 
-  socket.on("leaveGame", ({gameId}) => {
+  socket.on("leaveLobby", ({gameId}) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
       return;
@@ -96,10 +96,20 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameStarted", {gameId});
   })
 
+  socket.on("leaveGame", ({gameId}) => {
+    const game = GameManager.getGame(gameId);
+    if (!game) {
+      return;
+    }
+
+    io.to(game.id).emit("gameEnded");
+    GameManager.deleteGame(game.id);
+    return;
+  })
+
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
     const gameId = GameManager.socketToGame[socket.id];
-    console.log(gameId);
     if (!gameId) {
       return;
     }
@@ -109,7 +119,6 @@ io.on("connection", (socket) => {
       return;
     }
 
-    console.log("Emitting gameEnded for game:", game.id);
     io.to(game.id).emit("gameEnded");
     GameManager.deleteGame(game.id);
     delete GameManager.socketToGame[socket.id];
