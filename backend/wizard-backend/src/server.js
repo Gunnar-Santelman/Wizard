@@ -40,6 +40,7 @@ io.on("connection", (socket) => {
 
     socket.join(gameId);
     game.joinGame(playerName, socket.id);
+    GameManager.socketToGame[socket.id] = game.id;
 
     socket.emit("joinSuccess", {gameId});
 
@@ -97,20 +98,22 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
-
-    for(const [id, game] of GameManager.activeGames) {
-      const originalLength = game.players.length;
-
-      game.removePlayer(socket.id);
-
-      if (game.players.length !== originalLength) {
-        io.to(id).emit("gameState", game.getGameState());
-      }
-
-      if (game.isEmpty()) {
-        GameManager.deleteGame(id);
-      }
+    const gameId = GameManager.socketToGame[socket.id];
+    console.log(gameId);
+    if (!gameId) {
+      return;
     }
+    
+    const game = GameManager.getGame(gameId);
+    if (!game) {
+      return;
+    }
+
+    console.log("Emitting gameEnded for game:", game.id);
+    io.to(game.id).emit("gameEnded");
+    GameManager.deleteGame(game.id);
+    delete GameManager.socketToGame[socket.id];
+    return;
   });
 });
 

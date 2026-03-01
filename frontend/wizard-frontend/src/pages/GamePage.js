@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import React from "react";
 import Card from "../components/Card.jsx";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import socket from "../socket.js";
 import "../styling/GamePage.css";
 
@@ -11,6 +12,7 @@ export default function GamePage() {
   const { gameId } = useParams();
   const [players, setPlayers] = useState([]);
   const [hand, setHand] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.emit("requestGameState", { gameId });
@@ -26,6 +28,17 @@ export default function GamePage() {
       socket.off("gameState", handleGameState);
     };
   }, [gameId]);
+
+  useEffect(() => {
+    socket.on("gameEnded", () => {
+        alert("A player left the game!");
+        navigate("/");
+    });
+
+    return () => {
+        socket.off("gameEnded");
+    };
+  }, [navigate]);
 
   useEffect(() => {
     function updateRadii() {
@@ -116,7 +129,7 @@ export default function GamePage() {
     <div className="game-container" ref={containerRef}>
       <div className="table-center"></div>
 
-      {opponents.map(renderOpponent)}
+      {opponents && opponents.map(renderOpponent)}
 
       <div className="player-hand">
         {hand.map((card, index) => {
