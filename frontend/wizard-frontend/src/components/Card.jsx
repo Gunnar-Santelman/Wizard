@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import socket from "../socket";
 /*
 
 Possible Card States:
@@ -14,12 +14,17 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, index, rotation }) {
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, index, rotation, gameId }) {
     const [isHovered, setIsHovered] = useState(false)
     console.log(suit, value);
     const handleClick = () => {
-        // Put stuff here!
-        console.log('Card was clicked!')
+        if (!isValidPlay || !inPlayersHand) {
+            return;
+        }
+        socket.emit("playCard", {
+            gameId,
+            index
+        });
     };
 
     return (

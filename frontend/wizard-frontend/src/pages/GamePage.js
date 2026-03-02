@@ -13,7 +13,8 @@ export default function GamePage() {
   const [players, setPlayers] = useState([]);
   const [hand, setHand] = useState([]);
   const [trick, setTrick] = useState([]);
-  const [trump, setTrump] = useState([]);
+  const [trump, setTrump] = useState(null);
+  const [isMyTurn, setIsMyTurn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,10 +22,10 @@ export default function GamePage() {
 
     function handleGameState(game) {
       setPlayers(game.players);
-      setHand(game.hand);
-      setTrick(game.trick);
-      setTrump(game.trumpCard);
-      console.log(trump);
+      setHand(game.hands?.[socket.id] || []);
+      setTrick(game.trick || []);
+      setTrump(game.trumpCard || null);
+      setIsMyTurn(game.currentPlayer === socket.id);
     }
 
     socket.on("gameState", handleGameState);
@@ -131,28 +132,38 @@ export default function GamePage() {
   }
 
   function renderTrickCard(card, index) {
+    console.log(card.suit);
     const total = trick.length;
     const spacing = 60;
     const offsetX = (index - (total - 1) / 2) * spacing;
 
     return (
-      <div key = {index}
-        style = {{
+      <div
+        key={index}
+        style={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: `translate(-50%, -50%) translate(${offsetX}px, 0px)`,
           transition: "all 0.3s ease",
-          zIndex: index
+          zIndex: index,
         }}
       >
         <Card
-          suit = {card.suit}
-          value = {card.value}
-          inPlayersHand = {false}
-          isPlayed = {true}/>
+          suit={card.suit}
+          value={card.value}
+          inPlayersHand={false}
+          isPlayed={true}
+        />
       </div>
-    )
+    );
+  }
+
+  function renderTurnNotification() {
+    if (isMyTurn) {
+      return <h1>YOUR TURN!!</h1>;
+    }
+    return null;
   }
 
   async function handleLeave() {
@@ -160,45 +171,46 @@ export default function GamePage() {
   }
 
   return (
-      <div className="game-container" ref={containerRef}>
-        <button onClick={handleLeave}>Leave Game</button>
-        <div className="table-center"></div>
+    <div className="game-container" ref={containerRef}>
+      <button onClick={handleLeave}>Leave Game</button>
+      <div className="table-center"></div>
 
-        {opponents && opponents.map(renderOpponent)}
+      {opponents && opponents.map(renderOpponent)}
 
-        <div className = "trick-area">
-          {trick?.map((card, index) => 
-            renderTrickCard(card, index)
-          )}
-        </div>
-
-        <div className = "trump-card">
-          <Card
-            key = {"trump"}
-            suit = {trump?.suit}
-            value = {trump?.value}
-            inPlayersHand = {false}
-            isPlayed = {true}
-          />
-        </div>
-
-        <div className="player-hand">
-          {hand.map((card, index) => {
-            const middle = hand.length / 2;
-            const rotation = (index - middle) * 4;
-            return (
-              <Card
-                key={index}
-                suit={card.suit}
-                value={card.value}
-                inPlayersHand={true}
-                isValidPlay = {card.isValid}
-                index={index}
-                rotation={rotation}
-              />
-            );
-          })}
-        </div>
+      <div className="trick-area">
+        {trick?.map((card, index) => renderTrickCard(card, index))}
       </div>
+
+      <div className="trump-card">
+        <Card
+          key={"trump"}
+          suit={trump?.suit}
+          value={trump?.value}
+          inPlayersHand={false}
+          isPlayed={true}
+        />
+      </div>
+
+      <div>{renderTurnNotification()}</div>
+
+      <div className="player-hand">
+        {hand.map((card, index) => {
+          const middle = hand.length / 2;
+          const rotation = (index - middle) * 4;
+          return (
+            <Card
+              key={index}
+              suit={card.suit}
+              value={card.value}
+              inPlayersHand={true}
+              isValidPlay={card.isValid}
+              index={index}
+              rotation={rotation}
+              gameId = {gameId}
+            />
+          );
+        })}
+      </div>
+    </div>
   );
 }

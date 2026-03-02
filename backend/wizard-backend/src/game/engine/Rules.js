@@ -25,7 +25,7 @@ export default class Rules{
         let cards=Trick.cards;
         
         let lead=Trick.leadSuit;
-        const firstWizard= cards.find(({card})=>card.value==15);
+        const firstWizard= cards.find(({card})=>card?.value==15);
         if(firstWizard) return firstWizard.player;
         
             // this loops through the array, comparing each to a best value, and updates it if the comparator is positive
@@ -36,11 +36,13 @@ export default class Rules{
 
             })
             return winner;
-        
-        
     }   
+
     static compareCard(a,b,leadSuit){
     //wizards
+    if (a === null || b === null) {
+        return;
+    }
     if (a.value==15&&b.value!==15) return 1;
     if (b.value === 15 && a.value !== 15) return -1;
     //jesters
@@ -59,9 +61,10 @@ export default class Rules{
     // if all fall through, return numeric difference
     return a.value-b.value;
     }
+    
     static isValidPlay(card,hand,leadSuit){
         // you can always play a special card
-        if(card.value==1||card.value==15) return true;
+        if(card?.value==1||card?.value==15) return true;
         
         if(!leadSuit) return true; //for the first card played
         const canFollow=hand.some(c=>c.suit==leadSuit); // if some card in your hand can follow suit

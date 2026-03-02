@@ -44,15 +44,12 @@ export class WizardGame {
         this.maxRounds = 60 / this.players.length;
         // test trick
         this.currentRound = new Round(1, this);
-        // this.playGame();
-
-        this.currentRound.playRound();
+        //this.playGame();
     }
 
     playGame() {
-        for (let i = 0; i <= this.maxRounds; i++) {
-            this.currentRound = new this.maxRounds(i, this);
-            this.currentRound.playRound();
+        for (let i = 1; i <= this.maxRounds; i++) {
+            this.currentRound = new Round(i, this);
         }
     }
 
