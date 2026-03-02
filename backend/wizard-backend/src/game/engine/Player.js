@@ -17,9 +17,9 @@ export default class Player {
 
     playCard(playedCard) {
         for (let i= 0; i < this.hand.length; i++) {
-            const card = this.hand[0];
+            const card = this.hand[i];
             if (card.value === playedCard.value && card.suit === playedCard.suit) {
-                this.hand.pop(i);
+                this.hand.splice(i, 1);
             }
         }
     }
