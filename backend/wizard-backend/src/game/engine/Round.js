@@ -23,9 +23,14 @@ export default class Round {
     this.#trickNumber = 0;
     this.currentTrick = null;
     this.#deck = new Deck();
-    this.#cutCard = this.#deck.cutCard();
+    if (roundNumber !== (60 / this.#game.players.length)) {
+      this.#cutCard = this.#deck.cutCard();
+    }
+    else {
+      this.#cutCard = null;
+    }
     this.dealCards();
-    this.trumpCard = new Card(this.#cutCard.suit, this.#cutCard.value);
+    this.trumpCard = (this.#cutCard !== null) ? new Card(this.#cutCard.suit, this.#cutCard.value) : null;
   }
   get currentPlayer() {
     return this.#currentPlayer;
@@ -51,7 +56,7 @@ export default class Round {
   }
   determineTrumpInHand(hand) {
     for (let card of hand) {
-      if (card.suit === this.trump) {
+      if (card && card.suit === this.trump) {
         card.trump = true;
       }
     }
@@ -112,7 +117,7 @@ export default class Round {
         if (card && Rules.isValidPlay(card, hand, this.currentTrick?.ledCard?.suit)) {
           card.isValid = true;
         }
-        else {
+        else if (card){
           card.isValid = false;
         }
       }

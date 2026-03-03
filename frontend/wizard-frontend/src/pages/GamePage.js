@@ -118,7 +118,7 @@ export default function GamePage() {
           <div
             style={{
               display: "flex",
-              gap: 1,
+              gap: 0,
               transform: `rotate(${rotation}deg)`,
             }}
           >
@@ -159,9 +159,22 @@ export default function GamePage() {
     );
   }
 
+  function renderTrumpCard() {
+    if (trump !== null) {
+      return(<Card
+          key={"trump"}
+          suit={trump?.suit}
+          value={trump?.value}
+          inPlayersHand={false}
+          isPlayed={true}
+        />)
+    }
+    return null;
+  }
+
   function renderTurnNotification() {
     if (isMyTurn) {
-      return <h1>YOUR TURN!!</h1>;
+      return <h1 className="turn-notification">YOUR TURN!!</h1>;
     }
     return null;
   }
@@ -182,17 +195,11 @@ export default function GamePage() {
       </div>
 
       <div className="trump-card">
-        <Card
-          key={"trump"}
-          suit={trump?.suit}
-          value={trump?.value}
-          inPlayersHand={false}
-          isPlayed={true}
-        />
+        {renderTrumpCard()}
       </div>
 
       <div>{renderTurnNotification()}</div>
-
+      
       <div className="player-hand">
         {hand.map((card, index) => {
           const middle = hand.length / 2;

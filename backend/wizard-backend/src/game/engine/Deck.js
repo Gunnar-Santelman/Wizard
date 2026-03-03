@@ -41,6 +41,10 @@ export default class Deck{
      */
     cutCard(){
         // yes its the last element but does it matter?
-        return this.#cards.pop()
+        if (this.#cards.length > 0) {
+            let cardToReturn = this.#cards.pop();
+            return cardToReturn;
+        }
+        return null;
     }
 }

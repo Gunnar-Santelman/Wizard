@@ -22,7 +22,7 @@
     align-items: flex-end;
 }
 .player-hand .card {
-    margin-left: -90px;
+    margin-left: -100px;
     transition: transform 0.2s ease, z-index 0.2s ease;
 }
 .player-hand .card:first-child {
@@ -35,7 +35,7 @@
     align-items: flex-end;
 }
 .opponent-hand .card {
-    margin-left: -110px;
+    margin-left: -118px;
 }
 .opponent-hand .card:first-child {
     margin-left:0;
@@ -48,4 +48,10 @@
     width: 300px;
     height: 200px;
     transform: translate(-50%, -50%);
+}
+
+.turn-notification {
+    position:absolute;
+    top:90%;
+    left:20%
 }
