@@ -5,6 +5,7 @@ export default class Player {
         this.hand = [];
         this.bid = -1;
         this.score = 0;
+        this.playedCard = null;
     }
 
     setBid(bid) {
@@ -18,8 +19,9 @@ export default class Player {
     playCard(playedCard) {
         for (let i= 0; i < this.hand.length; i++) {
             const card = this.hand[i];
-            if (card.value === playedCard.value && card.suit === playedCard.suit) {
+            if (playedCard.value === card.value && playedCard.suit === card.suit) {
                 this.hand.splice(i, 1);
+                this.playedCard = playedCard;
             }
         }
     }

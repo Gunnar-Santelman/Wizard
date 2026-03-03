@@ -52,6 +52,27 @@
 
 .turn-notification {
     position:absolute;
-    top:90%;
-    left:20%
+    font-size: 45px;
+    display: flex;
+    top:62%;
+    left:42%;
+    color: white;
+}
+
+.winner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1000;
+}
+.winner-popup {
+    background-color: rgba(0,0,0,0);
+    color: white;
+    padding: 25px 40px;
+    border-radius: 16px;
+    font-size: 28px;
+    font-weight: bold;
 }

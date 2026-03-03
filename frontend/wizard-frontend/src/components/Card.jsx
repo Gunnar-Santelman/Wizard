@@ -16,7 +16,6 @@ Possible Card States:
 
 export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, index, rotation, gameId }) {
     const [isHovered, setIsHovered] = useState(false)
-    console.log(suit, value);
     const handleClick = () => {
         if (!isValidPlay || !inPlayersHand) {
             return;

@@ -15,6 +15,7 @@ export default function GamePage() {
   const [trick, setTrick] = useState([]);
   const [trump, setTrump] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
+  const [winner, setWinner] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,8 +27,8 @@ export default function GamePage() {
       setTrick(game.trick || []);
       setTrump(game.trumpCard || null);
       setIsMyTurn(game.currentPlayer === socket.id);
+      setWinner(game.winner || null);
     }
-
     socket.on("gameState", handleGameState);
 
     return () => {
@@ -63,6 +64,18 @@ export default function GamePage() {
     window.addEventListener("resize", updateRadii);
     return () => window.removeEventListener("resize", updateRadii);
   }, []);
+
+  useEffect(() => {
+    if (!winner) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setWinner(null);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [winner])
 
   const opponents = players.filter((p) => p.socketId !== socket.id);
 
@@ -101,6 +114,7 @@ export default function GamePage() {
             textAlign: "center",
             fontWeight: "bold",
             pointerEvents: "none",
+            color: "white",
           }}
         >
           {player.name}
@@ -132,7 +146,6 @@ export default function GamePage() {
   }
 
   function renderTrickCard(card, index) {
-    console.log(card.suit);
     const total = trick.length;
     const spacing = 60;
     const offsetX = (index - (total - 1) / 2) * spacing;
@@ -179,6 +192,20 @@ export default function GamePage() {
     return null;
   }
 
+  function renderWinnerPopup() {
+    if(!winner) {
+      return null;
+    }
+
+    return (
+      <div className = "winner-overlay">
+        <div className = "winner-popup">
+          {winner?.name} won the trick!!
+        </div>
+      </div>
+    )
+  }
+
   async function handleLeave() {
     socket.emit("leaveGame", { gameId });
   }
@@ -197,9 +224,7 @@ export default function GamePage() {
       <div className="trump-card">
         {renderTrumpCard()}
       </div>
-
       <div>{renderTurnNotification()}</div>
-      
       <div className="player-hand">
         {hand.map((card, index) => {
           const middle = hand.length / 2;
@@ -218,6 +243,7 @@ export default function GamePage() {
           );
         })}
       </div>
+      {renderWinnerPopup()}
     </div>
   );
 }

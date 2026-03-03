@@ -27,9 +27,7 @@ export default class Rules {
    * @returns a pair object that goes {card,player} that won the trick
    */
   static determineTrickWinner(Trick) {
-    console.log(Trick);
     let cards = Trick.cards;
-    console.log(cards);
 
     let lead = Trick.leadSuit;
     const firstWizard = cards.find(({ card }) => card?.value == 15);
@@ -54,9 +52,9 @@ export default class Rules {
     if (b.value == 1 && a.value !== 1) return 1;
 
     //Trump suit
-
     if (a.trump && !b.trump) return 1;
     if (b.trump && !a.trump) return -1;
+    
     //lead
     const aLead = a.suit == leadSuit;
     const bLead = b.suit == leadSuit;
