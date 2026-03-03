@@ -86,6 +86,7 @@ export default class Round {
       }
       this.determineValidCards(player.hand);
       this.determineTrumpInHand(player.hand);
+      player?.hand.sort(Card.orderCards);
     }
   }
   /**
