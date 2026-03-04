@@ -175,6 +175,16 @@ export default class Round {
     this.#trickNumber++;
     this.currentTrick = null;
 
+    if (this.#trickNumber == this.#roundNumber) {
+      this.finishRound();
+    }
     this.determineValidCards();
+  }
+
+  finishRound() {
+    const roundNumber = this.#roundNumber + 1
+    if (roundNumber <= 20) {
+      this.#game.currentRound = new Round(roundNumber, this.#game)
+    }
   }
 }
