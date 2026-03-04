@@ -9,10 +9,12 @@ class Round{
     #game;
     #deck;
     #trickCards;
+    #scoreboard;
     constructor(roundNo,game){
         
         this.#roundNo=roundNo;
         this.#game=game;
+        this.#scoreboard=new Scoring(this.#game);
         // rotates dealer and sets player to the left of the dealer 
         const dealerInd=(this.#roundNo-1)%this.#game.players.length();
         this.#dealer=this.#game.players[dealerInd];
