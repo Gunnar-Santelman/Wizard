@@ -12,6 +12,10 @@ export default function GamePage() {
   const { gameId } = useParams();
   const [players, setPlayers] = useState([]);
   const [hand, setHand] = useState([]);
+  const [trick, setTrick] = useState([]);
+  const [trump, setTrump] = useState(null);
+  const [isMyTurn, setIsMyTurn] = useState(false);
+  const [winner, setWinner] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,9 +23,12 @@ export default function GamePage() {
 
     function handleGameState(game) {
       setPlayers(game.players);
-      setHand(game.hand);
+      setHand(game.hands?.[socket.id] || []);
+      setTrick(game.trick || []);
+      setTrump(game.trumpCard || null);
+      setIsMyTurn(game.currentPlayer === socket.id);
+      setWinner(game.winner || null);
     }
-
     socket.on("gameState", handleGameState);
 
     return () => {
@@ -57,6 +64,18 @@ export default function GamePage() {
     window.addEventListener("resize", updateRadii);
     return () => window.removeEventListener("resize", updateRadii);
   }, []);
+
+  useEffect(() => {
+    if (!winner) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setWinner(null);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [winner])
 
   const opponents = players.filter((p) => p.socketId !== socket.id);
 
@@ -95,6 +114,7 @@ export default function GamePage() {
             textAlign: "center",
             fontWeight: "bold",
             pointerEvents: "none",
+            color: "white",
           }}
         >
           {player.name}
@@ -112,7 +132,7 @@ export default function GamePage() {
           <div
             style={{
               display: "flex",
-              gap: 1,
+              gap: 0,
               transform: `rotate(${rotation}deg)`,
             }}
           >
@@ -125,33 +145,105 @@ export default function GamePage() {
     );
   }
 
+  function renderTrickCard(card, index) {
+    const total = trick.length;
+    const spacing = 60;
+    const offsetX = (index - (total - 1) / 2) * spacing;
+
+    return (
+      <div
+        key={index}
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: `translate(-50%, -50%) translate(${offsetX}px, 0px)`,
+          transition: "all 0.3s ease",
+          zIndex: index,
+        }}
+      >
+        <Card
+          suit={card.suit}
+          value={card.value}
+          inPlayersHand={false}
+          isPlayed={true}
+        />
+      </div>
+    );
+  }
+
+  function renderTrumpCard() {
+    if (trump !== null) {
+      return(<Card
+          key={"trump"}
+          suit={trump?.suit}
+          value={trump?.value}
+          inPlayersHand={false}
+          isPlayed={true}
+        />)
+    }
+    return null;
+  }
+
+  function renderTurnNotification() {
+    if (isMyTurn) {
+      return <h1 className="turn-notification">YOUR TURN!!</h1>;
+    }
+    return null;
+  }
+
+  function renderWinnerPopup() {
+    if(!winner) {
+      return null;
+    }
+
+    return (
+      <div className = "winner-overlay">
+        <div className = "winner-popup">
+          {winner?.name} won the trick!!
+        </div>
+      </div>
+    )
+  }
+
   async function handleLeave() {
     socket.emit("leaveGame", { gameId });
   }
 
   return (
-      <div className="game-container" ref={containerRef}>
-        <button onClick={handleLeave}>Leave Game</button>
-        <div className="table-center"></div>
+    <div className="game-container" ref={containerRef}>
+      <button onClick={handleLeave}>Leave Game</button>
+      <div className="table-center"></div>
 
-        {opponents && opponents.map(renderOpponent)}
+      {opponents && opponents.map(renderOpponent)}
 
-        <div className="player-hand">
-          {hand.map((card, index) => {
-            const middle = hand.length / 2;
-            const rotation = (index - middle) * 4;
-            return (
-              <Card
-                key={index}
-                suit={card.suit}
-                value={card.value}
-                inPlayersHand={true}
-                index={index}
-                rotation={rotation}
-              />
-            );
-          })}
-        </div>
+      <div className="trick-area">
+        {trick?.map((card, index) => renderTrickCard(card, index))}
       </div>
+
+      <div className="trump-card">
+        {renderTrumpCard()}
+      </div>
+      <div>{renderTurnNotification()}</div>
+      <div className="player-hand">
+        {hand.map((card, index) => {
+          const middle = hand.length / 2;
+          const rotation = (index - middle) * 4;
+          return (
+            <Card
+              key={index}
+              suit={card.suit}
+              value={card.value}
+              inPlayersHand={true}
+              isValidPlay={card.isValid}
+              index={index}
+              rotation={rotation}
+              gameId = {gameId}
+            />
+          );
+        })}
+      </div>
+      {renderWinnerPopup()}
+    </div>
   );
 }

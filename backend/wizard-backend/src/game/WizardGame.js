@@ -1,10 +1,14 @@
-class WizardGame {
+import Round from "./engine/Round.js";
+import Card from "./engine/Card.js";
+import Player from "./engine/Player.js";
+
+export class WizardGame {
     constructor (gameId) {
         this.id = gameId;
         this.host = null;
         this.players = [];
         this.maxRounds = 0;
-        this.currentRound = 0;
+        this.currentRound = null;
         this.deck = [];
         this.status = "waiting";
     }
@@ -21,13 +25,9 @@ class WizardGame {
         if (alreadyExists) {
             return;
         }
-        
-        this.players.push({
-            name: playerName,
-            socketId: socketId,
-            // test hand
-            hand: [ {suit: "spades", value:2}, {suit: "hearts", value:14}, {suit: "clubs", value:3}, {suit: "diamonds", value:4}, {suit: "spades", value:13}, {suit: "diamonds", value:12}, {suit: "clubs", value:11}, {suit: "hearts", value:10},]
-        });
+        this.players.push(
+            new Player(socketId, playerName)
+        );
     }
     
     removePlayer(socketId) {
@@ -41,7 +41,16 @@ class WizardGame {
 
     startGame() {
         this.status = "running";
-        //this.deck = createDeck();
+        this.maxRounds = 60 / this.players.length;
+        // test trick
+        this.currentRound = new Round(20, this);
+        //this.playGame();
+    }
+
+    playGame() {
+        for (let i = 1; i <= this.maxRounds; i++) {
+            this.currentRound = new Round(i, this);
+        }
     }
 
     isEmpty() {
