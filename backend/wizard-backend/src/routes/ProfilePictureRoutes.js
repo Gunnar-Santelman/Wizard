@@ -62,7 +62,7 @@ router.post("/select-default", authenticate, async (req, res) => {
         res.json({ message: "Profile picture updated" });
 
     } catch (err) {
-        res.status(500).json({message: "Failed to update profile picture"});
+        res.status(500).json({message: "Failed to update user's profile picture"});
     }
 });
 
