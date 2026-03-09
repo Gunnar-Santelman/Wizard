@@ -1,6 +1,7 @@
 import express from "express";
 import gameRoutes from "./routes/GameRoutes.js";
-import authRoutes from "./routes/AuthRoutes.js"
+import authRoutes from "./routes/AuthRoutes.js";
+import userRoutes from "./routes/UserRoutes.js";
 import profilePictureRoutes from "./routes/ProfilePictureRoutes.js";
 import testFirebaseAdmin from "./routes/testFirebaseAdmin.js";
 import testCloudinary from "./routes/testCloudinary.js";
@@ -15,18 +16,19 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/game", gameRoutes);
-app.use("/api/auth", authRoutes)
-app.use("/api/profile-picture", profilePictureRoutes)
-app.use("/api/firebase-test", testFirebaseAdmin) // /api/firebase-test/firebase-admin-test
-app.use("/api/cloudinary-test", testCloudinary) // /api/cloudinary-test/cloudinary-test
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/profile-picture", profilePictureRoutes);
+app.use("/api/firebase-test", testFirebaseAdmin); // /api/firebase-test/firebase-admin-test
+app.use("/api/cloudinary-test", testCloudinary); // /api/cloudinary-test/cloudinary-test
 
 app.get("/", (req, res) => {
   res.json({ message: "Wizard API is ruinng"});
-})
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong" });
-})
+});
 
 export default app;
