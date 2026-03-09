@@ -24,10 +24,10 @@ const userSchema = new mongoose.Schema(
         },
         username: {
             type: String,
-            required: true,
             trim: true, // removes leading and ending whitespace
             minlength: 4,
-            maxlength: 16
+            maxlength: 16,
+            default: null
         },
         lastActive: {
             type: Date,
