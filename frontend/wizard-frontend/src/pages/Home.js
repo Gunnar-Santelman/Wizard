@@ -1,5 +1,7 @@
 import {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import { signOut, signout } from "firebase/auth";
+import { auth } from "../services/firebase";
 import * as gameApi from "../api/gameApi";
 import socket from "../socket";
 
@@ -51,8 +53,15 @@ export default function Home() {
         };
     }, [navigate, playerName]);
 
+    async function handleLogout() {
+        await signOut(auth);
+    }
+
     return (
         <div style ={{padding: 40}}>
+
+            <button onClick={handleLogout}>Logout</button>
+
             <h2>Wizard Lobby</h2>
 
             <button onClick={handleCreate}>Create Game</button>
