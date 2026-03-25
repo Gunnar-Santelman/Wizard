@@ -1,7 +1,6 @@
 import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
-
-const API_BASE_AUTH = process.env.REACT_APP_API_URL + "/api/auth";
+import { API } from "../api/apiConfig";
 
 export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
@@ -32,7 +31,7 @@ export const signInWithEmail = async (email, password) => {
 async function syncUser(user) {
     const token = await user.getIdToken();
 
-    const res = await fetch(`${API_BASE_AUTH}/sync`, {
+    const res = await fetch(`${API.AUTH}/sync`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
