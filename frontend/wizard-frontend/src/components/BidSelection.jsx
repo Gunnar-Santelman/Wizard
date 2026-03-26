@@ -1,6 +1,7 @@
 import { useState } from "react";
+import socket from "../socket";
 
-export default function BidSelection({ maxBid = 5 }) {
+export default function BidSelection({ maxBid = 5, gameId }) {
   const [bidAmount, setBidAmount] = useState(0);
   const minBid = 0;
 
@@ -18,7 +19,11 @@ export default function BidSelection({ maxBid = 5 }) {
 
   const placeBid = () => {
     // Put stuff here!
-    console.log("Bid placed: ${bidAmount}");
+    console.log(`Bid placed: ${bidAmount}`);
+    socket.emit("placeBid", {
+      gameId,
+      bidAmount
+    });
   };
 
   return (

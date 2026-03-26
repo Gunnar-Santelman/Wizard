@@ -66,6 +66,16 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameState", buildGameState(game));
   })
 
+  socket.on("placeBid", ({gameId, bidAmount}) => {
+    const game = GameManager.getGame(gameId);
+    if (!game || !game.currentRound) {
+      return;
+    } 
+    game.currentRound.placeBid(socket.id, bidAmount);
+    
+    io.to(gameId).emit("gameState", buildGameState(game));
+  })
+
   socket.on("leaveLobby", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
@@ -128,7 +138,8 @@ function buildGameState(game) {
     players: game.players.map(p =>({
       socketId:p.socketId,
       name: p.name,
-      cardCount: p.hand.length
+      cardCount: p.hand.length,
+      bidAmount: p.bid
     })),
     hands: game.players.reduce((acc, p) => {
       acc[p.socketId] = p.hand;
@@ -139,6 +150,7 @@ function buildGameState(game) {
       value: t.card.value,
       playerId: t.playerId
     })) || [],
+    roundNumber: game.currentRound?.roundNo || null,
     trumpCard: game.currentRound?.trumpCard || null,
     currentPlayer: game.currentRound?.currentPlayer?.socketId || null,
     winner: game.currentRound?.winner || null

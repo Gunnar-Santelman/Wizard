@@ -1,3 +1,4 @@
+// TODO: Remove extra /api once I merge with main in .env
 const API_BASE = process.env.REACT_APP_API_URL + "/api/game";
 
 export async function createGame() {

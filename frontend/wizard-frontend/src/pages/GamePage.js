@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket.js";
 import "../styling/GamePage.css";
+import BidSelection from "../components/BidSelection.jsx";
 
 export default function GamePage() {
   const containerRef = useRef(null);
@@ -16,6 +17,8 @@ export default function GamePage() {
   const [trump, setTrump] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [winner, setWinner] = useState(null);
+  const [bid, setBid] = useState(-1)
+  const [roundNumber, setRoundNumber] = useState(0)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +31,8 @@ export default function GamePage() {
       setTrump(game.trumpCard || null);
       setIsMyTurn(game.currentPlayer === socket.id);
       setWinner(game.winner || null);
+      setRoundNumber(game.roundNumber || 0);
+      setBid(game.players.find((p) => p.socketId === socket.id).bidAmount)
     }
     socket.on("gameState", handleGameState);
 
@@ -69,7 +74,6 @@ export default function GamePage() {
     if (!winner) {
       return;
     }
-
     const timer = setTimeout(() => {
       setWinner(null);
     }, 2000);
@@ -192,6 +196,13 @@ export default function GamePage() {
     return null;
   }
 
+  function renderBidPopup() {
+    if (isMyTurn && bid === -1) {
+      return <BidSelection maxBid={roundNumber} gameId={gameId}/>;
+    }
+    return null;
+  }
+
   function renderWinnerPopup() {
     if(!winner) {
       return null;
@@ -221,6 +232,14 @@ export default function GamePage() {
         {trick?.map((card, index) => renderTrickCard(card, index))}
       </div>
 
+      {<div>
+        <h1>{bid}</h1>
+      </div>}
+
+      <div>
+        {renderBidPopup()}
+      </div>
+
       <div className="trump-card">
         {renderTrumpCard()}
       </div>
@@ -236,6 +255,7 @@ export default function GamePage() {
               value={card.value}
               inPlayersHand={true}
               isValidPlay={card.isValid}
+              isBidPhase={bid === -1}
               index={index}
               rotation={rotation}
               gameId = {gameId}
