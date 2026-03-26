@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import socket from "../socket.js";
 import "../styling/GamePage.css";
 import BidSelection from "../components/BidSelection.jsx";
+import PlayerInfocard from "../components/PlayerInfocard.jsx";
 
 export default function GamePage() {
   const containerRef = useRef(null);
@@ -17,8 +18,9 @@ export default function GamePage() {
   const [trump, setTrump] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [winner, setWinner] = useState(null);
-  const [bid, setBid] = useState(-1)
-  const [roundNumber, setRoundNumber] = useState(0)
+  const [bid, setBid] = useState(-1);
+  const [tricksTaken, setTricksTaken] = useState(0);
+  const [roundNumber, setRoundNumber] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +34,10 @@ export default function GamePage() {
       setIsMyTurn(game.currentPlayer === socket.id);
       setWinner(game.winner || null);
       setRoundNumber(game.roundNumber || 0);
-      setBid(game.players.find((p) => p.socketId === socket.id).bidAmount)
+      setBid(game.players.find((p) => p.socketId === socket.id).bidAmount);
+      setTricksTaken(
+        game.players.find((p) => p.socketId === socket.id).tricksTaken,
+      );
     }
     socket.on("gameState", handleGameState);
 
@@ -74,12 +79,12 @@ export default function GamePage() {
     if (!winner) {
       return;
     }
+    
     const timer = setTimeout(() => {
       setWinner(null);
-    }, 2000);
-
+    }, 4000);
     return () => clearTimeout(timer);
-  }, [winner])
+  }, [winner]);
 
   const opponents = players.filter((p) => p.socketId !== socket.id);
 
@@ -98,13 +103,13 @@ export default function GamePage() {
       radii.rx,
       radii.ry,
     );
-    const nameOffset = 150;
-    const namePos = getOpponentPosition(
-      index,
-      opponents.length,
-      radii.rx + nameOffset,
-      radii.ry + nameOffset / 8,
-    );
+    const offset = 220;
+    const perpAngle = cardsPos.angle + Math.PI / 2;
+    const namePos = {
+      x: cardsPos.x + Math.cos(perpAngle) * offset,
+      y: cardsPos.y + Math.sin(perpAngle) * offset,
+    };
+
     const rotation = (cardsPos.angle * 180) / Math.PI + 90;
 
     return (
@@ -121,7 +126,10 @@ export default function GamePage() {
             color: "white",
           }}
         >
-          {player.name}
+          <PlayerInfocard
+            bidsMade={player.bidAmount}
+            tricksTaken={player.tricksTaken}
+          ></PlayerInfocard>
         </div>
         <div
           className="opponent-hand"
@@ -178,43 +186,43 @@ export default function GamePage() {
 
   function renderTrumpCard() {
     if (trump !== null) {
-      return(<Card
+      return (
+        <Card
           key={"trump"}
           suit={trump?.suit}
           value={trump?.value}
           inPlayersHand={false}
           isPlayed={true}
-        />)
+        />
+      );
     }
     return null;
   }
 
   function renderTurnNotification() {
     if (isMyTurn) {
-      return <h1 className="turn-notification">YOUR TURN!!</h1>;
+      return <h1 className="turn-notification">YOUR TURN</h1>;
     }
     return null;
   }
 
   function renderBidPopup() {
     if (isMyTurn && bid === -1) {
-      return <BidSelection maxBid={roundNumber} gameId={gameId}/>;
+      return <BidSelection maxBid={roundNumber} gameId={gameId} />;
     }
     return null;
   }
 
   function renderWinnerPopup() {
-    if(!winner) {
+    if (!winner) {
       return null;
     }
 
     return (
-      <div className = "winner-overlay">
-        <div className = "winner-popup">
-          {winner?.name} won the trick!!
-        </div>
+      <div className="winner-overlay">
+        <div className="winner-popup">{winner?.name} won the trick!!</div>
       </div>
-    )
+    );
   }
 
   async function handleLeave() {
@@ -232,36 +240,33 @@ export default function GamePage() {
         {trick?.map((card, index) => renderTrickCard(card, index))}
       </div>
 
-      {<div>
-        <h1>{bid}</h1>
-      </div>}
+      <div>{renderBidPopup()}</div>
 
-      <div>
-        {renderBidPopup()}
-      </div>
-
-      <div className="trump-card">
-        {renderTrumpCard()}
-      </div>
-      <div>{renderTurnNotification()}</div>
-      <div className="player-hand">
-        {hand.map((card, index) => {
-          const middle = hand.length / 2;
-          const rotation = (index - middle) * 4;
-          return (
-            <Card
-              key={index}
-              suit={card.suit}
-              value={card.value}
-              inPlayersHand={true}
-              isValidPlay={card.isValid}
-              isBidPhase={bid === -1}
-              index={index}
-              rotation={rotation}
-              gameId = {gameId}
-            />
-          );
-        })}
+      <div className="trump-card">{renderTrumpCard()}</div>
+      <div className="player-area">
+        {renderTurnNotification()}
+        <div className = "infocard">
+          <PlayerInfocard bidsMade={bid} tricksTaken={tricksTaken} />
+        </div>
+        <div className="player-hand">
+          {hand.map((card, index) => {
+            const middle = hand.length / 2;
+            const rotation = (index - middle) * 4;
+            return (
+              <Card
+                key={index}
+                suit={card.suit}
+                value={card.value}
+                inPlayersHand={true}
+                isValidPlay={card.isValid}
+                isBidPhase={bid === -1}
+                index={index}
+                rotation={rotation}
+                gameId={gameId}
+              />
+            );
+          })}
+        </div>
       </div>
       {renderWinnerPopup()}
     </div>

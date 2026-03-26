@@ -64,6 +64,8 @@ io.on("connection", (socket) => {
     game.currentRound.playCard(socket.id, index);
 
     io.to(gameId).emit("gameState", buildGameState(game));
+
+    game.currentRound.winner = null;
   })
 
   socket.on("placeBid", ({gameId, bidAmount}) => {
@@ -139,7 +141,8 @@ function buildGameState(game) {
       socketId:p.socketId,
       name: p.name,
       cardCount: p.hand.length,
-      bidAmount: p.bid
+      bidAmount: p.bid,
+      tricksTaken: p.tricksTaken
     })),
     hands: game.players.reduce((acc, p) => {
       acc[p.socketId] = p.hand;

@@ -28,7 +28,18 @@ export default function BidSelection({ maxBid = 5, gameId }) {
 
   return (
     <div>
-      <div>
+      <div style = {{position: "absolute",
+        top: "45%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        padding: "15px",
+        backgroundColor: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        borderRadius: "15px"}}>
         <h1>Place Your Bid</h1>
 
         <div>

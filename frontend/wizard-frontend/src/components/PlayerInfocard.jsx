@@ -7,6 +7,10 @@ export default function PlayerInfocard({
   avatarUrl = "https://wl-brightside.cf.tsp.li/resize/728x/jpg/af0/e0b/73c3f25248a70ded2a09db1e1b.jpg",
 }) {
 
+  if (bidsMade === -1) {
+    bidsMade = 0;
+  }
+
   return (
     <div
       className="player-infocard"

@@ -174,6 +174,7 @@ export default class Round {
     const result = Rules.determineTrickWinner(this.currentTrick);
     const winner = this.#game.players.find((p) => p.socketId === result.player);
     this.winner = winner;
+    winner.incrementTricksTaken();
     this.#currentPlayer = winner;
     this.#trickNumber++;
     this.currentTrick = null;
@@ -188,10 +189,11 @@ export default class Round {
     const roundNumber = this.#roundNumber + 1;
     const players = this.#reorderPlayers(this.#currentPlayer);
     for (let player of players) {
-      player.setBid(-1);
+      player.resetRoundForPlayer();
     }
     if (roundNumber <= (60 / this.#game.players.length)) {
-      this.#game.currentRound = new Round(roundNumber, this.#game)
+      this.#game.currentRound = new Round(roundNumber, this.#game);
+      this.#game.currentRound.winner = this.winner;
     }
   }
 }
