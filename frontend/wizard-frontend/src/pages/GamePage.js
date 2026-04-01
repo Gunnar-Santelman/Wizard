@@ -241,7 +241,7 @@ export default function GamePage() {
       </div>
 
       <div>{renderBidPopup()}</div>
-
+      
       <div className="trump-card">{renderTrumpCard()}</div>
       <div className="player-area">
         {renderTurnNotification()}

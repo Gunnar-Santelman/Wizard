@@ -5,6 +5,7 @@ export default class Player {
         this.hand = [];
         this.bid = -1;
         this.tricksTaken = 0;
+        this.roundScores = {}
         this.score = 0;
         this.playedCard = null;
     }
