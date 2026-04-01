@@ -1,12 +1,10 @@
 import { auth } from "./firebase";
-
-const API_BASE_USER = process.env.REACT_APP_API_URL + "/api/user";
-const API_BASE_PROFILE_PICTURE = process.env.REACT_APP_API_URL + "/api/profile-picture";
+import { API } from "../api/apiConfig";
 
 export const setUsername = async (username) => {
     const token = await auth.currentUser.getIdToken();
 
-    const res = await fetch(`${API_BASE_USER}/set-username`, {
+    const res = await fetch(`${API.USER}/set-username`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -21,7 +19,7 @@ export const setUsername = async (username) => {
 export const setDefaultProfilePicture = async (profilePictureId) => {
     const token = await auth.currentUser.getIdToken();
 
-    const res = await fetch(`${API_BASE_PROFILE_PICTURE}/select-default`, {
+    const res = await fetch(`${API.PROFILE_PICTURE}/select-default`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -36,7 +34,7 @@ export const setDefaultProfilePicture = async (profilePictureId) => {
 export const getOnboardingCompletionStatus = async () => {
     const token = await auth.currentUser.getIdToken();
 
-    const res = await fetch(`${API_BASE_USER}/onboarding-status`, {
+    const res = await fetch(`${API.USER}/onboarding-status`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
