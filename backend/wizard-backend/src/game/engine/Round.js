@@ -90,14 +90,17 @@ export default class Round {
       player?.hand.sort(Card.orderCards);
     }
   }
-  /**
-   * collects bids for the round
-   */
-  collectBids() {
-    for (const player of this.#reorderPlayers(this.#currentPlayer)) {
-      // offer player bid choice 0-round number
-      // player.setbid(choice)
+  
+  placeBid(socketId, bidAmount) {
+    const player = this.#game.players.find((p) => p.socketId === socketId);
+    if (!player) {
+      return;
     }
+    if (player !== this.#currentPlayer) {
+      return;
+    }
+    this.#currentPlayer.setBid(bidAmount);
+    this.moveToNextPlayer();
   }
   /**
    * Helper function to reorder play within a round.
@@ -171,6 +174,7 @@ export default class Round {
     const result = Rules.determineTrickWinner(this.currentTrick);
     const winner = this.#game.players.find((p) => p.socketId === result.player);
     this.winner = winner;
+    winner.incrementTricksTaken();
     this.#currentPlayer = winner;
     this.#trickNumber++;
     this.currentTrick = null;
@@ -182,9 +186,14 @@ export default class Round {
   }
 
   finishRound() {
-    const roundNumber = this.#roundNumber + 1
-    if (roundNumber <= 20) {
-      this.#game.currentRound = new Round(roundNumber, this.#game)
+    const roundNumber = this.#roundNumber + 1;
+    const players = this.#reorderPlayers(this.#currentPlayer);
+    for (let player of players) {
+      player.resetRoundForPlayer();
+    }
+    if (roundNumber <= (60 / this.#game.players.length)) {
+      this.#game.currentRound = new Round(roundNumber, this.#game);
+      this.#game.currentRound.winner = this.winner;
     }
   }
 }

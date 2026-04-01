@@ -1,6 +1,7 @@
 import { useState } from "react";
+import socket from "../socket";
 
-export default function BidSelection({ maxBid = 5 }) {
+export default function BidSelection({ maxBid = 5, gameId }) {
   const [bidAmount, setBidAmount] = useState(0);
   const minBid = 0;
 
@@ -18,12 +19,27 @@ export default function BidSelection({ maxBid = 5 }) {
 
   const placeBid = () => {
     // Put stuff here!
-    console.log("Bid placed: ${bidAmount}");
+    console.log(`Bid placed: ${bidAmount}`);
+    socket.emit("placeBid", {
+      gameId,
+      bidAmount
+    });
   };
 
   return (
     <div>
-      <div>
+      <div style = {{position: "absolute",
+        top: "45%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        padding: "15px",
+        backgroundColor: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        borderRadius: "15px"}}>
         <h1>Place Your Bid</h1>
 
         <div>

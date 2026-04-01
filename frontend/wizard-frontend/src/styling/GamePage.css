@@ -13,11 +13,28 @@
     transform: translate(-50%, -50%);
 }
 
-.player-hand {
+.player-area {
     position: absolute;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
+}
+.turn-notification {
+    position:absolute;
+    transform: translate(-125%, 50%);
+    margin-left: 25px;
+    font-size: 45px;
+    color: white;
+    white-space: nowrap;
+}
+.infocard {
+    position: absolute;
+    left: 100%;
+    margin-left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.player-hand {
     display: flex;
     align-items: flex-end;
 }
@@ -50,15 +67,6 @@
     transform: translate(-50%, -50%);
 }
 
-.turn-notification {
-    position:absolute;
-    font-size: 45px;
-    display: flex;
-    top:62%;
-    left:42%;
-    color: white;
-}
-
 .winner-overlay {
     position: absolute;
     inset: 0;
@@ -66,6 +74,7 @@
     justify-content: center;
     align-items: center;
     pointer-events: none;
+    bottom: -30%;
     z-index: 1000;
 }
 .winner-popup {
