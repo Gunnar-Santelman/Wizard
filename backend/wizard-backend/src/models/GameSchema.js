@@ -4,12 +4,11 @@ const gameSchema = new mongoose.Schema(
     {
         host: {
             type: String,
-            required: true
+            default: null
         },
         players: { 
             type: [String],
-            required: true,
-            validate: [arr => arr.length > 0, 'At least one player required']
+            default: []
         },
         status: {
             type: String,
