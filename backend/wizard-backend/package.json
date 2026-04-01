@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "node src/server.js",
     "dev": "nodemon --legacy-watch src/server.js"
   },
