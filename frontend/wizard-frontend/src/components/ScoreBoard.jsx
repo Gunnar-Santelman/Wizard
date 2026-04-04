@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PlayerInfocard from ':/PlayerInfocard.jsx';
+import PlayerInfocard from '/PlayerInfocard.jsx';
 import ScoreCell from './ScoreCell.jsx';
 import BidScoreCell from './BidScoreCell.jsx';
 
@@ -13,11 +13,11 @@ import Paper from '@mui/material/Paper';
 
 export default function Scoreboard({
   players = [], // Array of player objects
-  currentRound = 3,
-  totalRounds = 5
-}) {
+  currentRound = 0
+}) { 
 
   function createData(player) {
+    // creates jsx objects for each cell of player data
     const data = {};
 
     data.playerInfocard = (
@@ -28,14 +28,11 @@ export default function Scoreboard({
       />
     );
 
-    // BidScoreCell JSX for each round
-    data.bidScoreCells = [];
+    data.roundScoreCells = [];
     for (let i = 0; i < currentRound; i++) {
-      data.bidScoreCells.push(
-        <BidScoreCell
-          key={`bid-score-${i}`}
-          tricksTaken={player.getTricks().get(i)}
-          bidsMade={player.getBids().get(i)}
+      data.roundScoreCells.push(
+        <ScoreCell
+          key={`score-${i}`}
           score={player.getRoundScores().get(i)}
         />
       );
@@ -92,7 +89,7 @@ export default function Scoreboard({
                 </TableCell>
           
                 {/* Render cells for each round so far */}
-                {row.bidScoreCells.map((cell, cellIndex) => (
+                {row.roundScoreCells.map((cell, cellIndex) => (
                   <TableCell key={`round-cell-${cellIndex}`} align="right">
                     {cell}
                   </TableCell>

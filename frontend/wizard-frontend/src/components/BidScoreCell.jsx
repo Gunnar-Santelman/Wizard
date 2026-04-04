@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+// For use in ScoreBoard if you want to display a prior round's bids made/tricks taken in addition to score
+
 export default function BidScoreCell({
   tricksTaken = 2,
   bidsMade = 4,
