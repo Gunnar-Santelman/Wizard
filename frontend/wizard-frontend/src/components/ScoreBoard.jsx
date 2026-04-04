@@ -41,7 +41,6 @@ export default function Scoreboard({
       );
     }
 
-    // ScoreCell JSX
     data.totalScoreCell = (
       <ScoreCell score={player.getTotalScore()} />
     );
@@ -87,17 +86,19 @@ export default function Scoreboard({
                 key={`player-${rowIndex}`}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                {/* Render cell for PlayerInfocard */}
                 <TableCell component="th" scope="row">
                   {row.playerInfocard}
                 </TableCell>
           
-                {/* Render each round cell */}
+                {/* Render cells for each round so far */}
                 {row.bidScoreCells.map((cell, cellIndex) => (
                   <TableCell key={`round-cell-${cellIndex}`} align="right">
                     {cell}
                   </TableCell>
                 ))}
           
+                {/* Render cell for total score */}
                 <TableCell align="right">
                   {row.totalScoreCell}
                 </TableCell>
