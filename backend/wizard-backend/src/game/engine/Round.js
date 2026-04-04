@@ -48,6 +48,13 @@ export default class Round {
   get cutCard() {
     return this.#cutCard;
   }
+  get dealer() {
+     return this.#dealer; 
+    }
+  get trickNumber(){
+    return this.#trickNumber;
+  }
+
   /**
    * Sets the current dealer.
    * @param {Player} player the player object of the player.
