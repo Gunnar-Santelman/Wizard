@@ -2,17 +2,14 @@ import {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut, signout } from "firebase/auth";
 import { auth } from "../services/firebase";
+import { getUsername } from "../services/userService";
 import * as gameApi from "../api/gameApi";
 import socket from "../socket";
-
-function generatePlayerName() {
-    return "Player_" + Math.floor(Math.random() * 10000);
-}
 
 export default function Home() {
     const [gameId, setGameId] = useState("");
     const navigate = useNavigate();
-    const [playerName] = useState(() => generatePlayerName());
+    const [playerName] = useState(() => getUsername());
 
     async function handleCreate() {
         const game = await gameApi.createGame();

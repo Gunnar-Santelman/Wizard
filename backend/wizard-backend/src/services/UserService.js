@@ -8,6 +8,11 @@ export const updateUsername = async (userId, username) => {
     );
 };
 
+export const getUsername = async (userId) => {
+    const user = await User.findById(userId, { username: 1 });
+    return user.username;
+}
+
 // Returns true if onboarding finished, false if pending
 export const getOnboardingStatus = async (userId) => {
     console.log("Looking for user", userId);

@@ -29,6 +29,25 @@ export const updateUsername = async (req, res) => {
     }
 };
 
+export const getUsername = async (req, res) => {
+    try {
+        const userId = req.user.uid;
+        const username = await UserService.getUsername(userId);
+
+        return res.json({
+            message: "Username retrieved successfully",
+            username: username
+            }
+        );
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Server error retrieving username"
+        });
+    }
+};
+
 export const hasCompletedOnboarding = async (req, res) => {
     try {
         const userId = req.user.uid;
