@@ -35,7 +35,7 @@ export default function BidScoreCell({
       {/* score */}
       <div
         style={{
-          fontSize: "28px",
+          fontSize: "36px",
           fontWeight: "bold",
           textAlign: "center",
           marginLeft: "auto",

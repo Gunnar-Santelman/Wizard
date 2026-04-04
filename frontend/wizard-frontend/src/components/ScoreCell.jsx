@@ -21,7 +21,7 @@ export default function ScoreCell({
       {/* score */}
       <div
         style={{
-          fontSize: "28px",
+          fontSize: "36px",
           fontWeight: "bold",
           textAlign: "center",
           marginLeft: "auto",
