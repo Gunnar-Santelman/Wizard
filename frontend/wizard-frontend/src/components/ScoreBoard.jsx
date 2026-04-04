@@ -17,16 +17,9 @@ export default function Scoreboard({
   totalRounds = 5
 }) {
 
-    // Scores are accessed through the Player object
-    // Player.getRoundScores() --> dictionary with the player's score for each round, with round number as the key
-    // Player.getTotalScore() --> running total, integer
-
-    // Column Headers: Player, Round 1 .... Round n, Total
-    // Row Headers: Players 1 through n - profile pic & name
   function createData(player) {
     const data = {};
 
-    // PlayerInfocard JSX
     data.playerInfocard = (
       <PlayerInfocard
         username={player.getUsername()}
@@ -66,9 +59,9 @@ export default function Scoreboard({
 
   const rows = createRows(players);
 
-  // Col labels are the PlayerInfocards
-  // Row labels are round numbers
-    
+  // Column Headers: Player, Round 1 .... Round n, Total
+  // Row Headers: Players 1 through n - Infocard
+
   return (
     <div>
       <TableContainer component={Paper}>
