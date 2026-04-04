@@ -7,6 +7,7 @@ import Scoring from "./Scoring";
 import Trick from "./Trick";
 import Player from "./Player";
 import { describe, test, expect, beforeEach } from "@jest/globals";
+import WizardGame from "../WizardGame";
 
     function makeCard(suit,value,trump=false){
         const c=new Card(suit,value);
@@ -26,6 +27,24 @@ import { describe, test, expect, beforeEach } from "@jest/globals";
         for(const{card,player} of pairs)t.addCard(card,player);
         return t;
     }
+ function makeMockGame(playerCount = 4) {
+    const players = [];
+    for (let i = 0; i < playerCount; i++) {
+        const p = new Player(`socket-${i}`, `Player${i}`);
+        p.incrementTricksTaken = () => { p.tricksTaken = (p.tricksTaken || 0) + 1; };
+        p.resetRoundForPlayer = () => { p.hand = []; p.bid = -1; };
+        players.push(p);
+    }
+    return { players, currentRound: null };
+}
+
+function playFullTrick(round, game) {
+    for (let i = 0; i < game.players.length; i++) {
+        const player = round.currentPlayer;
+        player.hand[0].isValid = true;
+        round.playCard(player.socketId, 0);
+    }
+}
 
     describe("Card",()=>{
         test("Orders Cards correctly",()=>{
@@ -248,6 +267,366 @@ describe("Player",()=>{
         player.playCard(card);
         expect(player.playedCard).toBeNull();
     });
+    test("Increment trick count does that",()=>{
+        player.incrementTricksTaken();
+        expect(player.tricksTaken).toBe(1);
+    })
 
+});
+describe("Round", () => {
+    test("dealer rotates by round number", () => {
+        const game = makeMockGame(4);
+        const r1 = new Round(1, game);
+        const r2 = new Round(2, game);
+        const r3 = new Round(3, game);
+        expect(r1.dealer).toBe(game.players[0]);
+        expect(r2.dealer).toBe(game.players[1]);
+        expect(r3.dealer).toBe(game.players[2]);
+    });
+
+    test("first player is left of dealer", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        expect(round.currentPlayer).toBe(game.players[1]);
+    });
+
+    test("dealer wraps around with more rounds than players", () => {
+        const game = makeMockGame(4);
+        const round = new Round(5, game); // round 5 % 4 = index 0 again
+        expect(round.dealer).toBe(game.players[0]);
+    });
+
+    test("deals correct number of cards per player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(3, game);
+        for (const player of game.players) {
+            expect(player.hand).toHaveLength(3);
+        }
+    });
+
+    test("no cut card on last round", () => {
+        const game = makeMockGame(4); // 60/4 = 15 rounds
+        const round = new Round(15, game);
+        expect(round.cutCard).toBeNull();
+    });
+
+    test("cut card exists on normal round", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        expect(round.cutCard).toBeInstanceOf(Card);
+    });
+
+    test("reorderPlayers starts from current player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game); // currentPlayer is players[1]
+        // drain hands so playCard doesn't interfere
+        const ordered = game.players.slice(1).concat(game.players.slice(0, 1));
+        expect(round.currentPlayer).toBe(ordered[0]);
+    });
+
+    test("playCard rejects wrong player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const wrongPlayer = game.players[0]; // currentPlayer is players[1]
+        const card = wrongPlayer.hand[0];
+        round.playCard(wrongPlayer.socketId, 0);
+        expect(round.currentTrick).toBeNull(); // trick never started
+    });
+
+    test("playCard advances to next player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const first = round.currentPlayer;
+        const cardIndex = 0;
+        first.hand[0].isValid = true;
+        round.playCard(first.socketId, cardIndex);
+        expect(round.currentPlayer).not.toBe(first);
+    });
+
+    test("trick increments after all players play", () => {
+        const game = makeMockGame(4);
+        const round = new Round(4, game);
+        // mark all cards valid and play one per player in order
+        for (let i = 0; i < game.players.length; i++) {
+            const player = round.currentPlayer;
+            player.hand[0].isValid = true;
+            round.playCard(player.socketId, 0);
+        }
+        expect(round.trickNumber).toBe(1);
+    });
+});
+describe("Round.placeBid", () => {
+    test("stores bid on current player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const first = round.currentPlayer;
+        round.placeBid(first.socketId, 2);
+        expect(first.bid).toBe(2);
+    });
+
+    test("advances to next player after bid", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const first = round.currentPlayer;
+        round.placeBid(first.socketId, 2);
+        expect(round.currentPlayer).not.toBe(first);
+    });
+
+    test("rejects bid from wrong player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const wrongPlayer = game.players[0]; // currentPlayer is players[1]
+        round.placeBid(wrongPlayer.socketId, 2);
+        expect(wrongPlayer.bid).toBe(-1);
+    });
+
+    test("rejects bid from unknown socketId", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const before = round.currentPlayer;
+        round.placeBid("not-a-real-id", 2);
+        expect(round.currentPlayer).toBe(before);
+    });
+});
+
+describe("Round.determineValidCards", () => {
+    test("marks valid cards as isValid true", () => {
+        const game = makeMockGame(4);
+        const round = new Round(3, game);
+        round.determineValidCards();
+        for (const player of game.players) {
+            expect(player.hand.some(c => c.isValid)).toBe(true);
+        }
+    });
+});
+
+describe("Round.moveToNextPlayer", () => {
+    test("advances current player", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        const before = round.currentPlayer;
+        round.moveToNextPlayer();
+        expect(round.currentPlayer).not.toBe(before);
+    });
+
+    test("wraps around to first player after last", () => {
+        const game = makeMockGame(4);
+        const round = new Round(1, game);
+        for (let i = 0; i < game.players.length; i++) {
+            round.moveToNextPlayer();
+        }
+        expect(round.currentPlayer).toBe(game.players[1]); // back to start
+    });
+});
+
+describe("Round.finishTrick", () => {
+    test("increments trickNumber", () => {
+        const game = makeMockGame(4);
+        const round = new Round(4, game);
+        playFullTrick(round, game);
+        expect(round.trickNumber).toBe(1);
+    });
+
+    test("sets winner on round", () => {
+        const game = makeMockGame(4);
+        const round = new Round(4, game);
+        playFullTrick(round, game);
+        expect(round.winner).not.toBeNull();
+    });
+
+    test("clears currentTrick after finish", () => {
+        const game = makeMockGame(4);
+        const round = new Round(4, game);
+        playFullTrick(round, game);
+        expect(round.currentTrick).toBeNull();
+    });
+});
+
+describe("Round.finishRound", () => {
+    test("starts a new round on game when round is complete", () => {
+        const game = makeMockGame(4); // last round is 15
+        const round = new Round(1, game);
+        game.currentRound = round;
+        // play all tricks to trigger finishRound
+        for (let t = 0; t < 1; t++) {
+            playFullTrick(round, game);
+        }
+        expect(game.currentRound).not.toBe(round);
+    });
+
+ 
+});
+describe("Scoring", () => {
+    let scoring;
+    let game;
+
+    beforeEach(() => {
+        game = makeMockGame(4);
+        scoring = new Scoring(game);
+    });
+
+    test("initScoreboard creates entry for each player", () => {
+        for (const player of game.players) {
+            expect(scoring.scores[player.socketId]).toBeDefined();
+        }
+    });
+
+    test("initScoreboard starts total at 0", () => {
+        for (const player of game.players) {
+            expect(scoring.scores[player.socketId].total).toBe(0);
+        }
+    });
+
+    test("correct bid scores 20 plus 10 per trick", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 3, 3);
+        expect(scoring.scores[player.socketId].total).toBe(50); // 20 + 30
+    });
+
+    test("correct bid of 0 scores 20", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 0, 0);
+        expect(scoring.scores[player.socketId].total).toBe(20);
+    });
+
+    test("wrong bid loses 10 per trick off", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 3, 1); // 2 off
+        expect(scoring.scores[player.socketId].total).toBe(-20);
+    });
+
+    test("wrong bid is negative regardless of direction", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 1, 3); // over by 2
+        expect(scoring.scores[player.socketId].total).toBe(-20);
+    });
+
+    test("scores accumulate across rounds", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 2, 2); // 40
+        scoring.updateScore(player, 3, 3); // 50
+        expect(scoring.scores[player.socketId].total).toBe(90);
+    });
+
+    test("records bid history", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 2, 2);
+        scoring.updateScore(player, 3, 1);
+        expect(scoring.scores[player.socketId].bids).toEqual([2, 3]);
+    });
+
+    test("records tricks history", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 2, 2);
+        scoring.updateScore(player, 3, 1);
+        expect(scoring.scores[player.socketId].tricks).toEqual([2, 1]);
+    });
+
+    test("records round score history", () => {
+        const player = game.players[0];
+        scoring.updateScore(player, 2, 2); // 40
+        scoring.updateScore(player, 0, 1); // -10
+        expect(scoring.scores[player.socketId].rounds).toEqual([40, -10]);
+    });
+
+    test("scores are independent per player", () => {
+        const p1 = game.players[0];
+        const p2 = game.players[1];
+        scoring.updateScore(p1, 3, 3); // 50
+        scoring.updateScore(p2, 0, 2); // -20
+        expect(scoring.scores[p1.socketId].total).toBe(50);
+        expect(scoring.scores[p2.socketId].total).toBe(-20);
+    });
+});
+describe("WizardGame", () => {
+    let game;
+    beforeEach(() => {
+        game = new WizardGame("test-id");
+    });
+
+    test("initializes with empty players and waiting status", () => {
+        expect(game.players).toHaveLength(0);
+        expect(game.status).toBe("waiting");
+    });
+
+    test("first player to join becomes host", () => {
+        game.joinGame("Alice", "socket-1");
+        expect(game.host).toBe("socket-1");
+    });
+
+    test("subsequent players do not become host", () => {
+        game.joinGame("Alice", "socket-1");
+        game.joinGame("Bob", "socket-2");
+        expect(game.host).toBe("socket-1");
+    });
+
+    test("joinGame adds player", () => {
+        game.joinGame("Alice", "socket-1");
+        expect(game.players).toHaveLength(1);
+    });
+
+    test("joinGame ignores duplicate socketId", () => {
+        game.joinGame("Alice", "socket-1");
+        game.joinGame("Alice", "socket-1");
+        expect(game.players).toHaveLength(1);
+    });
+
+    test("removePlayer removes the player", () => {
+        game.joinGame("Alice", "socket-1");
+        game.removePlayer("socket-1");
+        expect(game.players).toHaveLength(0);
+    });
+
+    test("host transfers when host leaves while waiting", () => {
+        game.joinGame("Alice", "socket-1");
+        game.joinGame("Bob", "socket-2");
+        game.removePlayer("socket-1");
+        expect(game.host).toBe("socket-2");
+    });
+
+    test("host does not transfer when game is running", () => {
+        game.joinGame("Alice", "socket-1");
+        game.joinGame("Bob", "socket-2");
+        game.joinGame("C", "socket-3");
+        game.startGame();
+        game.removePlayer("socket-1");
+        expect(game.host).toBe("socket-1"); // unchanged
+    });
+
+    test("isEmpty returns true when no players", () => {
+        expect(game.isEmpty()).toBe(true);
+    });
+
+    test("isEmpty returns false when players exist", () => {
+        game.joinGame("Alice", "socket-1");
+        expect(game.isEmpty()).toBe(false);
+    });
+
+    test("startGame sets status to running", () => {
+        game.joinGame("Alice", "socket-1");
+        game.joinGame("Bob", "socket-2");
+        game.joinGame("C", "socket-3");
+        game.startGame();
+        expect(game.status).toBe("running");
+    });
+
+    test("startGame sets maxRounds based on player count", () => {
+        game.joinGame("Alice", "socket-1");
+        game.joinGame("Bob", "socket-2");
+        game.joinGame("C", "socket-3");
+        game.joinGame("D", "socket-4");
+        game.startGame();
+        expect(game.maxRounds).toBe(15); // 60/4
+    });
+
+    test("getGameState returns correct shape", () => {
+        game.joinGame("Alice", "socket-1");
+        const state = game.getGameState();
+        expect(state).toMatchObject({
+            id: "test-id",
+            status: "waiting",
+            host: "socket-1"
+        });
+    });
 });
 
