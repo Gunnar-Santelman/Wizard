@@ -1,4 +1,4 @@
-import { API } from "./apiConfig";
+import { API } from "../api/apiConfig";
 
 export async function createGame() {
     const res = await fetch(`${API.GAME}/create`, {
