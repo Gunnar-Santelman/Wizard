@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 
+import ScoreBoard from '../components/ScoreBoard.jsx';
+
 
 export default function LobbyPage() {
     const {gameId} = useParams();
@@ -64,6 +66,14 @@ export default function LobbyPage() {
                     listPlayer(p)
                 ))}
             </ul>
+
+            {/* TEST SCOREBOARD */}
+            <ScoreBoard
+                players={players}
+                currentRound={0}
+            />
+
+            {/* END TEST SCOREBOARD*/}
 
             <button onClick = {handleStartButton} disabled={players.length < 3 || !isHost}>
                 Start Game
