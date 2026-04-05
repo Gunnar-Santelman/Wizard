@@ -68,12 +68,12 @@ export default function LobbyPage() {
             </ul>
 
             {/* TEST SCOREBOARD */}
-            <ScoreBoard
+            {/* <ScoreBoard
                 players={players}
                 currentRound={0}
-            />
+            /> */}
 
-            {/* END TEST SCOREBOARD*/}
+            {/* END TEST SCOREBOARD */}
 
             <button onClick = {handleStartButton} disabled={players.length < 3 || !isHost}>
                 Start Game

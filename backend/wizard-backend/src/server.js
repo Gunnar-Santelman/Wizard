@@ -66,6 +66,7 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameState", buildGameState(game));
 
     game.currentRound.winner = null;
+    game.currentRound.roundEnd = false;
   })
 
   socket.on("placeBid", ({gameId, bidAmount}) => {
@@ -142,7 +143,9 @@ function buildGameState(game) {
       name: p.name,
       cardCount: p.hand.length,
       bidAmount: p.bid,
-      tricksTaken: p.tricksTaken
+      tricksTaken: p.tricksTaken,
+      roundScores: p.roundScores,
+      score: p.score
     })),
     hands: game.players.reduce((acc, p) => {
       acc[p.socketId] = p.hand;
@@ -156,7 +159,8 @@ function buildGameState(game) {
     roundNumber: game.currentRound?.roundNo || null,
     trumpCard: game.currentRound?.trumpCard || null,
     currentPlayer: game.currentRound?.currentPlayer?.socketId || null,
-    winner: game.currentRound?.winner || null
+    winner: game.currentRound?.winner || null,
+    roundEnd: game.currentRound?.roundEnd || false
   };
 }
 

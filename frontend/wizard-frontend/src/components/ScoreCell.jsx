@@ -8,7 +8,7 @@ export default function ScoreCell({
     <div
       className="score-cell"
       style={{
-        width: "300px",
+        width: "14vw",
         minHeight: "50px",
         boxSizing: "border-box",
         display: "flex",
@@ -21,10 +21,11 @@ export default function ScoreCell({
       {/* score */}
       <div
         style={{
-          fontSize: "36px",
+          fontSize: "24px",
           fontWeight: "bold",
           textAlign: "center",
           marginLeft: "auto",
+          marginRight: "auto"
         }}
       >
         {score}

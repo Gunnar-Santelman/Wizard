@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import socket from "../socket.js";
 import "../styling/GamePage.css";
 import BidSelection from "../components/BidSelection.jsx";
+import ScoreBoard from "../components/ScoreBoard.jsx"
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
 
 export default function GamePage() {
@@ -18,6 +19,7 @@ export default function GamePage() {
   const [trump, setTrump] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [winner, setWinner] = useState(null);
+  const [roundEnd, setRoundEnd] = useState(false);
   const [bid, setBid] = useState(-1);
   const [tricksTaken, setTricksTaken] = useState(0);
   const [roundNumber, setRoundNumber] = useState(0);
@@ -35,6 +37,7 @@ export default function GamePage() {
       setWinner(game.winner || null);
       setRoundNumber(game.roundNumber || 0);
       setBid(game.players.find((p) => p.socketId === socket.id).bidAmount);
+      setRoundEnd(game.roundEnd);
       setTricksTaken(
         game.players.find((p) => p.socketId === socket.id).tricksTaken,
       );
@@ -225,6 +228,18 @@ export default function GamePage() {
     );
   }
 
+  function renderScoreBoard(){
+    if (!roundEnd) {
+      return null;
+    }
+
+    return (
+      <div>
+        <ScoreBoard gameId={gameId} players={players} currentRound={roundNumber}/>
+      </div>
+    )
+  }
+
   async function handleLeave() {
     socket.emit("leaveGame", { gameId });
   }
@@ -269,6 +284,7 @@ export default function GamePage() {
         </div>
       </div>
       {renderWinnerPopup()}
+      {renderScoreBoard()}
     </div>
   );
 }

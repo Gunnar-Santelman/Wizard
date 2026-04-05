@@ -1,19 +1,20 @@
-import PlayerInfocard from './PlayerInfocard.jsx';
-import ScoreCell from './ScoreCell.jsx';
+import PlayerInfocard from "./PlayerInfocard.jsx";
+import ScoreCell from "./ScoreCell.jsx";
+import socket from "../socket.js";
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 export default function Scoreboard({
+  gameId,
   players = [], // Array of player objects
-  currentRound = 0
-}) { 
-
+  currentRound = 0,
+}) {
   function createData(player) {
     // creates jsx objects for each cell of player data
     const data = {};
@@ -21,25 +22,18 @@ export default function Scoreboard({
     data.playerInfocard = (
       <PlayerInfocard
         username={player.name}
-        // TODO set avatarUrl - database connection?
+        // TODO: set avatarUrl - database connection?
         showBids={false}
       />
     );
-
+    console.log(player);
     data.roundScoreCells = [];
     for (let i = 0; i < currentRound; i++) {
-      data.roundScoreCells.push(
-        <ScoreCell
-          score={player.roundScores.get(i)}
-        />
-      );
+      data.roundScoreCells.push(<ScoreCell score={player.roundScores[i]} />);
     }
 
     data.totalScoreCell = (
-        <ScoreCell
-            key={`score-total`}
-            score={player.score}
-        />
+      <ScoreCell key={`score-total`} score={player.score} />
     );
 
     return data;
@@ -53,58 +47,99 @@ export default function Scoreboard({
     return rows;
   }
 
+  function handleCloseScoreboard() {
+    socket.emit("requestGameState", { gameId })
+  }
+
   const rows = createRows(players);
 
   // Column Headers: Player, Round 1 .... Round n, Total
   // Row Headers: Players 1 through n - Infocard
 
   return (
-    <TableContainer component={Paper}>
-    <Table sx={{ minWidth: 650 }} aria-label="scoreboard table">
+    <div>
+    <TableContainer component={Paper}
+      style={{ position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "rgba(255,255,255,0.97)",
+        alignItems: "center",
+        padding: "1rem",
+        overflowY: "auto",
+        overflowX: "auto",
+        display: "block"}}>
+      <Table aria-label="scoreboard table">
         <TableHead>
-        <TableRow>
-            <TableCell>Player</TableCell>
-            
-            {/* Headers for Rounds 1 through current */}
-            {Array.from({ length: currentRound }, (_, i) => (
-            <TableCell key={`round-${i + 1}`} align="right">
-                Round {i + 1}
-            </TableCell>
-            ))}
+          <TableRow>
+            <TableCell style = {{position: "sticky", top: 0, zIndex: 10, backgroundColor: "rgba(255,255,255,0.95)"}}>
+              <button onClick={() => socket.emit("requestGameState", { gameId })}>Close Scoreboard</button>
+              </TableCell>
 
-            <TableCell align="right">Total</TableCell>
-        </TableRow>
+            {/*Player Headers Across Top */}
+            {players.map((player, index) => (
+              <TableCell key = {`player-header-${index}`} align = "center" style = {{position: "sticky", top: 0, zIndex: 10, backgroundColor: "rgba(255,255,255,0.95)"}}>
+                <h3>{player.name}</h3>
+              </TableCell>
+            ))}
+          </TableRow>
         </TableHead>
 
         <TableBody>
-        {rows.map((row, rowIndex) => (
-            <TableRow
-            key={`player-${rowIndex}`}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
+          {/*One row per round*/}
+          {Array.from({length: currentRound - 1}, (_, roundIndex) => (
+            <TableRow key = {`round-row-${roundIndex}`}>
+              <TableCell component = "th" scope="row">
+                <h3>Round {roundIndex + 1}</h3>
+              </TableCell>
 
-            {/* Render cell for PlayerInfocard */}
-            <TableCell component="th" scope="row">
-                {row.playerInfocard}
-            </TableCell>
-        
-            {/* Render cells for each round so far */}
-            {row.roundScoreCells.map((cell, cellIndex) => (
-                <TableCell key={`round-cell-${cellIndex}`} align="right">
-                {cell}
+              {players.map((player, playerIndex) => (
+                <TableCell key = {`player-${playerIndex}-round-${roundIndex}`} align="center">
+                  <ScoreCell score= {player.roundScores[roundIndex]}/>
                 </TableCell>
-            ))}
-        
-            {/* Render cell for total score */}
-            <TableCell align="right">
-                {row.totalScoreCell}
-            </TableCell>
-
+              ))}
             </TableRow>
-        ))}
+          ))}
+
+          {/*Final Total Rows*/}
+          <TableRow>
+            <TableCell component = "th" scope = "row">
+              <h3>Total</h3>
+            </TableCell>
+              {players.map((player, index) => (
+                <TableCell key={`total-${index}`} align = "center">
+                  <ScoreCell score={player.score}/>
+                </TableCell>
+              ))}
+          </TableRow>
         </TableBody>
-        
-    </Table>
+      </Table>
     </TableContainer>
+    </div>
   );
+
+
+  //<ScoreCell score= {player.roundScores[roundIndex]}/>
+  // {rows.map((row, rowIndex) => (
+  //           <TableRow
+  //             key={`player-${rowIndex}`}
+  //             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+  //           >
+  //             {/* Render cell for PlayerInfocard */}
+  //             <TableCell component="th" scope="row">
+  //               {row.playerInfocard}
+  //             </TableCell>
+
+  //             {/* Render cells for each round so far */}
+  //             {row.roundScoreCells.map((cell, cellIndex) => (
+  //               <TableCell key={`round-cell-${cellIndex}`} align="right">
+  //                 {cell}
+  //               </TableCell>
+  //             ))}
+
+  //             {/* Render cell for total score */}
+  //             <TableCell align="right">{row.totalScoreCell}</TableCell>
+  //           </TableRow>
+  //         ))}
 }
