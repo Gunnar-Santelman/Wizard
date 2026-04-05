@@ -9,14 +9,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-// player.getAvatarURL() - through Player object or through database?
-
 export default function Scoreboard({
   players = [], // Array of player objects
   currentRound = 0
 }) { 
 
-    
   function createData(player) {
     // creates jsx objects for each cell of player data
     const data = {};
@@ -24,7 +21,7 @@ export default function Scoreboard({
     data.playerInfocard = (
       <PlayerInfocard
         username={player.name}
-        avatarUrl={player.getAvatarURL()}
+        // TODO set avatarUrl - database connection?
         showBids={false}
       />
     );
@@ -33,7 +30,6 @@ export default function Scoreboard({
     for (let i = 0; i < currentRound; i++) {
       data.roundScoreCells.push(
         <ScoreCell
-          key={`score-${i}`}
           score={player.roundScores.get(i)}
         />
       );
