@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { signOut, signout } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/authContext";
-import * as gameApi from "../api/gameApi";
+import { createGame } from "../services/gameService";
 import socket from "../socket";
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
 
     async function handleCreate() {
         if (!playerName) return;
-        const game = await gameApi.createGame();
+        const game = await createGame();
 
         socket.emit("joinGame", {
             gameId: game.id,
