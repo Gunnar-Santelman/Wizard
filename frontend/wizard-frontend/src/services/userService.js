@@ -30,6 +30,20 @@ export const getUsername = async () => {
     return await res.json();
 };
 
+export const getAllUserInfo = async () => {
+    const token = await auth.currentUser.getIdToken();
+
+    const res = await fetch(`${API.USER}/get-all-info`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    return await res.json();
+};
+
 export const setDefaultProfilePicture = async (profilePictureId) => {
     const token = await auth.currentUser.getIdToken();
 

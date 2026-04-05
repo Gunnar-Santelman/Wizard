@@ -48,6 +48,27 @@ export const getUsername = async (req, res) => {
     }
 };
 
+export const getAllUserInfo = async (req, res) => {
+    try {
+        const userId = req.user.uid;
+        const userInfo = await UserService.getAllUserInfo(userId);
+
+        return res.json({
+            message: "User info retrieved successfully",
+            userInfo
+            }
+        );
+        
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Server error retrieving user info"
+        });
+    }
+};
+
+
+
 export const hasCompletedOnboarding = async (req, res) => {
     try {
         const userId = req.user.uid;

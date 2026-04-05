@@ -6,7 +6,7 @@ import { getDefaultProfilePictures, uploadProfilePicture } from "../services/pro
 import { validateUsername } from "../utils/validation";
 
 function OnboardingPage() {
-  const { setOnboardingComplete } = useAuth();
+  const { user, updateUserData, refreshUserData } = useAuth();
 
   const [username, setUsername] = useState("");
   const [defaultPictures, setDefaultPictures] = useState([]);
@@ -63,7 +63,11 @@ function OnboardingPage() {
         await setDefaultProfilePicture(selectedDefault)
       }
       console.log("completed onboarding");
-      setOnboardingComplete(true);
+      updateUserData(prev => ({
+        ...prev,
+        completedOnboarding: true,
+      }));
+      await refreshUserData(user.uid);
       console.log("setOnboardingComplete");
       navigate("/home", { replace: true });
 
