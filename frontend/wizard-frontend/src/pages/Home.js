@@ -2,19 +2,19 @@ import {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut, signout } from "firebase/auth";
 import { auth } from "../services/firebase";
+import { useAuth } from "../context/authContext";
 import * as gameApi from "../api/gameApi";
 import socket from "../socket";
 
-function generatePlayerName() {
-    return "Player_" + Math.floor(Math.random() * 10000);
-}
-
 export default function Home() {
+    const { userData } = useAuth();
+
     const [gameId, setGameId] = useState("");
     const navigate = useNavigate();
-    const [playerName] = useState(() => generatePlayerName());
+    const playerName = userData?.username;
 
     async function handleCreate() {
+        if (!playerName) return;
         const game = await gameApi.createGame();
 
         socket.emit("joinGame", {
@@ -28,6 +28,7 @@ export default function Home() {
     }
 
     function handleJoin() {
+        if (!playerName) return;
         socket.emit("joinGame", {
             gameId,
             playerName

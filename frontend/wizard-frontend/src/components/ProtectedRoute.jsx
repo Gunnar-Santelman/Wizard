@@ -2,23 +2,19 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
 function ProtectedRoute({ children }) {
-  const {user, onboardingComplete} = useAuth();
+  const {user, userData, loading} = useAuth();
 
   const location = useLocation();
 
-console.log("ProtectedRoute state:", {
-  user,
-  onboardingComplete,
-  path: location.pathname
-});
-
-  if (user === undefined) {
+  if (user === undefined || loading) {
     return <p>Loading...</p>;
   }
 
   if (!user) {
     return <Navigate to="/login" replace/>;
   }
+
+  const onboardingComplete = userData?.completedOnboarding;
 
   if (onboardingComplete === null) {
     return <p>Loading...</p>;
