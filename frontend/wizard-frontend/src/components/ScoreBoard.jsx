@@ -9,12 +9,21 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useEffect, useState } from "react";
 
 export default function Scoreboard({
   gameId,
   players = [], // Array of player objects
   currentRound = 0,
 }) {
+  const [showScoreboard, setShowScoreboard] = useState(false);
+
+  useEffect(() => {
+    if (currentRound !== 0 && currentRound !== 1) {
+      setShowScoreboard(true);
+    }
+  }, [currentRound]) 
+
   function createData(player) {
     // creates jsx objects for each cell of player data
     const data = {};
@@ -33,7 +42,7 @@ export default function Scoreboard({
     }
 
     data.totalScoreCell = (
-      <ScoreCell key={`score-total`} score={player.score} />
+      <ScoreCell score={player.score} />
     );
 
     return data;
@@ -47,14 +56,11 @@ export default function Scoreboard({
     return rows;
   }
 
-  function handleCloseScoreboard() {
-    socket.emit("requestGameState", { gameId })
-  }
-
   const rows = createRows(players);
 
-  // Column Headers: Player, Round 1 .... Round n, Total
-  // Row Headers: Players 1 through n - Infocard
+  if (!showScoreboard) {
+    return;
+  }
 
   return (
     <div>
@@ -69,17 +75,18 @@ export default function Scoreboard({
         padding: "1rem",
         overflowY: "auto",
         overflowX: "auto",
-        display: "block"}}>
+        display: "block",
+        zIndex: "1000"}}>
       <Table aria-label="scoreboard table">
         <TableHead>
           <TableRow>
-            <TableCell style = {{position: "sticky", top: 0, zIndex: 10, backgroundColor: "rgba(255,255,255,0.95)"}}>
-              <button onClick={() => socket.emit("requestGameState", { gameId })}>Close Scoreboard</button>
+            <TableCell style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)"}}>
+              <button onClick={() => setShowScoreboard(false)}>Close Scoreboard</button>
               </TableCell>
 
             {/*Player Headers Across Top */}
             {players.map((player, index) => (
-              <TableCell key = {`player-header-${index}`} align = "center" style = {{position: "sticky", top: 0, zIndex: 10, backgroundColor: "rgba(255,255,255,0.95)"}}>
+              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)"}}>
                 <h3>{player.name}</h3>
               </TableCell>
             ))}
@@ -89,13 +96,13 @@ export default function Scoreboard({
         <TableBody>
           {/*One row per round*/}
           {Array.from({length: currentRound - 1}, (_, roundIndex) => (
-            <TableRow key = {`round-row-${roundIndex}`}>
+            <TableRow>
               <TableCell component = "th" scope="row">
                 <h3>Round {roundIndex + 1}</h3>
               </TableCell>
 
               {players.map((player, playerIndex) => (
-                <TableCell key = {`player-${playerIndex}-round-${roundIndex}`} align="center">
+                <TableCell align="center">
                   <ScoreCell score= {player.roundScores[roundIndex]}/>
                 </TableCell>
               ))}
@@ -108,7 +115,7 @@ export default function Scoreboard({
               <h3>Total</h3>
             </TableCell>
               {players.map((player, index) => (
-                <TableCell key={`total-${index}`} align = "center">
+                <TableCell align = "center">
                   <ScoreCell score={player.score}/>
                 </TableCell>
               ))}

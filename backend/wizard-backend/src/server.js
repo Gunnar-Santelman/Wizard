@@ -66,7 +66,6 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameState", buildGameState(game));
 
     game.currentRound.winner = null;
-    game.currentRound.roundEnd = false;
   })
 
   socket.on("placeBid", ({gameId, bidAmount}) => {
@@ -160,7 +159,6 @@ function buildGameState(game) {
     trumpCard: game.currentRound?.trumpCard || null,
     currentPlayer: game.currentRound?.currentPlayer?.socketId || null,
     winner: game.currentRound?.winner || null,
-    roundEnd: game.currentRound?.roundEnd || false
   };
 }
 

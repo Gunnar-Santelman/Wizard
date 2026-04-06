@@ -32,7 +32,6 @@ export default class Round {
     this.dealCards();
     this.trumpCard = (this.#cutCard !== null) ? new Card(this.#cutCard.suit, this.#cutCard.value) : null;
     this.winner = null;
-    this.roundEnd = false;
   }
   get currentPlayer() {
     return this.#currentPlayer;
@@ -203,7 +202,6 @@ export default class Round {
     if (roundNumber <= (60 / this.#game.players.length)) {
       this.#game.currentRound = new Round(roundNumber, this.#game);
       this.#game.currentRound.winner = this.winner;
-      this.#game.currentRound.roundEnd = true;
     }
   }
 }
