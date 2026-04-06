@@ -80,7 +80,7 @@ export default function Scoreboard({
       <Table aria-label="scoreboard table">
         <TableHead>
           <TableRow>
-            <TableCell style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)"}}>
+            <TableCell style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)", minWidth:"10vw", width:"10vw"}}>
               <button onClick={() => setShowScoreboard(false)}>Close Scoreboard</button>
               </TableCell>
 
@@ -115,7 +115,7 @@ export default function Scoreboard({
               <h3>Total</h3>
             </TableCell>
               {players.map((player, index) => (
-                <TableCell align = "center">
+                <TableCell align = "center" style = {{minWidth:"20vw", width:"20vw"}}>
                   <ScoreCell score={player.score}/>
                 </TableCell>
               ))}

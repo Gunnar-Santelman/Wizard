@@ -146,6 +146,7 @@ function buildGameState(game) {
       roundScores: p.roundScores,
       score: p.score
     })),
+    host: game.host,
     hands: game.players.reduce((acc, p) => {
       acc[p.socketId] = p.hand;
       return acc;

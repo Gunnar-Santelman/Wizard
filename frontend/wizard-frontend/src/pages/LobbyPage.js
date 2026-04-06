@@ -67,14 +67,6 @@ export default function LobbyPage() {
                 ))}
             </ul>
 
-            {/* TEST SCOREBOARD */}
-            {/* <ScoreBoard
-                players={players}
-                currentRound={0}
-            /> */}
-
-            {/* END TEST SCOREBOARD */}
-
             <button onClick = {handleStartButton} disabled={players.length < 3 || !isHost}>
                 Start Game
             </button>
