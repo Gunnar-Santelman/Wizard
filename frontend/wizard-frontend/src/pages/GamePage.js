@@ -5,10 +5,14 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket.js";
 import "../styling/GamePage.css";
+import { useAuth } from "../context/authContext.js";
 import BidSelection from "../components/BidSelection.jsx";
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
 
 export default function GamePage() {
+
+  const { userData } = useAuth();
+
   const containerRef = useRef(null);
   const [radii, setRadii] = useState({ rx: 300, ry: 200 });
   const { gameId } = useParams();
@@ -38,6 +42,7 @@ export default function GamePage() {
       setTricksTaken(
         game.players.find((p) => p.socketId === socket.id).tricksTaken,
       );
+      console.log(game.players);
     }
     socket.on("gameState", handleGameState);
 
@@ -127,6 +132,8 @@ export default function GamePage() {
           }}
         >
           <PlayerInfocard
+            username={player.name}
+            avatarUrl={player.profilePicture}
             bidsMade={player.bidAmount}
             tricksTaken={player.tricksTaken}
           ></PlayerInfocard>
@@ -246,7 +253,12 @@ export default function GamePage() {
       <div className="player-area">
         {renderTurnNotification()}
         <div className = "infocard">
-          <PlayerInfocard bidsMade={bid} tricksTaken={tricksTaken} />
+          <PlayerInfocard
+            username={userData.username}
+            avatarUrl={userData.profilePicture}
+            bidsMade={bid}
+            tricksTaken={tricksTaken}
+          />
         </div>
         <div className="player-hand">
           {hand.map((card, index) => {

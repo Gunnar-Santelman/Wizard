@@ -21,7 +21,7 @@ app.set("io", io);
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  socket.on("joinGame", ({ gameId, playerName }) => {
+  socket.on("joinGame", ({ gameId, playerName, profilePicture }) => {
     const game = GameManager.getGame(gameId);
 
     if (!game) {
@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
     }
 
     socket.join(gameId);
-    game.joinGame(playerName, socket.id);
+    game.joinGame(playerName, profilePicture, socket.id);
     GameManager.socketToGame[socket.id] = game.id;
 
     socket.emit("joinSuccess", { gameId });
@@ -140,6 +140,7 @@ function buildGameState(game) {
     players: game.players.map(p =>({
       socketId:p.socketId,
       name: p.name,
+      profilePicture: p.profilePicture,
       cardCount: p.hand.length,
       bidAmount: p.bid,
       tricksTaken: p.tricksTaken
