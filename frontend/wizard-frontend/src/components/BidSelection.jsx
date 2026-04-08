@@ -39,7 +39,8 @@ export default function BidSelection({ maxBid = 5, gameId }) {
         alignItems: "center",
         justifyContent: "center",
         gap: "10px",
-        borderRadius: "15px"}}>
+        borderRadius: "15px",
+        zIndex: "100"}}>
         <h1>Place Your Bid</h1>
 
         <div>

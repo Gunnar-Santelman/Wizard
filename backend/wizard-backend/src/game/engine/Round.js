@@ -164,7 +164,7 @@ export default class Round {
     if (!this.currentTrick) {
       this.currentTrick = new Trick(this.trump);
     }
-    if (!this.currentTrick.ledCard) {
+    if (!this.currentTrick.ledCard && card.value !== 1 && card.value !== 15) {
       this.currentTrick.setLed(card);
     }
 
@@ -196,6 +196,7 @@ export default class Round {
     const roundNumber = this.#roundNumber + 1;
     const players = this.#reorderPlayers(this.#currentPlayer);
     for (let player of players) {
+      player.updateScore(this.#roundNumber - 1);
       player.resetRoundForPlayer();
     }
     if (roundNumber <= (60 / this.#game.players.length)) {

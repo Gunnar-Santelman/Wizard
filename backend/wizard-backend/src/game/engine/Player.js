@@ -37,4 +37,21 @@ export default class Player {
             }
         }
     }
+
+    updateScore(roundNumber) {
+        let currScore = 0
+        if(this.bid!=this.tricksTaken)
+        {
+            // 10 per trick wrong
+            currScore=10*(-Math.abs(this.bid-this.tricksTaken));
+            
+        }
+        else{
+            // 20 for being correct plus 10 per trick taken
+            currScore=20+(10*this.tricksTaken);
+            
+        }
+        this.roundScores[roundNumber] = currScore
+        this.score += currScore
+    }
 }

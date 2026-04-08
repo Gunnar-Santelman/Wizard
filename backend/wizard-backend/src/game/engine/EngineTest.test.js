@@ -172,8 +172,8 @@ function playFullTrick(round, game) {
         });
         test("det trick winner- First wizard wins",()=>{
             const lead=makeCard(Suit.HEARTS,14);
-            const wiz=makeWizard;
-            const high=makeCard(Suit.HEARTS,13)
+            const wiz=makeWizard();
+            const high=makeCard(Suit.HEARTS,13);
             let p1=new Player(null,"p1");
             let p2=new Player(null,"p2");
             let p3=new Player(null,"p3");
@@ -184,7 +184,7 @@ function playFullTrick(round, game) {
         });
         test("trump beats lead",()=>{
             const lead=makeCard(Suit.CLUBS,14);
-            const trump=makeCard(Suit.HEARTS,13,true)
+            const trump=makeCard(Suit.HEARTS,13,true);
             let p1=new Player(null,"p1");
             let p2=new Player(null,"p2");
             const trick=makeTrick([{card:lead,player:p1},{card:trump,player:p2}],lead);
@@ -193,7 +193,7 @@ function playFullTrick(round, game) {
         test("Highest lead wins if no trump or wizard",()=>{
             const lead=makeCard(Suit.HEARTS,7);
             const high=makeCard(Suit.HEARTS,14);
-            const off=makeCard(Suit.CLUBS,14)
+            const off=makeCard(Suit.CLUBS,14);
             let p1=new Player(null,"p1");
             let p2=new Player(null,"p2");
             let p3=new Player(null,"p3");
@@ -202,9 +202,9 @@ function playFullTrick(round, game) {
           
         });
         test("jesty festy first one wins",()=>{
-            const lead=makeJester;
-            const high=makeJester
-            const off=makeJester
+            const lead=makeJester();
+            const high=makeJester();
+            const off=makeJester();
             let p1=new Player(null,"p1");
             let p2=new Player(null,"p2");
             let p3=new Player(null,"p3");

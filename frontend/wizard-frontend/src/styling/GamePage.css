@@ -75,7 +75,7 @@
     align-items: center;
     pointer-events: none;
     bottom: -30%;
-    z-index: 1000;
+    /* z-index: 1000; */
 }
 .winner-popup {
     background-color: rgba(0,0,0,0);

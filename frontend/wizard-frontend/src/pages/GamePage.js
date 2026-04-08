@@ -7,6 +7,7 @@ import socket from "../socket.js";
 import "../styling/GamePage.css";
 import { useAuth } from "../context/authContext.js";
 import BidSelection from "../components/BidSelection.jsx";
+import ScoreBoard from "../components/ScoreBoard.jsx"
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
 
 export default function GamePage() {
@@ -232,6 +233,14 @@ export default function GamePage() {
     );
   }
 
+  function renderScoreBoard(){
+    return (
+      <div>
+        <ScoreBoard gameId={gameId} players={players} currentRound={roundNumber}/>
+      </div>
+    )
+  }
+
   async function handleLeave() {
     socket.emit("leaveGame", { gameId });
   }
@@ -281,6 +290,7 @@ export default function GamePage() {
         </div>
       </div>
       {renderWinnerPopup()}
+      {renderScoreBoard()}
     </div>
   );
 }

@@ -143,8 +143,11 @@ function buildGameState(game) {
       profilePicture: p.profilePicture,
       cardCount: p.hand.length,
       bidAmount: p.bid,
-      tricksTaken: p.tricksTaken
+      tricksTaken: p.tricksTaken,
+      roundScores: p.roundScores,
+      score: p.score
     })),
+    host: game.host,
     hands: game.players.reduce((acc, p) => {
       acc[p.socketId] = p.hand;
       return acc;
@@ -157,7 +160,7 @@ function buildGameState(game) {
     roundNumber: game.currentRound?.roundNo || null,
     trumpCard: game.currentRound?.trumpCard || null,
     currentPlayer: game.currentRound?.currentPlayer?.socketId || null,
-    winner: game.currentRound?.winner || null
+    winner: game.currentRound?.winner || null,
   };
 }
 

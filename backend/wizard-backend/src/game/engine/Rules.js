@@ -29,13 +29,13 @@ export default class Rules {
   static determineTrickWinner(Trick) {
     let cards = Trick.cards;
 
-    let lead = Trick.leadSuit;
+    let leadSuit = Trick.ledCard?.suit ?? null;
     const firstWizard = cards.find(({ card }) => card?.value == 15);
     if (firstWizard) return firstWizard;
 
     // this loops through the array, comparing each to a best value, and updates it if the comparator is positive
     const winner = cards.reduce((best, curr) => {
-      return this.compareCard(curr.card, best.card, lead) > 0 ? curr : best;
+      return this.compareCard(curr.card, best.card, leadSuit) > 0 ? curr : best;
     });
     return winner;
   }
