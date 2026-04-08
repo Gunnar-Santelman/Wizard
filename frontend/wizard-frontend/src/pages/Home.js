@@ -19,7 +19,8 @@ export default function Home() {
 
         socket.emit("joinGame", {
             gameId: game.id,
-            playerName
+            playerName,
+            profilePicture: userData?.profilePicture
         });
 
         navigate(`/lobby/${game.id}`, {
@@ -31,7 +32,8 @@ export default function Home() {
         if (!playerName) return;
         socket.emit("joinGame", {
             gameId,
-            playerName
+            playerName,
+            profilePicture: userData?.profilePicture
         });
     }
 

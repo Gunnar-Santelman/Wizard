@@ -1,6 +1,7 @@
 export default class Player {
-    constructor(playerId, name) {
+    constructor(playerId, name, profilePicture) {
         this.name = name;
+        this.profilePicture = profilePicture;
         this.socketId = playerId;
         this.hand = [];
         this.bid = -1;
