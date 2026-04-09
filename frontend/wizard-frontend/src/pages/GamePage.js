@@ -195,14 +195,21 @@ export default function GamePage() {
   function renderTrumpCard() {
     if (trump !== null) {
       return (
-        <Card
-          key={"trump"}
-          suit={trump?.suit}
-          value={trump?.value}
-          inPlayersHand={false}
-          isPlayed={true}
-        />
-      );
+        <div className="trump-display">
+          <div className="trump-label">TRUMP</div>
+          <Card
+            style={{
+              transform: 'scale(0.5)',
+              transformOrigin: 'center'
+            }}
+            key={"trump"}
+            suit={trump?.suit}
+            value={trump?.value}
+            inPlayersHand={false}
+            isPlayed={true}
+          />
+        </div>
+        );
     }
     return null;
   }
@@ -258,7 +265,18 @@ export default function GamePage() {
 
       <div>{renderBidPopup()}</div>
       
-      <div className="trump-card">{renderTrumpCard()}</div>
+      <div
+        className="trump-card"
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '50%',
+          transform: 'translateX(-50%)'
+          }}
+      >
+        {renderTrumpCard()}
+      </div>
+      
       <div className="player-area">
         {renderTurnNotification()}
         <div className = "infocard">
