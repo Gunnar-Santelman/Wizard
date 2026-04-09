@@ -1,7 +1,7 @@
-const API_BASE = process.env.REACT_APP_API_URL + "/api/game";
+import { API } from "../api/apiConfig";
 
 export async function createGame() {
-    const res = await fetch(`${API_BASE}/create`, {
+    const res = await fetch(`${API.GAME}/create`, {
         method: "POST",
     });
 
@@ -13,7 +13,7 @@ export async function createGame() {
 }
 
 export async function joinGame(gameId, name) {
-    const res = await fetch(`${API_BASE}/${gameId}/join`, {
+    const res = await fetch(`${API.GAME}/${gameId}/join`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export async function joinGame(gameId, name) {
 }
 
 export async function startGame(gameId) {
-    const res = await fetch(`${API_BASE}/${gameId}/start`, {
+    const res = await fetch(`${API.GAME}/${gameId}/start`, {
         method: "POST",
     });
 
@@ -41,7 +41,7 @@ export async function startGame(gameId) {
 }
 
 export async function getGameState(gameId) {
-    const res = await fetch(`${API_BASE}/${gameId}`);
+    const res = await fetch(`${API.GAME}/${gameId}`);
 
     if (!res.ok) {
         throw new Error("Failed to get game state");

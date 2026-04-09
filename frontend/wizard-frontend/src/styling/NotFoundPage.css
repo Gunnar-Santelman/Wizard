@@ -1,0 +1,72 @@
+.container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.road-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+/* Base brick style */
+.yellow-brick {
+  width: 80px;
+  height: 40px;
+  margin: 6px;
+  background: linear-gradient(145deg, #f7d358, #e6b800);
+  border: 2px solid #c99a00;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 #a67c00;
+}
+
+/* Curved path effect */
+.yellow-brick:nth-child(1) {
+  transform: rotate(-5deg) translateY(0px);
+}
+.yellow-brick:nth-child(2) {
+  transform: rotate(3deg) translateY(10px);
+}
+.yellow-brick:nth-child(3) {
+  transform: rotate(-2deg) translateY(20px);
+}
+.yellow-brick:nth-child(4) {
+  transform: rotate(0deg) translateY(30px);
+}
+.yellow-brick:nth-child(5) {
+  transform: rotate(2deg) translateY(20px);
+}
+.yellow-brick:nth-child(6) {
+  transform: rotate(-3deg) translateY(10px);
+}
+.yellow-brick:nth-child(7) {
+  transform: rotate(4deg) translateY(0px);
+}
+
+.active-brick {
+  cursor: pointer;
+  font-weight: bold;
+  color: #5a3e00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.active-brick:hover {
+  transform: scale(1.1) translateY(30px);
+  box-shadow: 0 0 12px #ffd700;
+}
+
+.active-brick {
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px #ffd700;
+  }
+  to {
+    box-shadow: 0 0 15px #ffea70;
+  }
+}

@@ -13,16 +13,33 @@
     transform: translate(-50%, -50%);
 }
 
-.player-hand {
+.player-area {
     position: absolute;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
+}
+.turn-notification {
+    position:absolute;
+    transform: translate(-125%, 50%);
+    margin-left: 25px;
+    font-size: 45px;
+    color: white;
+    white-space: nowrap;
+}
+.infocard {
+    position: absolute;
+    left: 100%;
+    margin-left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.player-hand {
     display: flex;
     align-items: flex-end;
 }
 .player-hand .card {
-    margin-left: -90px;
+    margin-left: -100px;
     transition: transform 0.2s ease, z-index 0.2s ease;
 }
 .player-hand .card:first-child {
@@ -35,8 +52,36 @@
     align-items: flex-end;
 }
 .opponent-hand .card {
-    margin-left: -110px;
+    margin-left: -118px;
 }
 .opponent-hand .card:first-child {
     margin-left:0;
+}
+
+.trick-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 200px;
+    transform: translate(-50%, -50%);
+}
+
+.winner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    bottom: -30%;
+    /* z-index: 1000; */
+}
+.winner-popup {
+    background-color: rgba(0,0,0,0);
+    color: white;
+    padding: 25px 40px;
+    border-radius: 16px;
+    font-size: 28px;
+    font-weight: bold;
 }

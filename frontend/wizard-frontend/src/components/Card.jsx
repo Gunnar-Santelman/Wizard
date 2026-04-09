@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import socket from "../socket";
 /*
 
 Possible Card States:
@@ -14,14 +14,16 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, index, rotation }) {
-
-    const [isValidPlay, setIsValidPlay] = useState(false)
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId }) {
     const [isHovered, setIsHovered] = useState(false)
-    console.log(suit, value);
     const handleClick = () => {
-        // Put stuff here!
-        console.log('Card was clicked!')
+        if (!isValidPlay || !inPlayersHand || isBidPhase) {
+            return;
+        }
+        socket.emit("playCard", {
+            gameId,
+            index
+        });
     };
 
     return (
@@ -31,23 +33,23 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, inde
             onClick={handleClick}
 
             // Shows either front or back of card, if it's in the player's hand or not
-            src={inPlayersHand ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
+            src={inPlayersHand || isPlayed ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
 
             alt={value + " of " + suit}
             className="card"
             style={{
                 width: '120px',
                 height: '168px',
-                border: inPlayersHand && isHovered && isValidPlay ? "thick ridge lemonchiffon" : "thick ridge transparent",
+                border: inPlayersHand && isHovered && isValidPlay && !isBidPhase ? "thick ridge gold" : "thick ridge transparent",
                 borderRadius: '5px',
                 transform: `
                     rotate(${rotation}deg)
                     ${isHovered && inPlayersHand ? "translateY(-30px)": ""}
-                    ${inPlayersHand && isHovered && isValidPlay ? "scale(1.1)" : "scale(1)"}
+                    ${inPlayersHand && isHovered && isValidPlay && !isBidPhase ? "scale(1.1)" : "scale(1)"}
                 `,
-                filter: inPlayersHand && isHovered && !isValidPlay ? "contrast(50%)" : "none",
+                filter: inPlayersHand && isHovered && (!isValidPlay || isBidPhase) ? "contrast(50%)" : "none",
                 transition: "transform 0.3s ease, border 0.3s ease, filter 0.3s ease",
-                cursor:inPlayersHand && isHovered && isValidPlay ? 'pointer' : 'not-allowed'
+                cursor:inPlayersHand && isHovered && isValidPlay && !isBidPhase ? 'pointer' : 'not-allowed'
              }}
            
         />

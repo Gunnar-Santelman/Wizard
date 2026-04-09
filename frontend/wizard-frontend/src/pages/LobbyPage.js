@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 
+import ScoreBoard from '../components/ScoreBoard.jsx';
+
 
 export default function LobbyPage() {
     const {gameId} = useParams();

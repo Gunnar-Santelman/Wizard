@@ -1,23 +1,26 @@
 import {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import * as gameApi from "../api/gameApi";
+import { signOut, signout } from "firebase/auth";
+import { auth } from "../services/firebase";
+import { useAuth } from "../context/authContext";
+import { createGame } from "../services/gameService";
 import socket from "../socket";
 
-function generatePlayerName() {
-    return "Player_" + Math.floor(Math.random() * 10000);
-}
-
 export default function Home() {
+    const { userData } = useAuth();
+
     const [gameId, setGameId] = useState("");
     const navigate = useNavigate();
-    const [playerName] = useState(() => generatePlayerName());
+    const playerName = userData?.username;
 
     async function handleCreate() {
-        const game = await gameApi.createGame();
+        if (!playerName) return;
+        const game = await createGame();
 
         socket.emit("joinGame", {
             gameId: game.id,
-            playerName
+            playerName,
+            profilePicture: userData?.profilePicture
         });
 
         navigate(`/lobby/${game.id}`, {
@@ -26,9 +29,11 @@ export default function Home() {
     }
 
     function handleJoin() {
+        if (!playerName) return;
         socket.emit("joinGame", {
             gameId,
-            playerName
+            playerName,
+            profilePicture: userData?.profilePicture
         });
     }
 
@@ -51,8 +56,15 @@ export default function Home() {
         };
     }, [navigate, playerName]);
 
+    async function handleLogout() {
+        await signOut(auth);
+    }
+
     return (
         <div style ={{padding: 40}}>
+
+            <button onClick={handleLogout}>Logout</button>
+
             <h2>Wizard Lobby</h2>
 
             <button onClick={handleCreate}>Create Game</button>

@@ -1,5 +1,5 @@
 //Enum simulator as there is none in JS
-const SUIT=Object.freeze({
+export default Object.freeze({
     HEARTS:"hearts",
     DIAMONDS:"diamonds",
     CLUBS:"clubs",
