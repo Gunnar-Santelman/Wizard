@@ -1,5 +1,5 @@
 export default class Player {
-    constructor(playerId, name, profilePicture = null) {
+    constructor(playerId, name, profilePicture) {
         this.name = name;
         this.profilePicture = profilePicture;
         this.socketId = playerId;
