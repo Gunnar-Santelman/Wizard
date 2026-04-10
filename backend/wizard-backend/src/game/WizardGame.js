@@ -13,7 +13,7 @@ export class WizardGame {
         this.status = "waiting";
     }
 
-    joinGame(playerName, socketId, profilePicture = null) {
+    joinGame(playerName, profilePicture = null, socketId) {
         if (this.players.length === 0) {
             this.host = socketId;
         }
