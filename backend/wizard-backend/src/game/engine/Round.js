@@ -203,5 +203,8 @@ export default class Round {
       this.#game.currentRound = new Round(roundNumber, this.#game);
       this.#game.currentRound.winner = this.winner;
     }
+    else {
+      this.#game.finishGame();
+    }
   }
 }

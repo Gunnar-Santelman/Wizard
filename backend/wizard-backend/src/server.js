@@ -103,14 +103,28 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameStarted", { gameId });
   });
 
+  socket.on("abandonGame", ({ gameId }) => {
+    const game = GameManager.getGame(gameId);
+    if (!game) {
+      return;
+    }
+
+    io.to(game.id).emit("gameAbandoned");
+    GameManager.deleteGame(game.id);
+    return;
+  });
+
   socket.on("leaveGame", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
       return;
     }
 
-    io.to(game.id).emit("gameEnded");
-    GameManager.deleteGame(game.id);
+    socket.emit("gameLeft");
+    game.removePlayer(socket.id);
+    if (game.isEmpty()) {
+      GameManager.deleteGame(game.id);
+    }
     return;
   });
 
@@ -126,7 +140,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    io.to(game.id).emit("gameEnded");
+    io.to(game.id).emit("gameAbandoned");
     GameManager.deleteGame(game.id);
     delete GameManager.socketToGame[socket.id];
     return;

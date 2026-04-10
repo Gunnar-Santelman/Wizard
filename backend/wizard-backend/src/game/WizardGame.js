@@ -29,6 +29,11 @@ export class WizardGame {
             new Player(socketId, playerName, profilePicture)
         );
     }
+
+    finishGame() {
+        //Save stats to database
+        this.status = "complete";
+    }
     
     removePlayer(socketId) {
         this.players = this.players.filter(
@@ -42,15 +47,7 @@ export class WizardGame {
     startGame() {
         this.status = "running";
         this.maxRounds = 60 / this.players.length;
-        // test trick
         this.currentRound = new Round(1, this);
-        //this.playGame();
-    }
-
-    playGame() {
-        for (let i = 1; i <= this.maxRounds; i++) {
-            this.currentRound = new Round(i, this);
-        }
     }
 
     isEmpty() {

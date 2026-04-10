@@ -34,6 +34,7 @@ export default class Player {
             if (playedCard.value === card.value && playedCard.suit === card.suit) {
                 this.hand.splice(i, 1);
                 this.playedCard = playedCard;
+                return;
             }
         }
     }
