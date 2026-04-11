@@ -130,11 +130,12 @@ export default function GamePage() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            transform: `translate(-50%, 10%) translate(${namePos.x}px, ${namePos.y}px)`,
+            transform: `translate(-50%, 10%) translate(${cardsPos.x}px, ${cardsPos.y}px)`,
             textAlign: "center",
             fontWeight: "bold",
             pointerEvents: "none",
             color: "white",
+            zIndex: "100"
           }}
         >
           <PlayerInfocard
