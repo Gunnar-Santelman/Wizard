@@ -28,6 +28,10 @@ export const signInWithEmail = async (email, password) => {
     return { firebaseUser: user };
 };
 
+export const getToken = async () => {
+    return await auth.currentUser.getIdToken();
+};
+
 async function syncUser(user) {
     const token = await user.getIdToken();
 
@@ -40,4 +44,4 @@ async function syncUser(user) {
     });
 
     return await res.json();
-}
+};

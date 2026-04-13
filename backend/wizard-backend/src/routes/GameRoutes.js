@@ -1,16 +1,13 @@
 import gameManager from "./../game/GameManager.js";
 import express from "express";
+import { authenticate } from "../middleware/auth.js";
+import { createGame } from "../controllers/GameController.js";
+
 const router = express.Router();
 
-router.post("/create", (req, res) => {
-    const gameId = gameManager.createGame();
+router.post("/create", authenticate, createGame);
 
-    const io = req.app.get("io");
-    io.emit("gameCreated", gameId);
-
-    res.json({id: gameId});
-})
-
+// All following routes are never used
 router.post("/:id/join", (req, res) => {
     const game = gameManager.getGame(req.params.id);
     if (!game) {
