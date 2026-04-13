@@ -3,8 +3,9 @@ import Card from "./engine/Card.js";
 import Player from "./engine/Player.js";
 
 export class WizardGame {
-    constructor (gameId) {
+    constructor (gameId, dbid) {
         this.id = gameId;
+        this.dbid = dbid;
         this.host = null;
         this.players = [];
         this.maxRounds = 0;
@@ -13,21 +14,22 @@ export class WizardGame {
         this.status = "waiting";
     }
 
-    joinGame(playerName, profilePicture, socketId) {
-        if (this.players.length === 0) {
-            this.host = socketId;
-        }
-
+    joinGame(playerName, profilePicture, socketId, uid) {
         const alreadyExists = this.players.find(
             p => p.socketId === socketId
         );
 
         if (alreadyExists) {
             return;
-        }
-        this.players.push(
-            new Player(socketId, playerName, profilePicture)
-        );
+        };
+
+        const newPlayer = new Player(socketId, uid, playerName, profilePicture);
+
+        if (this.players.length === 0) {
+            this.host = newPlayer;
+        };
+
+        this.players.push(newPlayer);
     }
     
     removePlayer(socketId) {

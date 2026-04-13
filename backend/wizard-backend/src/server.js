@@ -2,7 +2,9 @@ import app from "./app.js";
 import connectDB from "./db.js";
 import http from "http";
 import { Server } from "socket.io";
+import { verifyToken } from "./middleware/auth.js";
 import GameManager from "./game/GameManager.js";
+import * as GameService from "./services/GameService.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,7 +23,8 @@ app.set("io", io);
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  socket.on("joinGame", ({ gameId, playerName, profilePicture }) => {
+  socket.on("joinGame", async ({ gameId, token, playerName, profilePicture }) => {
+    const uid = await verifyToken(token);
     const game = GameManager.getGame(gameId);
 
     if (!game) {
@@ -38,7 +41,7 @@ io.on("connection", (socket) => {
     }
 
     socket.join(gameId);
-    game.joinGame(playerName, profilePicture, socket.id);
+    game.joinGame(playerName, profilePicture, socket.id, uid);
     GameManager.socketToGame[socket.id] = game.id;
 
     socket.emit("joinSuccess", { gameId });
@@ -99,6 +102,8 @@ io.on("connection", (socket) => {
     }
 
     game.startGame();
+
+    GameService.startGameDB(game);
 
     io.to(gameId).emit("gameStarted", { gameId });
   });

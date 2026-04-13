@@ -9,8 +9,8 @@ import ScoreBoard from '../components/ScoreBoard.jsx';
 export default function LobbyPage() {
     const {gameId} = useParams();
     const [players, setPlayers] = useState([]);
-    const [host, setHost] = useState([]); 
-    const isHost = host === socket.id;
+    const [host, setHost] = useState(null); 
+    const isHost = host?.socketId === socket.id;
     const navigate = useNavigate();
 
     function handleLeave() {
@@ -21,7 +21,7 @@ export default function LobbyPage() {
         socket.emit("startGame", {gameId});
     }
     function listPlayer(player) {
-        if (player.socketId === host) {
+        if (player.socketId === host?.socketId) {
             return <li key = {player.socketId}>Host: {player.name}</li>
         }
         else {

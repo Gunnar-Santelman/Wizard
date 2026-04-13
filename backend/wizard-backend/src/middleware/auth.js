@@ -1,6 +1,6 @@
 import admin from "../config/firebaseAdmin.js";
 
-const authenticate = async (req, res, next) => {
+export const authenticate = async (req, res, next) => {
     try {
         const header = req.headers.authorization;
 
@@ -17,8 +17,15 @@ const authenticate = async (req, res, next) => {
     next();
 
     } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+        return res.status(401).json({ message: "Invalid or expired token" });
     }
 };
 
-export default authenticate;
+export const verifyToken = async (token) => {
+    try {
+        const decoded = await admin.auth().verifyIdToken(token);
+        return decoded.uid;
+    } catch (err) {
+        throw new Error("Invalid or expired token");
+    }
+};

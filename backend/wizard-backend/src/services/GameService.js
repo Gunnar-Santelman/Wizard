@@ -1,13 +1,29 @@
-import Game from '../models/Game.js';
+import Game from '../models/GameSchema.js';
+import GameManager from '../game/GameManager.js';
 
-export const initializeGameDB = async () => {
+export const createGameDB = async () => {
     const newGame = new Game();
 
     await newGame.save();
 
-    return newGame._id.toString();
-}
+    return newGame._id;
+};
 
+export const startGameDB = async (game) => {
+    return await Game.findByIdAndUpdate(game.dbid, {
+        status: "running",
+        players: game.players.map(p => p.uid),
+        host: game.host.uid
+    });
+};
+/*
+export const endGameDB = async (game) => {
+    return await Game.findByIdAndUpdate(game.dbid, {
+        status: "finished",
+        winner: game.winner
+    });
+}
+*/
 export const updateGameDB = async (gameId, updateData) => {
     const updatedGame = await Game.findByIdAndUpdate(
         gameId,
@@ -16,4 +32,13 @@ export const updateGameDB = async (gameId, updateData) => {
     );
 
     return updatedGame;
+};
+
+export const createGameBackend = (dbid) => {
+    const gameId = GameManager.createGame(dbid);
+    return gameId;
+};
+
+export const createGameSocket = (io, gameId) => {
+    io.emit("gameCreated", gameId);
 };

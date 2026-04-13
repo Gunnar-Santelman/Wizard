@@ -7,9 +7,9 @@ class GameManager {
         this.socketToGame = {};
     }
 
-    createGame() {
+    createGame(dbid) {
         const id = crypto.randomUUID();
-        const newGame = new WizardGame(id);
+        const newGame = new WizardGame(id, dbid);
         this.activeGames.set(id, newGame);
         return id;
     }
@@ -17,7 +17,7 @@ class GameManager {
     getGame(id) {
         return this.activeGames.get(id);
     }
-
+    // Does not work since this.activeGames is a Map
     findGameBySocket(socketId) {
         return Object.values(this.activeGames)
             .filter(game => game && game.players)

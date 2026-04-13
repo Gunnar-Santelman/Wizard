@@ -1,8 +1,15 @@
+import { auth } from "./firebase";
 import { API } from "../api/apiConfig";
 
 export async function createGame() {
+    const token = await auth.currentUser.getIdToken();
+
     const res = await fetch(`${API.GAME}/create`, {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
     });
 
     if (!res.ok) {
@@ -12,6 +19,7 @@ export async function createGame() {
     return res.json();
 }
 
+// All following functions are never used
 export async function joinGame(gameId, name) {
     const res = await fetch(`${API.GAME}/${gameId}/join`, {
         method: "POST",

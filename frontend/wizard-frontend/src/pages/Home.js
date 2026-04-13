@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { signOut, signout } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/authContext";
+import { getToken } from "../services/authService";
 import { createGame } from "../services/gameService";
 import socket from "../socket";
 
@@ -19,6 +20,7 @@ export default function Home() {
 
         socket.emit("joinGame", {
             gameId: game.id,
+            token: await getToken(),
             playerName,
             profilePicture: userData?.profilePicture
         });
@@ -28,10 +30,11 @@ export default function Home() {
         });
     }
 
-    function handleJoin() {
+    async function handleJoin() {
         if (!playerName) return;
         socket.emit("joinGame", {
             gameId,
+            token: await getToken(),
             playerName,
             profilePicture: userData?.profilePicture
         });
