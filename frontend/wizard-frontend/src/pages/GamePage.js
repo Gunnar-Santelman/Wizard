@@ -327,6 +327,7 @@ export default function GamePage() {
                 index={index}
                 rotation={rotation}
                 gameId={gameId}
+                isMyTurn={isMyTurn}
               />
             );
           })}
