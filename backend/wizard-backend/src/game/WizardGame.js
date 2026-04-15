@@ -11,6 +11,7 @@ export class WizardGame {
         this.currentRound = null;
         this.deck = [];
         this.status = "waiting";
+        this.gameWinner = null;
     }
 
     joinGame(playerName, profilePicture, socketId) {
@@ -32,6 +33,8 @@ export class WizardGame {
 
     finishGame() {
         //Save stats to database
+        this.gameWinner = this.players.reduce((prev, current) => (prev.score > current.score) ? prev : current);
+        console.log(this.gameWinner);
         this.status = "complete";
     }
     

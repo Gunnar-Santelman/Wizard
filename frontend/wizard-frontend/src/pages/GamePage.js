@@ -255,23 +255,28 @@ export default function GamePage() {
   }
 
   function renderFinalWinner() {
-    if (!gameComplete) {
-      return null;
-    }
-
-    const overallWinner = players.reduce((prev, current) => (prev.score > current.score) ? prev : current);
-    const modal = document.querySelector(".modal");
-    const closeModal = document.querySelector(".closeModal");
-    closeModal.addEventListener("click", () => {
-      modal?.close();
-    });
-    return (
-      <dialog className="modal" open>
-        <p className="modalText"> {overallWinner.name} Won the Game With A Score of {overallWinner.score}!</p>
-        <button className="closeModal">Close</button>
-      </dialog>
-    )
+  if (!gameComplete) {
+    return null;
   }
+
+  const overallWinner = players.reduce((prev, current) =>
+    prev.score > current.score ? prev : current
+  );
+
+  return (
+    <dialog className="modal" open>
+      <p className="modalText">
+        {overallWinner.name} Won the Game With A Score of {overallWinner.score}!
+      </p>
+      <button
+        className="closeModal"
+        onClick={() => setGameComplete(false)}
+      >
+        Close
+      </button>
+    </dialog>
+  );
+}
 
   async function handleLeave() {
     socket.emit("abandonGame", { gameId });
