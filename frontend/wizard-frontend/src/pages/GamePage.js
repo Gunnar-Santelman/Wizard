@@ -26,6 +26,7 @@ export default function GamePage() {
   const [bid, setBid] = useState(-1);
   const [tricksTaken, setTricksTaken] = useState(0);
   const [roundNumber, setRoundNumber] = useState(0);
+  const [gameComplete, setGameComplete] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function GamePage() {
       setTricksTaken(
         game.players.find((p) => p.socketId === socket.id).tricksTaken,
       );
-      console.log(game.players);
+      setGameComplete((game.status === "complete"));
     }
     socket.on("gameState", handleGameState);
 
@@ -53,13 +54,17 @@ export default function GamePage() {
   }, [gameId]);
 
   useEffect(() => {
-    socket.on("gameEnded", () => {
+    socket.on("gameAbandoned", () => {
       alert("A player left the game!");
       navigate("/");
     });
+    socket.on("gameLeft", () => {
+      navigate("/");
+    })
 
     return () => {
-      socket.off("gameEnded");
+      socket.off("gameAbandoned");
+      socket.off("gameLeft")
     };
   }, [navigate]);
 
@@ -125,11 +130,12 @@ export default function GamePage() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            transform: `translate(-50%, 10%) translate(${namePos.x}px, ${namePos.y}px)`,
+            transform: `translate(-50%, 10%) translate(${cardsPos.x}px, ${cardsPos.y}px)`,
             textAlign: "center",
             fontWeight: "bold",
             pointerEvents: "none",
             color: "white",
+            zIndex: "100"
           }}
         >
           <PlayerInfocard
@@ -243,13 +249,37 @@ export default function GamePage() {
   function renderScoreBoard(){
     return (
       <div>
-        <ScoreBoard gameId={gameId} players={players} currentRound={roundNumber}/>
+        <ScoreBoard gameId={gameId} players={players} currentRound={roundNumber} gameComplete={gameComplete}/>
       </div>
     )
   }
 
+  function renderFinalWinner() {
+  if (!gameComplete) {
+    return null;
+  }
+
+  const overallWinner = players.reduce((prev, current) =>
+    prev.score > current.score ? prev : current
+  );
+
+  return (
+    <dialog className="modal" open>
+      <p className="modalText">
+        {overallWinner.name} Won the Game With A Score of {overallWinner.score}!
+      </p>
+      <button
+        className="closeModal"
+        onClick={() => setGameComplete(false)}
+      >
+        Close
+      </button>
+    </dialog>
+  );
+}
+
   async function handleLeave() {
-    socket.emit("leaveGame", { gameId });
+    socket.emit("abandonGame", { gameId });
   }
 
   return (
@@ -279,7 +309,7 @@ export default function GamePage() {
       
       <div className="player-area">
         {renderTurnNotification()}
-        <div className = "infocard">
+        <div className = "infocard" style={{fontWeight: "bold"}}>
           <PlayerInfocard
             username={userData.username}
             avatarUrl={userData.profilePicture}
@@ -302,6 +332,7 @@ export default function GamePage() {
                 index={index}
                 rotation={rotation}
                 gameId={gameId}
+                isMyTurn={isMyTurn}
               />
             );
           })}
@@ -309,6 +340,7 @@ export default function GamePage() {
       </div>
       {renderWinnerPopup()}
       {renderScoreBoard()}
+      {renderFinalWinner()}
     </div>
   );
 }
