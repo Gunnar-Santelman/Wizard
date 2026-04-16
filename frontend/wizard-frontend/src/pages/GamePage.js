@@ -27,6 +27,7 @@ export default function GamePage() {
   const [tricksTaken, setTricksTaken] = useState(0);
   const [roundNumber, setRoundNumber] = useState(0);
   const [gameComplete, setGameComplete] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -264,13 +265,13 @@ export default function GamePage() {
   );
 
   return (
-    <dialog className="modal" open>
+    <dialog className="modal" open={showModal}>
       <p className="modalText">
         {overallWinner.name} Won the Game With A Score of {overallWinner.score}!
       </p>
       <button
         className="closeModal"
-        onClick={() => setGameComplete(false)}
+        onClick={() => setShowModal(false)}
       >
         Close
       </button>
