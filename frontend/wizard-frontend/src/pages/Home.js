@@ -20,9 +20,7 @@ export default function Home() {
 
         socket.emit("joinGame", {
             gameId: game.id,
-            token: await getToken(),
-            playerName,
-            profilePicture: userData?.profilePicture
+            token: await getToken()
         });
 
         navigate(`/lobby/${game.id}`, {
@@ -34,9 +32,7 @@ export default function Home() {
         if (!playerName) return;
         socket.emit("joinGame", {
             gameId,
-            token: await getToken(),
-            playerName,
-            profilePicture: userData?.profilePicture
+            token: await getToken()
         });
     }
 
