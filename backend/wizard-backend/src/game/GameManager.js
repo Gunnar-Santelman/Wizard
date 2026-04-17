@@ -1,5 +1,5 @@
 import WizardGame from "./WizardGame.js";
-import crypto from "crypto";
+import { generateId } from "../utils/IdGenerator.js";
 
 class GameManager {
     constructor() {
@@ -7,8 +7,16 @@ class GameManager {
         this.socketToGame = {};
     }
 
+    generateGameId() {
+        let id;
+        do {
+            id = generateId();
+        } while (this.activeGames.has(id));
+        return id;
+    }
+
     createGame(dbid) {
-        const id = crypto.randomUUID();
+        const id = this.generateGameId();
         const newGame = new WizardGame(id, dbid);
         this.activeGames.set(id, newGame);
         return id;
