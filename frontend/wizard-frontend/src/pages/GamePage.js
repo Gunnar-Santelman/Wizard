@@ -9,6 +9,7 @@ import { useAuth } from "../context/authContext.js";
 import BidSelection from "../components/BidSelection.jsx";
 import ScoreBoard from "../components/ScoreBoard.jsx"
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
+import { motion } from "framer-motion";
 
 export default function GamePage() {
 
@@ -164,7 +165,13 @@ export default function GamePage() {
             }}
           >
             {Array.from({ length: player.cardCount }).map((_, i) => (
-              <Card key={i} inPlayersHand={false} />
+              <motion.div
+                key={i}
+                layoutId={`card-${player.socketId}-${i}`}
+                style={{ display: 'inline-block' }}
+              >
+                <Card key={i} inPlayersHand={false} />
+              </motion.div>
             ))}
           </div>
         </div>
@@ -178,9 +185,11 @@ export default function GamePage() {
     const offsetX = (index - (total - 1) / 2) * spacing;
 
     return (
-      <div
+      <motion.div
         key={index}
+        layoutId={`card-${card.value}-of-${card.suit}`}
         style={{
+          display: 'inline-block',
           position: "absolute",
           top: "50%",
           left: "50%",
@@ -195,7 +204,7 @@ export default function GamePage() {
           inPlayersHand={false}
           isPlayed={true}
         />
-      </div>
+      </motion.div>
     );
   }
 
@@ -323,6 +332,14 @@ export default function GamePage() {
             const middle = hand.length / 2;
             const rotation = (index - middle) * 4;
             return (
+            <motion.div
+              key={index}
+              layoutId={`card-${card.value}-of-${card.suit}`}
+              style={{
+                display: 'inline-block',
+                marginLeft: index === 0 ? '0' : '-100px'
+                }}
+                >
               <Card
                 key={index}
                 suit={card.suit}
@@ -335,6 +352,7 @@ export default function GamePage() {
                 gameId={gameId}
                 isMyTurn={isMyTurn}
               />
+            </motion.div>
             );
           })}
         </div>
