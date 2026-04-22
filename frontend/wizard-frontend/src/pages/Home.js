@@ -78,7 +78,6 @@ export default function Home() {
         />
 
         <button className = "secondary-btn" onClick={handleJoin}>Join Game</button>
-        <button className = "tertiary-btn" onClick={() => navigate("/profile")}>Profile</button>
         <button className = "tertiary-btn" onClick={handleLogout}>Logout</button>
       </div>
     </div>
