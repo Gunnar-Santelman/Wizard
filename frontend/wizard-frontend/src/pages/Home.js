@@ -1,10 +1,11 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut, signout } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/authContext";
 import { getToken } from "../services/authService";
 import { createGame } from "../services/gameService";
+import "../styling/Home.css"
 import socket from "../socket";
 
 export default function Home() {
@@ -36,46 +37,39 @@ export default function Home() {
         });
     }
 
-    useEffect(() => {
-        function handleSuccess({gameId}) {
-            navigate(`/lobby/${gameId}`, {
-                state: {playerName}
-            });
-        }
-        function handleError(message) {
-            alert(message);
-        }
+    socket.on("joinSuccess", handleSuccess);
+    socket.on("joinError", handleError);
 
-        socket.on("joinSuccess", handleSuccess);
-        socket.on("joinError", handleError);
+    return () => {
+      socket.off("joinSuccess", handleSuccess);
+      socket.off("joinError", handleError);
+    };
+  }, [navigate, playerName]);
 
-        return () => {
-            socket.off("joinSuccess",handleSuccess);
-            socket.off("joinError", handleError);
-        };
-    }, [navigate, playerName]);
+  async function handleLogout() {
+    await signOut(auth);
+  }
 
-    async function handleLogout() {
-        await signOut(auth);
-    }
+  return (
+    <div className="home-container">
+      <div className="home-card">
+        <h1 className="title">Wizard</h1>
 
-    return (
-        <div style ={{padding: 40}}>
+        <button className = "primary-btn" onClick={handleCreate}>Create Game</button>
+        
+        <div className="divider">or</div>
 
-            <button onClick={handleLogout}>Logout</button>
+        <input
+          value={gameId}
+          className = "game-input"
+          onChange={(e) => setGameId(e.target.value)}
+          placeholder="Game Code"
+        />
 
-            <h2>Wizard Lobby</h2>
-
-            <button onClick={handleCreate}>Create Game</button>
-
-            <hr />
-
-            <input 
-                value = {gameId}
-                onChange={(e) => setGameId(e.target.value)}
-                placeholder="Game Code"
-            />
-            <button onClick={handleJoin}>Join Game</button>
-        </div>
-    )
+        
+        <button className = "secondary-btn" onClick={handleJoin}>Join Game</button>
+        <button className = "logout-btn" onClick={handleLogout}>Logout</button>
+      </div>
+    </div>
+  );
 }
