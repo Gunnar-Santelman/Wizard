@@ -9,46 +9,32 @@ import "../styling/Home.css"
 import socket from "../socket";
 
 export default function Home() {
-  const { userData } = useAuth();
+    const { userData } = useAuth();
 
-  const [gameId, setGameId] = useState("");
-  const navigate = useNavigate();
-  const playerName = userData?.username;
+    const [gameId, setGameId] = useState("");
+    const navigate = useNavigate();
+    const playerName = userData?.username;
 
-  async function handleCreate() {
-    if (!playerName) return;
-    const game = await createGame();
+    async function handleCreate() {
+        if (!playerName) return;
+        const game = await createGame();
 
-    socket.emit("joinGame", {
-      gameId: game.id,
-      token: await getToken(),
-      playerName,
-      profilePicture: userData?.profilePicture,
-    });
+        socket.emit("joinGame", {
+            gameId: game.id,
+            token: await getToken()
+        });
 
-    navigate(`/lobby/${game.id}`, {
-      state: { playerName },
-    });
-  }
-
-  async function handleJoin() {
-    if (!playerName) return;
-    socket.emit("joinGame", {
-      gameId,
-      token: await getToken(),
-      playerName,
-      profilePicture: userData?.profilePicture,
-    });
-  }
-
-  useEffect(() => {
-    function handleSuccess({ gameId }) {
-      navigate(`/lobby/${gameId}`, {
-        state: { playerName },
-      });
+        navigate(`/lobby/${game.id}`, {
+            state: {playerName}
+        });
     }
-    function handleError(message) {
-      alert(message);
+
+    async function handleJoin() {
+        if (!playerName) return;
+        socket.emit("joinGame", {
+            gameId,
+            token: await getToken()
+        });
     }
 
     socket.on("joinSuccess", handleSuccess);
