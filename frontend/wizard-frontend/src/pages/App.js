@@ -8,6 +8,7 @@ import LobbyPage from "./LobbyPage.js";
 import GamePage from "./GamePage.js";
 import OnboardingPage from './OnboardingPage.js';
 import LoginPage from './LoginPage.js';
+import ProfilePage from './ProfilePage.js';
 import NotFoundPage from './NotFoundPage.js';
 import ProtectedRoute from '../components/ProtectedRoute.jsx';
 import PublicRoute from '../components/PublicRoute.jsx';
@@ -42,6 +43,7 @@ function App() {
           <Route path = "/home" element = {<Home />} />
           <Route path = "/lobby/:gameId" element = {<LobbyPage />} />
           <Route path = "/game/:gameId" element = {<GamePage />} />
+          <Route path = "/profile" element = {<ProfilePage />} />
         </Route>
 
         <Route path = "*" element = {<NotFoundPage />} />

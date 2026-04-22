@@ -64,9 +64,16 @@ export default function Home() {
     }
 
     return (
-        <div style ={{padding: 40}}>
+        <div style={{ padding: 40, position: "relative" }}>
 
-            <button onClick={handleLogout}>Logout</button>
+            <div style={{ position: "absolute", top: 20, right: 20 }}>
+                <button onClick={() => navigate("/profile")}>
+                    Profile
+                </button>
+                <button onClick={handleLogout} style={{ marginLeft: 10 }}>
+                    Logout
+                </button>
+            </div>
 
             <h2>Wizard Lobby</h2>
 
@@ -75,7 +82,7 @@ export default function Home() {
             <hr />
 
             <input 
-                value = {gameId}
+                value={gameId}
                 onChange={(e) => setGameId(e.target.value)}
                 placeholder="Game Code"
             />
