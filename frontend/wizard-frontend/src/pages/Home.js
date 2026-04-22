@@ -63,6 +63,7 @@ export default function Home() {
   return (
     <div className="home-container">
       <div className="home-card">
+        <button className="icon-btn" onClick={() => navigate("/profile")}>Profile</button>
         <h1 className="title">Wizard</h1>
 
         <button className = "primary-btn" onClick={handleCreate}>Create Game</button>
