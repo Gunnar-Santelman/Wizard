@@ -550,47 +550,47 @@ describe("WizardGame", () => {
     });
 
     test("first player to join becomes host", () => {
-        game.joinGame("Alice", "socket-1");
-        expect(game.host).toBe("socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        expect(game.host.socketId).toBe("socket-1");
     });
 
     test("subsequent players do not become host", () => {
-        game.joinGame("Alice", "socket-1");
-        game.joinGame("Bob", "socket-2");
-        expect(game.host).toBe("socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        game.joinGame("Bob", "profile-picture-2", "socket-2", "uid-2");
+        expect(game.host.socketId).toBe("socket-1");
     });
 
     test("joinGame adds player", () => {
-        game.joinGame("Alice", "socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
         expect(game.players).toHaveLength(1);
     });
 
     test("joinGame ignores duplicate socketId", () => {
-        game.joinGame("Alice", "socket-1");
-        game.joinGame("Alice", "socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
         expect(game.players).toHaveLength(1);
     });
 
     test("removePlayer removes the player", () => {
-        game.joinGame("Alice", "socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
         game.removePlayer("socket-1");
         expect(game.players).toHaveLength(0);
     });
 
     test("host transfers when host leaves while waiting", () => {
-        game.joinGame("Alice", "socket-1");
-        game.joinGame("Bob", "socket-2");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        game.joinGame("Bob", "profile-picture-2", "socket-2", "uid-2");
         game.removePlayer("socket-1");
-        expect(game.host).toBe("socket-2");
+        expect(game.host.socketId).toBe("socket-2");
     });
 
     test("host does not transfer when game is running", () => {
-        game.joinGame("Alice", "socket-1");
-        game.joinGame("Bob", "socket-2");
-        game.joinGame("C", "socket-3");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        game.joinGame("Bob", "profile-picture-2", "socket-2", "uid-2");
+        game.joinGame("Carl", "profile-picture-3", "socket-3", "uid-3");
         game.startGame();
         game.removePlayer("socket-1");
-        expect(game.host).toBe("socket-1"); // unchanged
+        expect(game.host.socketId).toBe("socket-1"); // unchanged
     });
 
     test("isEmpty returns true when no players", () => {
@@ -598,34 +598,45 @@ describe("WizardGame", () => {
     });
 
     test("isEmpty returns false when players exist", () => {
-        game.joinGame("Alice", "socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
         expect(game.isEmpty()).toBe(false);
     });
 
     test("startGame sets status to running", () => {
-        game.joinGame("Alice", "socket-1");
-        game.joinGame("Bob", "socket-2");
-        game.joinGame("C", "socket-3");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        game.joinGame("Bob", "profile-picture-2", "socket-2", "uid-2");
+        game.joinGame("Carl", "profile-picture-3", "socket-3", "uid-3");
         game.startGame();
         expect(game.status).toBe("running");
     });
 
     test("startGame sets maxRounds based on player count", () => {
-        game.joinGame("Alice", "socket-1");
-        game.joinGame("Bob", "socket-2");
-        game.joinGame("C", "socket-3");
-        game.joinGame("D", "socket-4");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
+        game.joinGame("Bob", "profile-picture-2", "socket-2", "uid-2");
+        game.joinGame("Carl", "profile-picture-3", "socket-3", "uid-3");
+        game.joinGame("Diane", "profile-picture-4", "socket-4", "uid-4");
         game.startGame();
         expect(game.maxRounds).toBe(15); // 60/4
     });
 
     test("getGameState returns correct shape", () => {
-        game.joinGame("Alice", "socket-1");
+        game.joinGame("Alice", "profile-picture-1", "socket-1", "uid-1");
         const state = game.getGameState();
         expect(state).toMatchObject({
             id: "test-id",
             status: "waiting",
-            host: "socket-1"
+            host: {
+                name: "Alice",
+                profilePicture: "profile-picture-1",
+                socketId: "socket-1",
+                uid: "uid-1",
+                bid: -1,
+                hand: [],
+                playedCard: null,
+                roundScores: {},
+                score: 0,
+                tricksTaken: 0
+            }
         });
     });
 });

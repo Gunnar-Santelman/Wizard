@@ -15,6 +15,7 @@ export default function Scoreboard({
   gameId,
   players = [], // Array of player objects
   currentRound = 0,
+  gameComplete
 }) {
   const [showScoreboard, setShowScoreboard] = useState(false);
 
@@ -31,7 +32,6 @@ export default function Scoreboard({
     data.playerInfocard = (
       <PlayerInfocard
         username={player.name}
-        // TODO: set avatarUrl - database connection?
         showBids={false}
       />
     );
@@ -56,9 +56,27 @@ export default function Scoreboard({
     return rows;
   }
 
-  const rows = createRows(players);
+  function handleExitGame() {
+    socket.emit("leaveGame", {gameId})
+  }
 
-  if (!showScoreboard) {
+  function renderExitButton() {
+    if (!gameComplete) {
+      return (
+        <button onClick={() => setShowScoreboard(false)}>Close Scoreboard</button>
+      )
+    }
+    else {
+      return (
+        <button onClick={handleExitGame}>Exit Game</button>
+      )
+    }
+  }
+
+  const rows = createRows(players);
+  const roundCount = players.length > 0 ? Math.max(...players.map(player=>Object.keys(player.roundScores || {}).length)) : 0
+  const color = "rgba(255, 255, 255, 0.97)"
+  if (!showScoreboard && !gameComplete) {
     return;
   }
 
@@ -70,7 +88,7 @@ export default function Scoreboard({
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "rgba(255,255,255,0.97)",
+        backgroundColor: color,
         alignItems: "center",
         padding: "1rem",
         overflowY: "auto",
@@ -80,13 +98,13 @@ export default function Scoreboard({
       <Table aria-label="scoreboard table">
         <TableHead>
           <TableRow>
-            <TableCell style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)", minWidth:"10vw", width:"10vw"}}>
-              <button onClick={() => setShowScoreboard(false)}>Close Scoreboard</button>
-              </TableCell>
+            <TableCell style = {{position: "sticky", top: 0, backgroundColor: color, minWidth:"10vw", width:"10vw"}}>
+              {renderExitButton()}
+            </TableCell>
 
             {/*Player Headers Across Top */}
             {players.map((player, index) => (
-              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)"}}>
+              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: color}}>
                 <h3>{player.name}</h3>
               </TableCell>
             ))}
@@ -95,7 +113,7 @@ export default function Scoreboard({
 
         <TableBody>
           {/*One row per round*/}
-          {Array.from({length: currentRound - 1}, (_, roundIndex) => (
+          {Array.from({ length: roundCount}, (_, roundIndex) => (
             <TableRow>
               <TableCell component = "th" scope="row">
                 <h3>Round {roundIndex + 1}</h3>
@@ -103,7 +121,7 @@ export default function Scoreboard({
 
               {players.map((player, playerIndex) => (
                 <TableCell align="center">
-                  <ScoreCell score= {player.roundScores[roundIndex]}/>
+                  <ScoreCell score= {player.roundScores?.[roundIndex]}/>
                 </TableCell>
               ))}
             </TableRow>
@@ -125,28 +143,4 @@ export default function Scoreboard({
     </TableContainer>
     </div>
   );
-
-
-  //<ScoreCell score= {player.roundScores[roundIndex]}/>
-  // {rows.map((row, rowIndex) => (
-  //           <TableRow
-  //             key={`player-${rowIndex}`}
-  //             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-  //           >
-  //             {/* Render cell for PlayerInfocard */}
-  //             <TableCell component="th" scope="row">
-  //               {row.playerInfocard}
-  //             </TableCell>
-
-  //             {/* Render cells for each round so far */}
-  //             {row.roundScoreCells.map((cell, cellIndex) => (
-  //               <TableCell key={`round-cell-${cellIndex}`} align="right">
-  //                 {cell}
-  //               </TableCell>
-  //             ))}
-
-  //             {/* Render cell for total score */}
-  //             <TableCell align="right">{row.totalScoreCell}</TableCell>
-  //           </TableRow>
-  //         ))}
 }

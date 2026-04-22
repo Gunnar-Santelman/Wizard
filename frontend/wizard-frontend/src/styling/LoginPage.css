@@ -1,0 +1,125 @@
+.login-container {
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle, #0b5e2e 40%, #06381c 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    background: rgba(0,0,0,0.8);
+    border: 3px solid white;
+    border-radius: 20px;
+    padding: 40px;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,0.7);
+}
+
+.login-title {
+    font-size: 36px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.instruction {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.email-input,
+.password-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: none;
+    text-align: center;
+    outline: none;
+}
+.email-input:focus,
+.password-input:focus {
+    box-shadow: 0 0 8px gold;
+}
+
+.primary-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 12px;
+    border: none;
+    background: gold;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.primary-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px gold;
+}
+.primary-btn:disabled {
+    background: grey;
+    cursor: not-allowed;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.google-btn:hover {
+    transform: scale(1.05);
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: gold;
+    cursor: pointer;
+    font-weight: bold;
+}
+.link-btn:hover {
+    text-decoration: underline;
+}
+
+.error-text {
+    color: lightcoral;
+    white-space: pre-line;
+    margin: 10px;
+}
+
+.password-instruction {
+    font-size: 13px;
+    color: lightgrey;
+    margin: 10px;
+}
+
+.input-group p {
+    margin: 5px;
+}
+hr {
+    border: none;
+    width: 100%;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    margin: 10px;
+}

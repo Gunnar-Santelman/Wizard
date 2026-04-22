@@ -14,7 +14,7 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId }) {
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId, isMyTurn }) {
     const [isHovered, setIsHovered] = useState(false)
     const handleClick = () => {
         if (!isValidPlay || !inPlayersHand || isBidPhase) {
@@ -40,14 +40,14 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, isPl
             style={{
                 width: '120px',
                 height: '168px',
-                border: inPlayersHand && isHovered && isValidPlay && !isBidPhase ? "thick ridge gold" : "thick ridge transparent",
+                border: inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn ? "thick ridge gold" : "thick ridge transparent",
                 borderRadius: '5px',
                 transform: `
                     rotate(${rotation}deg)
                     ${isHovered && inPlayersHand ? "translateY(-30px)": ""}
-                    ${inPlayersHand && isHovered && isValidPlay && !isBidPhase ? "scale(1.1)" : "scale(1)"}
+                    ${inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn ? "scale(1.1)" : "scale(1)"}
                 `,
-                filter: inPlayersHand && isHovered && (!isValidPlay || isBidPhase) ? "contrast(50%)" : "none",
+                filter: inPlayersHand && isHovered && (!isValidPlay || isBidPhase || !isMyTurn) ? "contrast(50%)" : "none",
                 transition: "transform 0.3s ease, border 0.3s ease, filter 0.3s ease",
                 cursor:inPlayersHand && isHovered && isValidPlay && !isBidPhase ? 'pointer' : 'not-allowed'
              }}

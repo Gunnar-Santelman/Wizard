@@ -12,6 +12,7 @@ export class WizardGame {
         this.currentRound = null;
         this.deck = [];
         this.status = "waiting";
+        this.gameWinner = null;
     }
 
     joinGame(playerName, profilePicture, socketId, uid) {
@@ -31,28 +32,27 @@ export class WizardGame {
 
         this.players.push(newPlayer);
     }
+
+    finishGame() {
+        //Save stats to database
+        this.gameWinner = this.players.reduce((prev, current) => (prev.score > current.score) ? prev : current);
+        console.log(this.gameWinner);
+        this.status = "complete";
+    }
     
     removePlayer(socketId) {
         this.players = this.players.filter(
             p => p.socketId !== socketId
         );
-        if (socketId === this.host && this.players.length !== 0 && this.status === "waiting") {
-            this.host = this.players[0].socketId;
+        if (socketId === this.host?.socketId && this.players.length !== 0 && this.status === "waiting") {
+            this.host = this.players[0];
         }
     }
 
     startGame() {
         this.status = "running";
         this.maxRounds = 60 / this.players.length;
-        // test trick
         this.currentRound = new Round(1, this);
-        //this.playGame();
-    }
-
-    playGame() {
-        for (let i = 1; i <= this.maxRounds; i++) {
-            this.currentRound = new Round(i, this);
-        }
     }
 
     isEmpty() {
