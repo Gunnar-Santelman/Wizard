@@ -32,7 +32,6 @@ export default function Scoreboard({
     data.playerInfocard = (
       <PlayerInfocard
         username={player.name}
-        // TODO: set avatarUrl - database connection?
         showBids={false}
       />
     );
@@ -76,6 +75,7 @@ export default function Scoreboard({
 
   const rows = createRows(players);
   const roundCount = players.length > 0 ? Math.max(...players.map(player=>Object.keys(player.roundScores || {}).length)) : 0
+  const color = "rgba(255, 255, 255, 0.97)"
   if (!showScoreboard && !gameComplete) {
     return;
   }
@@ -88,7 +88,7 @@ export default function Scoreboard({
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "rgba(255,255,255,0.97)",
+        backgroundColor: color,
         alignItems: "center",
         padding: "1rem",
         overflowY: "auto",
@@ -98,13 +98,13 @@ export default function Scoreboard({
       <Table aria-label="scoreboard table">
         <TableHead>
           <TableRow>
-            <TableCell style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)", minWidth:"10vw", width:"10vw"}}>
+            <TableCell style = {{position: "sticky", top: 0, backgroundColor: color, minWidth:"10vw", width:"10vw"}}>
               {renderExitButton()}
             </TableCell>
 
             {/*Player Headers Across Top */}
             {players.map((player, index) => (
-              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: "rgba(255,255,255,0.95)"}}>
+              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: color}}>
                 <h3>{player.name}</h3>
               </TableCell>
             ))}
