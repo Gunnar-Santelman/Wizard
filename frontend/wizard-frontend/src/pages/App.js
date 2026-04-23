@@ -9,6 +9,7 @@ import GamePage from "./GamePage.js";
 import OnboardingPage from './OnboardingPage.js';
 import LoginPage from './LoginPage.js';
 import ProfilePage from './ProfilePage.js';
+import TutorialPage from "./TutorialPage.js";
 import NotFoundPage from './NotFoundPage.js';
 import ProtectedRoute from '../components/ProtectedRoute.jsx';
 import PublicRoute from '../components/PublicRoute.jsx';
@@ -17,18 +18,6 @@ import {auth} from "../services/firebase.js";
 import {useEffect} from "react"
 
 function App() {
-  // useEffect(() => {
-  //   console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
-  //   console.log("Firebase Auth object:", auth);
-  //   console.log("Current user:", auth.currentUser)
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("API key loaded:", process.env.REACT_APP_FIREBASE_API_KEY);
-  //   console.log("Firebase Auth object:", auth);
-  //   console.log("Current user:", auth.currentUser)
-  // }, []);
-
   return (
     <AuthProvider>
       <Routes>
@@ -44,6 +33,7 @@ function App() {
           <Route path = "/lobby/:gameId" element = {<LobbyPage />} />
           <Route path = "/game/:gameId" element = {<GamePage />} />
           <Route path = "/profile" element = {<ProfilePage />} />
+          <Route path = "/tutorial" element = {<TutorialPage />} />
         </Route>
 
         <Route path = "*" element = {<NotFoundPage />} />
