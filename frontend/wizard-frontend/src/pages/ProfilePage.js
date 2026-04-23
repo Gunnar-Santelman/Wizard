@@ -4,6 +4,7 @@ import { useAuth } from "../context/authContext";
 import { auth } from "../services/firebase";
 import { signOut, updatePassword } from "firebase/auth";
 import { uploadProfilePicture } from "../services/profilePictureService";
+import "../styling/ProfilePage.css"
 
 export default function ProfilePage() {
   const { user, userData, loading, refreshUserData } = useAuth();
@@ -16,7 +17,13 @@ export default function ProfilePage() {
 
   const navigate = useNavigate();
 
-  // 🔄 Cleanup preview URL
+  const statLabels = {
+    gamesPlayed: "Games Played",
+    gamesWon: "Wins",
+    gamesLost: "Losses",
+  };
+  const orderedStats = ["gamesPlayed", "gamesWon", "gamesLost"];
+
   useEffect(() => {
     return () => {
       if (previewURL) {
@@ -28,7 +35,6 @@ export default function ProfilePage() {
   if (loading) return <p>Loading...</p>;
   if (!userData) return <p>No user data found.</p>;
 
-  // 🔐 Change Password
   const handleChangePassword = async () => {
     try {
       if (!newPassword || newPassword.length < 6) {
@@ -50,7 +56,6 @@ export default function ProfilePage() {
     }
   };
 
-  // 🖼 Handle file selection + validation
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -76,7 +81,6 @@ export default function ProfilePage() {
     setStatus("");
   };
 
-  // 🖼 Upload Profile Picture
   const handleImageUpload = async () => {
     if (!imageFile) {
       setStatus("Select an image first.");
@@ -107,112 +111,73 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "auto" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px"
-        }}
-      >
-        <button onClick={() => navigate("/home")}>
-          Go Home
-        </button>
+    <div className="profile-container">
+      <div className="profile-card">
+        <div className="profile-header">
+          <button className = "link-btn" onClick={() => navigate("/home")}>Go Home</button>
 
-        <button onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
-      
-      <h1>{userData.username}'s Profile</h1>
+          <button className = "link-btn" onClick={handleLogout}>Logout</button>
+        </div>
 
-      <img
-        src={userData.profilePicture}
-        alt="Profile"
-        style={{
-          width: "120px",
-          height: "120px",
-          borderRadius: "50%",
-          objectFit: "cover"
-        }}
-      />
+        <h1 className="profile-title">{userData.username}'s Profile</h1>
 
-      <div style={{ marginTop: "10px" }}>
-        <input type="file" onChange={handleFileChange} />
-
-        {previewURL && (
-          <div style={{ marginTop: "10px" }}>
-            <p>Preview:</p>
-            <img
-              src={previewURL}
-              alt="preview"
-              width={80}
-              style={{ borderRadius: "50%", objectFit: "cover" }}
-            />
-          </div>
-        )}
-
-        <button onClick={handleImageUpload} disabled={uploading}>
-          {uploading ? "Uploading..." : "Upload"}
-        </button>
-      </div>
-
-      <section style={{ marginTop: "20px" }}>
-        <h2>Change Password</h2>
-        <input
-          type="password"
-          placeholder="New password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
+        <img
+          src={userData.profilePicture}
+          alt="Profile"
+          className="profile-avatar"
         />
-        <button onClick={handleChangePassword}>
-          Update Password
-        </button>
-      </section>
 
-      <section style={{ marginTop: "20px" }}>
-        <h2>Statistics</h2>
-        {userData.statistics.size === 0 ? (
-          <p>No stats yet.</p>
-        ) : (
-          <ul>
-            {[...userData.statistics.entries()].map(([key, value]) => (
-              <li key={key}>
-                {key}: {value}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        <div className="section">
+          <h3>Update Profile Picture</h3>
+          <button className="secondary-btn" onClick = {() => document.getElementById("fileInput").click()}>Choose Image</button>
+          <input id = "fileInput" type="file" className = "hidden-file-input" onChange={handleFileChange} />
 
-      <section style={{ marginTop: "20px" }}>
-        <h2>Friends</h2>
-        {userData.friends.length === 0 ? (
-          <p>No friends yet.</p>
-        ) : (
-          <ul>
-            {userData.friends.map((friend, i) => (
-              <li key={i}>{friend}</li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {previewURL && (
+            <div className="preview-section">
+              <p>Preview:</p>
+              <img
+                src={previewURL}
+                alt="preview"
+                className="avatar-preview"
+              />
+            </div>
+          )}
 
-      <section style={{ marginTop: "20px" }}>
-        <h2>Achievements</h2>
-        {userData.achievements.length === 0 ? (
-          <p>No achievements yet.</p>
-        ) : (
-          <ul>
-            {userData.achievements.map((ach, i) => (
-              <li key={i}>{ach}</li>
-            ))}
-          </ul>
-        )}
-      </section>
+          <button className = "primary-btn" onClick={handleImageUpload} disabled={uploading}>
+            {uploading ? "Uploading..." : "Upload"}
+          </button>
+        </div>
 
-      {status && <p style={{ marginTop: "20px" }}>{status}</p>}
+        <div className="section">
+          <h3>Change Password</h3>
+          <input
+            className="text-input"
+            type="password"
+            placeholder="New password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <button className = "primary-btn" onClick={handleChangePassword}>Update Password</button>
+        </div>
+
+        <div className="section">
+          <h3>Statistics</h3>
+          {userData.statistics.size === 0 ? (
+            <p className="muted-text">No stats yet.</p>
+          ) : (
+            <ul className="stats-list">
+              {orderedStats.map((key) => (
+                <li key = {key}>
+                  <span>{statLabels[key]}</span>
+                  <span>{userData.statistics.get(key) ?? 0}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {status && <p className="status-text">{status}</p>}
+      </div>
     </div>
   );
 }
