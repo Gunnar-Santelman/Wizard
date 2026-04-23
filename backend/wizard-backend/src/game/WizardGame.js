@@ -52,7 +52,7 @@ export class WizardGame {
     startGame() {
         this.status = "running";
         this.maxRounds = 60 / this.players.length;
-        this.currentRound = new Round(15, this);
+        this.currentRound = new Round(1, this);
     }
 
     isEmpty() {

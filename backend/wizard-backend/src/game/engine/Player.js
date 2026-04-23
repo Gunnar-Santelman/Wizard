@@ -28,6 +28,9 @@ export default class Player {
         this.bid = -1;
         this.tricksTaken = 0;
     }
+    getCardByIndex(index) {
+        return this.hand[index];
+    }
 
     playCard(playedCard) {
         for (let i= 0; i < this.hand.length; i++) {
