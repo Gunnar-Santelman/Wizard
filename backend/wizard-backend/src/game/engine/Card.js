@@ -6,6 +6,7 @@ export default class Card{
         this.suit=suit;
         this.value=val;
         this.isValid = false;
+        this.id = crypto.randomUUID();
     }
     
    /**

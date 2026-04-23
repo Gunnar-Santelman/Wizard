@@ -65,13 +65,13 @@ io.on("connection", (socket) => {
     socket.emit("gameState", buildGameState(game));
   });
 
-  socket.on("playCard", ({gameId, index}) => {
+  socket.on("playCard", ({gameId, cardId}) => {
     const game = GameManager.getGame(gameId);
     if (!game || !game.currentRound) {
       return;
     }
 
-    game.currentRound.playCard(socket.id, index);
+    game.currentRound.playCard(socket.id, cardId);
 
     io.to(gameId).emit("gameState", buildGameState(game));
 

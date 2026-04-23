@@ -144,7 +144,7 @@ export default class Round {
     this.#currentPlayer = players[nextIndex];
   }
 
-  playCard(socketId, cardIndex) {
+  playCard(socketId, cardId) {
     const player = this.#game.players.find((p) => p.socketId === socketId);
     if (!player) {
       return;
@@ -153,7 +153,8 @@ export default class Round {
     if (player !== this.#currentPlayer) {
       return;
     }
-
+    
+    const cardIndex = player.hand.findIndex(c => c.id === cardId);
     const card = player.hand[cardIndex];
     if (!card || !card.isValid) {
       return;

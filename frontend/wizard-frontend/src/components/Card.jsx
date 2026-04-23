@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import socket from "../socket";
 /*
 
@@ -14,15 +14,22 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId, isMyTurn }) {
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId, isMyTurn, hand = [], id = null}) {
     const [isHovered, setIsHovered] = useState(false)
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    useEffect(() => {
+        setIsPlaying(false);
+    }, [hand]);
+
     const handleClick = () => {
-        if (!isValidPlay || !inPlayersHand || isBidPhase) {
+        if (!isValidPlay || !inPlayersHand || isBidPhase || isPlaying) {
             return;
         }
+        setIsPlaying(true);
         socket.emit("playCard", {
             gameId,
-            index
+            cardId: id
         });
     };
 

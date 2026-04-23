@@ -40,7 +40,6 @@ export default class Deck{
      * Cuts the top card off the deck, returns it.
      */
     cutCard(){
-        // yes its the last element but does it matter?
         if (this.#cards.length > 0) {
             let cardToReturn = this.#cards.pop();
             return cardToReturn;

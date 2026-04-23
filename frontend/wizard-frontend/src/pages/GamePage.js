@@ -7,13 +7,11 @@ import socket from "../socket.js";
 import "../styling/GamePage.css";
 import { useAuth } from "../context/authContext.js";
 import BidSelection from "../components/BidSelection.jsx";
-import ScoreBoard from "../components/ScoreBoard.jsx"
+import ScoreBoard from "../components/ScoreBoard.jsx";
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
-import { AnimatePresence, motion } from "framer-motion";
-
+import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 
 export default function GamePage() {
-
   const { userData } = useAuth();
 
   const containerRef = useRef(null);
@@ -47,7 +45,7 @@ export default function GamePage() {
       setTricksTaken(
         game.players.find((p) => p.socketId === socket.id).tricksTaken,
       );
-      setGameComplete((game.status === "complete"));
+      setGameComplete(game.status === "complete");
     }
     socket.on("gameState", handleGameState);
 
@@ -63,11 +61,11 @@ export default function GamePage() {
     });
     socket.on("gameLeft", () => {
       navigate("/");
-    })
+    });
 
     return () => {
       socket.off("gameAbandoned");
-      socket.off("gameLeft")
+      socket.off("gameLeft");
     };
   }, [navigate]);
 
@@ -93,7 +91,7 @@ export default function GamePage() {
     if (!winner) {
       return;
     }
-    
+
     const timer = setTimeout(() => {
       setWinner(null);
     }, 4000);
@@ -138,7 +136,7 @@ export default function GamePage() {
             fontWeight: "bold",
             pointerEvents: "none",
             color: "white",
-            zIndex: "100"
+            zIndex: "100",
           }}
         >
           <PlayerInfocard
@@ -181,29 +179,24 @@ export default function GamePage() {
 
     return (
       <motion.div
-        key={index}
-        layoutId={`card-${card.value}-of-${card.suit}`}
+        key={index} 
+        layoutId={`trick-card-${card.value}-of-${card.suit}-${index}`}
         style={{
           position: "absolute",
           top: "50%",
           left: "50%",
-          zIndex: index
+          zIndex: index,
         }}
-        initial={{
-          opacity: 0,
-          y: 40,
-          scale: 0.9,
-          x: offsetX
-        }}
+        initial={{opacity: 0, y: 40, scale: 0.9, x: offsetX}}
         animate={{
           opacity: 1,
           y: 0,
           scale: 1,
-          x: offsetX
+          x: offsetX,
         }}
         transition={{
           duration: 0.3,
-          ease: "easeOut"
+          ease: "easeOut",
         }}
       >
         <Card
@@ -227,8 +220,8 @@ export default function GamePage() {
           <div className="trump-label">TRUMP</div>
           <Card
             style={{
-              transform: 'scale(0.5)',
-              transformOrigin: 'center'
+              transform: "scale(0.5)",
+              transformOrigin: "center",
             }}
             key={"trump"}
             suit={trump?.suit}
@@ -237,7 +230,7 @@ export default function GamePage() {
             isPlayed={true}
           />
         </motion.div>
-        );
+      );
     }
     return null;
   }
@@ -249,24 +242,30 @@ export default function GamePage() {
           className={"scoreboard-wrapper"}
           initial={{ y: 200, scale: 0.9, opacity: 0 }}
           animate={{ y: 0, scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 140, damping: 10, duration: 0.5 }}
-          >
-            <h1 className="turn-notification">YOUR TURN</h1>
-          </motion.div>
-    );}
+          transition={{
+            type: "spring",
+            stiffness: 140,
+            damping: 10,
+            duration: 0.5,
+          }}
+        >
+          <h1 className="turn-notification">YOUR TURN</h1>
+        </motion.div>
+      );
+    }
     return null;
   }
 
   function renderBidPopup() {
     if (isMyTurn && bid === -1) {
       return (
-      <motion.div
+        <motion.div
           className={"scoreboard-wrapper"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          >
-            <BidSelection maxBid={roundNumber} gameId={gameId} />
+        >
+          <BidSelection maxBid={roundNumber} gameId={gameId} />
         </motion.div>
       );
     }
@@ -283,13 +282,13 @@ export default function GamePage() {
         className="winner-overlay"
         initial={{ y: -300, scale: 0.8, opacity: 0 }}
         animate={{ y: 0, scale: 1, opacity: 1 }}
-        >
-          <div className="winner-popup">{winner?.name} won the trick!!</div>
+      >
+        <div className="winner-popup">{winner?.name} won the trick!!</div>
       </motion.div>
     );
   }
 
-  function renderScoreBoard(){
+  function renderScoreBoard() {
     return (
       <motion.div
         className={"scoreboard-wrapper"}
@@ -298,39 +297,42 @@ export default function GamePage() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <ScoreBoard gameId={gameId} players={players} currentRound={roundNumber} gameComplete={gameComplete}/>
+        <ScoreBoard
+          gameId={gameId}
+          players={players}
+          currentRound={roundNumber}
+          gameComplete={gameComplete}
+        />
       </motion.div>
-    )
+    );
   }
 
   function renderFinalWinner() {
-  if (!gameComplete) {
-    return null;
-  }
+    if (!gameComplete) {
+      return null;
+    }
 
-  const overallWinner = players.reduce((prev, current) =>
-    prev.score > current.score ? prev : current
-  );
+    const overallWinner = players.reduce((prev, current) =>
+      prev.score > current.score ? prev : current,
+    );
 
-  return (
-    <dialog className="modal" open={showModal}>
-      <motion.div
-        initial={{ y: -300, scale: 0.8, opacity: 0 }}
-        animate={{ y: 0, scale: 1, opacity: 1 }}
+    return (
+      <dialog className="modal" open={showModal}>
+        <motion.div
+          initial={{ y: -300, scale: 0.8, opacity: 0 }}
+          animate={{ y: 0, scale: 1, opacity: 1 }}
         >
           <p className="modalText">
-          {overallWinner.name} Won the Game With A Score of {overallWinner.score}!
-        </p>
-      </motion.div>
-      <button
-        className="closeModal"
-        onClick={() => setShowModal(false)}
-      >
-        Close
-      </button>
-    </dialog>
-  );
-}
+            {overallWinner.name} Won the Game With A Score of{" "}
+            {overallWinner.score}!
+          </p>
+        </motion.div>
+        <button className="closeModal" onClick={() => setShowModal(false)}>
+          Close
+        </button>
+      </dialog>
+    );
+  }
 
   async function handleLeave() {
     socket.emit("abandonGame", { gameId });
@@ -343,67 +345,70 @@ export default function GamePage() {
 
       {opponents && opponents.map(renderOpponent)}
 
-      <div className="trick-area">
-        {trick?.map((card, index) => renderTrickCard(card, index))}
-      </div>
+      <LayoutGroup>
+        <div className="trick-area">
+          {trick?.map((card, index) => renderTrickCard(card, index))}
+        </div>
 
-      <div>{renderBidPopup()}</div>
-      
-      <div
-        className="trump-card"
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)'
+        <div>{renderBidPopup()}</div>
+
+        <div
+          className="trump-card"
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
           }}
-      >
-        {renderTrumpCard()}
-      </div>
-      
-      <div className="player-area">
-        {renderTurnNotification()}
-        <div className = "infocard" style={{fontWeight: "bold"}}>
-          <PlayerInfocard
-            username={userData.username}
-            avatarUrl={userData.profilePicture}
-            bidsMade={bid}
-            tricksTaken={tricksTaken}
-          />
+        >
+          {renderTrumpCard()}
         </div>
-        <div className="player-hand">
-          {hand.map((card, index) => {
-            const middle = hand.length / 2;
-            const rotation = (index - middle) * 4;
-            return (
+
+        <div className="player-area">
+          {renderTurnNotification()}
+          <div className="infocard" style={{ fontWeight: "bold" }}>
+            <PlayerInfocard
+              username={userData.username}
+              avatarUrl={userData.profilePicture}
+              bidsMade={bid}
+              tricksTaken={tricksTaken}
+            />
+          </div>
+          <div className="player-hand">
             <AnimatePresence>
-              <motion.div
-                key={index}
-                layoutId={`card-${card.value}-of-${card.suit}`}
-                exit={{ opacity: 0, y: -20 }}
-                style={{
-                  display: 'inline-block',
-                  marginLeft: index === 0 ? '0' : '-100px'
-                  }}
+              {hand.map((card, index) => {
+                const middle = hand.length / 2;
+                const rotation = (index - middle) * 4;
+                return (
+                  <motion.div
+                    key={`${card.id}`}
+                    layoutId={`card-${card.id}`}
+                    exit={{ opacity: 0, y: -20 }}
+                    style={{
+                      display: "inline-block",
+                      marginLeft: index === 0 ? "0" : "-100px",
+                    }}
                   >
-                <Card
-                  key={index}
-                  suit={card.suit}
-                  value={card.value}
-                  inPlayersHand={true}
-                  isValidPlay={card.isValid}
-                  isBidPhase={bid === -1}
-                  index={index}
-                  rotation={rotation}
-                  gameId={gameId}
-                  isMyTurn={isMyTurn}
-                />
-              </motion.div>
+                    <Card
+                      suit={card.suit}
+                      value={card.value}
+                      inPlayersHand={true}
+                      isValidPlay={card.isValid}
+                      isBidPhase={bid === -1}
+                      index={index}
+                      rotation={rotation}
+                      gameId={gameId}
+                      isMyTurn={isMyTurn}
+                      hand={hand}
+                      id={card.id}
+                    />
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
-            );
-          })}
+          </div>
         </div>
-      </div>
+      </LayoutGroup>
       {renderWinnerPopup()}
       {renderScoreBoard()}
       {renderFinalWinner()}
