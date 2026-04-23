@@ -127,17 +127,8 @@ export default function GamePage() {
     return (
       <React.Fragment key={player.socketId}>
         <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: `translate(-50%, 10%) translate(${cardsPos.x}px, ${cardsPos.y}px)`,
-            textAlign: "center",
-            fontWeight: "bold",
-            pointerEvents: "none",
-            color: "white",
-            zIndex: "100",
-          }}
+          className = "opponent-infocard"
+          style={{transform: `translate(-50%, 50%) translate(${cardsPos.x}px, ${cardsPos.y}px)`}}
         >
           <PlayerInfocard
             username={player.name}
@@ -148,20 +139,11 @@ export default function GamePage() {
         </div>
         <div
           className="opponent-hand"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: `translate(-50%, 10%) translate(${cardsPos.x}px, ${cardsPos.y}px)`,
-            transformOrigin: "center center",
-          }}
+          style={{transform: `translate(-50%, 10%) translate(${cardsPos.x}px, ${cardsPos.y}px)`}}
         >
           <div
-            style={{
-              display: "flex",
-              gap: 0,
-              transform: `rotate(${rotation}deg)`,
-            }}
+            className="rotation-handler"
+            style={{transform: `rotate(${rotation}deg)`}}
           >
             {Array.from({ length: player.cardCount }).map((_, i) => (
               <Card key={i} inPlayersHand={false} />
@@ -352,15 +334,7 @@ export default function GamePage() {
 
         <div>{renderBidPopup()}</div>
 
-        <div
-          className="trump-card"
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
-        >
+        <div className="trump-card">
           {renderTrumpCard()}
         </div>
 
