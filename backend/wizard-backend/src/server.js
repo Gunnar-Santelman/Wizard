@@ -102,7 +102,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("startGame", ({ gameId }) => {
+  socket.on("startGame", async ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
       return;
@@ -110,31 +110,31 @@ io.on("connection", (socket) => {
 
     game.startGame();
 
-    GameService.startGameDB(game);
+    await GameService.startGameDB(game);
 
     io.to(gameId).emit("gameStarted", { gameId });
   });
 
-  socket.on("abandonGame", ({ gameId }) => {
+  socket.on("abandonGame", async ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
       return;
     }
     
-    GameService.abandonGameDB(game);
+    await GameService.abandonGameDB(game);
 
     io.to(game.id).emit("gameAbandoned");
     GameManager.deleteGame(game.id);
     return;
   });
 
-  socket.on("leaveGame", ({ gameId }) => {
+  socket.on("leaveGame", async ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
       return;
     }
 
-    GameService.finishGameDB(game);
+    await GameService.finishGameDB(game);
     
     socket.emit("gameLeft");
     game.removePlayer(socket.id);
