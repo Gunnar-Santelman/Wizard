@@ -6,7 +6,7 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
-    const data = await syncUser(user);
+    await syncUser(user);
 
     return { firebaseUser: user };
 };
@@ -15,7 +15,7 @@ export const signUpWithEmail = async (email, password) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user;
 
-    const data = await syncUser(user);
+    await syncUser(user);
 
     return { firebaseUser: user };
 };
@@ -24,7 +24,7 @@ export const signInWithEmail = async (email, password) => {
     const result = await signInWithEmailAndPassword(auth, email, password);
     const user = result.user;
 
-    const data = await syncUser(user);
+    await syncUser(user);
     return { firebaseUser: user };
 };
 

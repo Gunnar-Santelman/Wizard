@@ -18,13 +18,6 @@ export default function LobbyPage() {
   function handleStartButton() {
     socket.emit("startGame", { gameId });
   }
-  function listPlayer(player) {
-    if (player.socketId === host?.socketId) {
-      return <li key={player.socketId}>Host: {player.name}</li>;
-    } else {
-      return <li key={player.socketId}>{player.name}</li>;
-    }
-  }
 
   useEffect(() => {
     socket.emit("requestGameState", { gameId });

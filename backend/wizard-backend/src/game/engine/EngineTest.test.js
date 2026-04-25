@@ -41,8 +41,9 @@ import WizardGame from "../WizardGame";
 function playFullTrick(round, game) {
     for (let i = 0; i < game.players.length; i++) {
         const player = round.currentPlayer;
-        player.hand[0].isValid = true;
-        round.playCard(player.socketId, 0);
+        card = player.getCardByIndex(0);
+        card.isValid = true;
+        round.playCard(player.socketId, card.id);
     }
 }
 
@@ -329,7 +330,7 @@ describe("Round", () => {
         const round = new Round(1, game);
         const wrongPlayer = game.players[0]; // currentPlayer is players[1]
         const card = wrongPlayer.hand[0];
-        round.playCard(wrongPlayer.socketId, 0);
+        round.playCard(wrongPlayer.socketId, card.id);
         expect(round.currentTrick).toBeNull(); // trick never started
     });
 
@@ -338,8 +339,9 @@ describe("Round", () => {
         const round = new Round(1, game);
         const first = round.currentPlayer;
         const cardIndex = 0;
-        first.hand[0].isValid = true;
-        round.playCard(first.socketId, cardIndex);
+        const card = first.getCardByIndex(cardIndex);
+        card.isValid = true;
+        round.playCard(first.socketId, card.id);
         expect(round.currentPlayer).not.toBe(first);
     });
 
@@ -349,8 +351,9 @@ describe("Round", () => {
         // mark all cards valid and play one per player in order
         for (let i = 0; i < game.players.length; i++) {
             const player = round.currentPlayer;
-            player.hand[0].isValid = true;
-            round.playCard(player.socketId, 0);
+            const card = player.getCardByIndex(0);
+            card.isValid = true;
+            round.playCard(player.socketId, card.id);
         }
         expect(round.trickNumber).toBe(1);
     });

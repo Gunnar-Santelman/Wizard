@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signOut, signout } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/authContext";
 import { getToken } from "../services/authService";
@@ -63,7 +63,8 @@ export default function Home() {
   return (
     <div className="home-container">
       <div className="home-card">
-        <button className="icon-btn" onClick={() => navigate("/profile")}>Profile</button>
+        <button className="quarternary-btn" id = "tutorial" onClick={() => navigate("/tutorial")}>Tutorial</button>
+        <button className="quarternary-btn" id = "profile" onClick={() => navigate("/profile")}>Profile</button>
         <h1 className="title">Wizard</h1>
 
         <button className = "primary-btn" onClick={handleCreate}>Create Game</button>
