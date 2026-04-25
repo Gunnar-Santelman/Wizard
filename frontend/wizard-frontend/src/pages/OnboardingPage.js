@@ -176,7 +176,6 @@ function OnboardingPage() {
                 src={previewURL}
                 className="avatar"
                 alt="preview"
-                style={{ display: "block"}}
               />
 
                 <button

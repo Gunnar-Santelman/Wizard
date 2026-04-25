@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import socket from "../socket";
+import "../styling/Card.css"
 /*
 
 Possible Card States:
@@ -14,53 +15,74 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId, isMyTurn, hand = [], id = null, identifier = null}) {
-    const [isHovered, setIsHovered] = useState(false)
-    const [isPlaying, setIsPlaying] = useState(false);
+export default function Card({
+  suit = "spades",
+  value = 14,
+  inPlayersHand = true,
+  isPlayed = false,
+  isValidPlay = false,
+  isBidPhase = false,
+  index,
+  rotation,
+  gameId,
+  isMyTurn,
+  hand = [],
+  id = null,
+  identifier = null,
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-    useEffect(() => {
-        setIsPlaying(false);
-    }, [hand]);
+  useEffect(() => {
+    setIsPlaying(false);
+  }, [hand]);
 
-    const handleClick = () => {
-        if (!isValidPlay || !inPlayersHand || isBidPhase || isPlaying) {
-            return;
-        }
-        setIsPlaying(true);
-        socket.emit("playCard", {
-            gameId,
-            cardId: id
-        });
-    };
-    
-    return (
-        <img
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={handleClick}
+  const handleClick = () => {
+    if (!isValidPlay || !inPlayersHand || isBidPhase || isPlaying) {
+      return;
+    }
+    setIsPlaying(true);
+    socket.emit("playCard", {
+      gameId,
+      cardId: id,
+    });
+  };
 
-            // Shows either front or back of card, if it's in the player's hand or not
-            
-            src={inPlayersHand || isPlayed ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
+  return (
+    <img
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+      // Shows either front or back of card, if it's in the player's hand or not
 
-            alt={value + " of " + suit}
-            className="card"
-            style={{
-                width: '120px',
-                height: '168px',
-                border: inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn ? "thick ridge gold" : "thick ridge transparent",
-                borderRadius: '5px',
-                transform: `
+      src={
+        inPlayersHand || isPlayed
+          ? `/cards/${value}_of_${suit}.png`
+          : "https://clipart-library.com/images/8cxrbGE6i.jpg"
+      }
+      alt={value + " of " + suit}
+      className="card"
+      style={{
+        border:
+          inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn
+            ? "thick ridge gold"
+            : "thick ridge transparent",
+        transform: `
                     rotate(${rotation}deg)
-                    ${isHovered && inPlayersHand ? "translateY(-30px)": ""}
+                    ${isHovered && inPlayersHand ? "translateY(-30px)" : ""}
                     ${inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn ? "scale(1.1)" : "scale(1)"}
                 `,
-                filter: inPlayersHand && isHovered && (!isValidPlay || isBidPhase || !isMyTurn) ? "contrast(50%)" : "none",
-                transition: "transform 0.3s ease, border 0.3s ease, filter 0.3s ease",
-                cursor:inPlayersHand && isHovered && isValidPlay && !isBidPhase ? 'pointer' : 'not-allowed'
-             }}
-           
-        />
-    );
+        filter:
+          inPlayersHand &&
+          isHovered &&
+          (!isValidPlay || isBidPhase || !isMyTurn)
+            ? "contrast(50%)"
+            : "none",
+        cursor:
+          inPlayersHand && isHovered && isValidPlay && !isBidPhase
+            ? "pointer"
+            : "not-allowed",
+      }}
+    />
+  );
 }
-

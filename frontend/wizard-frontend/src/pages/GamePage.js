@@ -122,7 +122,10 @@ export default function GamePage() {
       <React.Fragment key={player.socketId}>
         <div
           className = "opponent-infocard"
-          style={{transform: `translate(-50%, 50%) translate(${cardsPos.x}px, ${cardsPos.y}px)`}}
+          style={{
+            "--x": `${cardsPos.x}px`,
+            "--y": `${cardsPos.y}px`
+          }}
         >
           <PlayerInfocard
             username={player.name}
@@ -133,11 +136,16 @@ export default function GamePage() {
         </div>
         <div
           className="opponent-hand"
-          style={{transform: `translate(-50%, 10%) translate(${cardsPos.x}px, ${cardsPos.y}px)`}}
+          style={{
+            "--x": `${cardsPos.x}px`,
+            "--y": `${cardsPos.y}px`
+          }}
         >
           <div
             className="rotation-handler"
-            style={{transform: `rotate(${rotation}deg)`}}
+            style={{
+              "--rotation": `${rotation}deg`
+            }}
           >
             {Array.from({ length: player.cardCount }).map((_, i) => (
               <Card key={i} inPlayersHand={false} />
@@ -156,13 +164,11 @@ export default function GamePage() {
 
     return (
       <motion.div
-        key={layoutKey} 
-        layoutId={layoutKey}
+        key={card.id} 
+        layoutId={card.id}
+        className="trick-animation"
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          zIndex: index,
+          zIndex: index
         }}
         initial={{opacity: 0, y: 40, scale: 0.9, x: offsetX}}
         animate={{
@@ -197,10 +203,7 @@ export default function GamePage() {
         >
           <div className="trump-label">TRUMP</div>
           <Card
-            style={{
-              transform: "scale(0.5)",
-              transformOrigin: "center",
-            }}
+            className="trump-card-inner"
             key={"trump"}
             suit={trump?.suit}
             value={trump?.value}
@@ -336,7 +339,7 @@ export default function GamePage() {
 
         <div className="player-area">
           {renderTurnNotification()}
-          <div className="infocard" style={{ fontWeight: "bold" }}>
+          <div className="infocard">
             <PlayerInfocard
               username={userData.username}
               avatarUrl={userData.profilePicture}
@@ -352,11 +355,10 @@ export default function GamePage() {
                 const layoutKey = `card-${card.value}-of-${card.suit}-${card.identifier}`
                 return (
                   <motion.div
-                    key={layoutKey}
-                    layoutId={layoutKey}
+                    key={card.id}
+                    layoutId={card.id}
                     exit={{ opacity: 0, y: -20 }}
-                    className="hand-animation"
-                    style={{marginLeft: index === 0 ? "0" : "-100px",}}
+                    className={`hand-animation ${index === 0 ? "first-card" : ""}`}
                   >
                     <Card
                       suit={card.suit}

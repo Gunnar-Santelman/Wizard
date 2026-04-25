@@ -1,6 +1,6 @@
 import ScoreCell from "./ScoreCell.jsx";
 import socket from "../socket.js";
-
+import "../styling/ScoreBoard.css"
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -43,36 +43,23 @@ export default function Scoreboard({
 
 
   const roundCount = players.length > 0 ? Math.max(...players.map(player=>Object.keys(player.roundScores || {}).length)) : 0
-  const color = "rgba(255, 255, 255, 0.97)"
   if (!showScoreboard && !gameComplete) {
     return;
   }
 
   return (
     <div>
-    <TableContainer component={Paper}
-      style={{ position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: color,
-        alignItems: "center",
-        padding: "1rem",
-        overflowY: "auto",
-        overflowX: "auto",
-        display: "block",
-        zIndex: "1000"}}>
+    <TableContainer component={Paper} className="score-table">
       <Table aria-label="scoreboard table">
         <TableHead>
           <TableRow>
-            <TableCell style = {{position: "sticky", top: 0, backgroundColor: color, minWidth:"10vw", width:"10vw"}}>
+            <TableCell className = "exit-cell">
               {renderExitButton()}
             </TableCell>
 
             {/*Player Headers Across Top */}
             {players.map((player, index) => (
-              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: color}}>
+              <TableCell className = "player-name" align = "center">
                 <h3>{player.name}</h3>
               </TableCell>
             ))}
@@ -101,7 +88,7 @@ export default function Scoreboard({
               <h3>Total</h3>
             </TableCell>
               {players.map((player, index) => (
-                <TableCell align = "center" style = {{minWidth:"20vw", width:"20vw"}}>
+                <TableCell className = "total-score" align = "center">
                   <ScoreCell score={player.score}/>
                 </TableCell>
               ))}
