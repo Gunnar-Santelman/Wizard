@@ -110,7 +110,7 @@ io.on("connection", (socket) => {
 
     game.startGame();
 
-    await GameService.startGameDB(game);
+    GameService.startGameDB(game);
 
     io.to(gameId).emit("gameStarted", { gameId });
   });
@@ -120,8 +120,6 @@ io.on("connection", (socket) => {
     if (!game) {
       return;
     }
-    
-    await GameService.abandonGameDB(game);
 
     io.to(game.id).emit("gameAbandoned");
     GameManager.deleteGame(game.id);
@@ -134,8 +132,6 @@ io.on("connection", (socket) => {
       return;
     }
 
-    await GameService.finishGameDB(game);
-    
     socket.emit("gameLeft");
     game.removePlayer(socket.id);
     if (game.isEmpty()) {
