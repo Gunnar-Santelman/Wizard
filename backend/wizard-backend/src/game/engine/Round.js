@@ -165,7 +165,7 @@ export default class Round {
     if (!this.currentTrick) {
       this.currentTrick = new Trick(this.trump);
     }
-    if (!this.currentTrick.ledCard && card.value !== 1 && card.value !== 15) {
+    if (!this.currentTrick.ledCard && card.value !== 1) {
       this.currentTrick.setLed(card);
     }
 
