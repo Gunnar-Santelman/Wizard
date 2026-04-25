@@ -1,6 +1,6 @@
 import Game from '../models/GameSchema.js';
 import GameManager from '../game/GameManager.js';
-import UserService from './UserService.js';
+import { updateGamesLost, updateGamesPlayed, updateGamesWon } from './UserService.js';
 
 export const createGameDB = async () => {
     const newGame = new Game();
