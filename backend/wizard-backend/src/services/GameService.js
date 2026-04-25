@@ -28,13 +28,13 @@ export const finishGameDB = async (game) => {
     const winnerUid = game.gameWinner.uid;
     const playerUids = game.players.map(p => p.uid);
 
-    await UserService.updateGamesWon(winnerUid);
-    await UserService.updateGamesPlayed(playerUids);
+    await updateGamesWon(winnerUid);
+    await updateGamesPlayed(playerUids);
 
     const losers = playerUids.filter(uid => uid !== winnerUid);
 
     if (losers.length > 0) {
-        await UserService.updateGamesLost(losers);
+        await updateGamesLost(losers);
     };
 
     return await Game.findByIdAndUpdate(game.dbid, {
