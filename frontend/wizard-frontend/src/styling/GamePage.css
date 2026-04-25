@@ -152,3 +152,7 @@
   padding: 2% 4%;
   border-radius: 10px;
 }
+
+.hand-animation {
+  display: inline-block;
+}

@@ -115,12 +115,6 @@ export default function GamePage() {
       radii.rx,
       radii.ry,
     );
-    const offset = 220;
-    const perpAngle = cardsPos.angle + Math.PI / 2;
-    const namePos = {
-      x: cardsPos.x + Math.cos(perpAngle) * offset,
-      y: cardsPos.y + Math.sin(perpAngle) * offset,
-    };
 
     const rotation = (cardsPos.angle * 180) / Math.PI + 90;
 
@@ -361,10 +355,8 @@ export default function GamePage() {
                     key={layoutKey}
                     layoutId={layoutKey}
                     exit={{ opacity: 0, y: -20 }}
-                    style={{
-                      display: "inline-block",
-                      marginLeft: index === 0 ? "0" : "-100px",
-                    }}
+                    className="hand-animation"
+                    style={{marginLeft: index === 0 ? "0" : "-100px",}}
                   >
                     <Card
                       suit={card.suit}

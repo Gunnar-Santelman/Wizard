@@ -18,7 +18,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   const statLabels = {
-    gamesPlayed: "Games Played",
+    gamesPlayed: "Games Completed",
     gamesWon: "Wins",
     gamesLost: "Losses",
   };

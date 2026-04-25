@@ -1,7 +1,4 @@
-import logo from '../logo.svg';
 import '../styling/App.css';
-
-
 import {Navigate, Routes, Route} from "react-router-dom";
 import Home from "./Home.js";
 import LobbyPage from "./LobbyPage.js";
@@ -14,8 +11,6 @@ import NotFoundPage from './NotFoundPage.js';
 import ProtectedRoute from '../components/ProtectedRoute.jsx';
 import PublicRoute from '../components/PublicRoute.jsx';
 import { AuthProvider } from "../context/authContext.js";
-import {auth} from "../services/firebase.js";
-import {useEffect} from "react"
 
 function App() {
   return (

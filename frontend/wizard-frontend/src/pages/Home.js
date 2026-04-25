@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signOut, signout } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/authContext";
 import { getToken } from "../services/authService";

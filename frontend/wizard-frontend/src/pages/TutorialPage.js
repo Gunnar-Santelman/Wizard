@@ -1,53 +1,34 @@
 import "../styling/TutorialPage.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function TutorialPage() {
   const [pageNumber, setPageNumber] = useState(1);
   const navigate = useNavigate();
 
-  function handlePrevious() {
-    if (pageNumber > 1) {
-      setPageNumber(pageNumber - 1);
-    }
-  }
-  function handleNext() {
-    if (pageNumber < 8) {
-      setPageNumber(pageNumber + 1);
-    }
-  }
-
   function displayHeader() {
     switch (pageNumber) {
       case 1:
         return <h1 className="header">Object Of The Game</h1>;
-        break;
       case 2:
         return <h1 className="header">The Deal</h1>;
-        break;
       case 3:
         return <h1 className="header">Bidding</h1>;
-        break;
       case 4:
         return <h1 className="header">The Play</h1>;
-        break;
       case 5:
         return <h1 className="header">Trick Winning</h1>;
-        break;
       case 6:
         return <h1 className="header">Leading Wizards or Jesters</h1>;
-        break;
       case 7:
         return <h1 className="header">Scoring</h1>;
-        break;
-      case 8:
+      default:
         return <h1 className="header">Example Scoring</h1>;
-        break;
     }
   }
   function displayImage() {
     return (
-      <img className="image" src={`/tutorial-images/Page_${pageNumber}.png`} />
+      <img className="image" src={`/tutorial-images/Page_${pageNumber}.png`} alt = {`Tutorial for Page ${pageNumber}`}/>
     );
   }
   function displayBody() {
@@ -60,7 +41,6 @@ export default function TutorialPage() {
             the person with the most points wins the game.
           </p>
         );
-        break;
       case 2:
         return (
           <p className="body">
@@ -74,7 +54,6 @@ export default function TutorialPage() {
             is no trump.
           </p>
         );
-        break;
       case 3:
         return (
           <p className="body">
@@ -84,7 +63,6 @@ export default function TutorialPage() {
             equal the total number of tricks available.
           </p>
         );
-        break;
       case 4:
         return (
           <p className="body">
@@ -96,7 +74,6 @@ export default function TutorialPage() {
             the suit led.
           </p>
         );
-        break;
       case 5:
         return [
           <p className="body">A trick is won:</p>,
@@ -109,7 +86,6 @@ export default function TutorialPage() {
           </p>,
           <p className="body">The winner of the trick will lead next.</p>,
         ];
-        break;
       case 6:
         return (
           <p className="body">
@@ -121,7 +97,6 @@ export default function TutorialPage() {
             trick.
           </p>
         );
-        break;
       case 7:
         return (
           <p className="body">
@@ -133,8 +108,7 @@ export default function TutorialPage() {
             for each trick you win over or under your bid.
           </p>
         );
-        break;
-      case 8:
+      default:
         return (
           <p className="body">
             If Paul calls for 0 tricks, and did not take any, he will add 20
@@ -143,7 +117,6 @@ export default function TutorialPage() {
             got her 2, she will add 40 points to her total score.
           </p>
         );
-        break;
     }
   }
 
