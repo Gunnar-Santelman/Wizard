@@ -14,7 +14,7 @@ Possible Card States:
 
 */
 
-export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId, isMyTurn, hand = [], id = null}) {
+export default function Card({ suit="spades", value=14, inPlayersHand=true, isPlayed = false, isValidPlay = false, isBidPhase=false, index, rotation, gameId, isMyTurn, hand = [], id = null, identifier = null}) {
     const [isHovered, setIsHovered] = useState(false)
     const [isPlaying, setIsPlaying] = useState(false);
 
@@ -32,7 +32,7 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, isPl
             cardId: id
         });
     };
-
+    
     return (
         <img
             onMouseEnter={() => setIsHovered(true)}
@@ -40,6 +40,7 @@ export default function Card({ suit="spades", value=14, inPlayersHand=true, isPl
             onClick={handleClick}
 
             // Shows either front or back of card, if it's in the player's hand or not
+            
             src={inPlayersHand || isPlayed ? `/cards/${value}_of_${suit}.png` : "https://clipart-library.com/images/8cxrbGE6i.jpg"}
 
             alt={value + " of " + suit}

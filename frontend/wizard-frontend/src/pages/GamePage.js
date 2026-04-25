@@ -158,11 +158,12 @@ export default function GamePage() {
     const total = trick.length;
     const spacing = 60;
     const offsetX = (index - (total - 1) / 2) * spacing;
+    const layoutKey = `card-${card.value}-of-${card.suit}-${card.identifier}`
 
     return (
       <motion.div
-        key={index} 
-        layoutId={`trick-card-${card.value}-of-${card.suit}-${index}`}
+        key={layoutKey} 
+        layoutId={layoutKey}
         style={{
           position: "absolute",
           top: "50%",
@@ -186,6 +187,7 @@ export default function GamePage() {
           value={card.value}
           inPlayersHand={false}
           isPlayed={true}
+          identifier={card.identifier}
         />
       </motion.div>
     );
@@ -353,10 +355,11 @@ export default function GamePage() {
               {hand.map((card, index) => {
                 const middle = hand.length / 2;
                 const rotation = (index - middle) * 4;
+                const layoutKey = `card-${card.value}-of-${card.suit}-${card.identifier}`
                 return (
                   <motion.div
-                    key={`${card.id}`}
-                    layoutId={`card-${card.id}`}
+                    key={layoutKey}
+                    layoutId={layoutKey}
                     exit={{ opacity: 0, y: -20 }}
                     style={{
                       display: "inline-block",
@@ -375,6 +378,7 @@ export default function GamePage() {
                       isMyTurn={isMyTurn}
                       hand={hand}
                       id={card.id}
+                      identifier={card.identifier}
                     />
                   </motion.div>
                 );

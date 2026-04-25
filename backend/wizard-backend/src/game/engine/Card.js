@@ -2,10 +2,11 @@ import SUIT from "./Suit.js";
 export default class Card{
     trump=false;
     sprite=null;
-    constructor(suit,val){
+    constructor(suit,val, identifier = null){
         this.suit=suit;
         this.value=val;
         this.isValid = false;
+        this.identifier = identifier;
         this.id = crypto.randomUUID();
     }
     
