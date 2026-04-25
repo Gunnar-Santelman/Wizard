@@ -1,5 +1,6 @@
 import Game from '../models/GameSchema.js';
 import GameManager from '../game/GameManager.js';
+import UserService from './UserService.js';
 
 export const createGameDB = async () => {
     const newGame = new Game();
@@ -16,14 +17,33 @@ export const startGameDB = async (game) => {
         host: game.host.uid
     });
 };
-/*
-export const endGameDB = async (game) => {
+
+export const abandonGameDB = async (game) => {
+    return await Game.findByIdAndUpdate(game.dbid, {
+        status: "abandoned",
+    });
+};
+
+export const finishGameDB = async (game) => {
+    const winnerUid = game.gameWinner.uid;
+    const playerUids = game.players.map(p => p.uid);
+
+    await UserService.updateGamesWon(winnerUid);
+    await UserService.updateGamesPlayed(playerUids);
+
+    const losers = playerUids.filter(uid => uid !== winnerUid);
+
+    if (losers.length > 0) {
+        await UserService.updateGamesLost(losers);
+    };
+
     return await Game.findByIdAndUpdate(game.dbid, {
         status: "finished",
-        winner: game.winner
+        winner: [game.gameWinner.uid],
+        finishedAt: new Date()
     });
-}
-*/
+};
+
 export const updateGameDB = async (gameId, updateData) => {
     const updatedGame = await Game.findByIdAndUpdate(
         gameId,
