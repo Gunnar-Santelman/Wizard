@@ -16,14 +16,21 @@ export const startGameDB = async (game) => {
         host: game.host.uid
     });
 };
-/*
-export const endGameDB = async (game) => {
+
+export const abandonGameDB = async (game) => {
+    return await Game.findByIdAndUpdate(game.dbid, {
+        status: "abandoned",
+    });
+};
+
+export const finishGameDB = async (game) => {
     return await Game.findByIdAndUpdate(game.dbid, {
         status: "finished",
-        winner: game.winner
+        winner: [game.gameWinner.uid],
+        finishedAt: new Date()
     });
-}
-*/
+};
+
 export const updateGameDB = async (gameId, updateData) => {
     const updatedGame = await Game.findByIdAndUpdate(
         gameId,
