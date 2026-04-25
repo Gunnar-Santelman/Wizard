@@ -173,7 +173,7 @@ export default function GamePage() {
         initial={{opacity: 0, y: 40, scale: 0.9, x: offsetX}}
         animate={{
           opacity: 1,
-          y: 0,
+          y: "-50%",
           scale: 1,
           x: offsetX,
         }}
