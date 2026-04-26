@@ -9,6 +9,8 @@ import { validateEmail, validatePassword } from "../utils/validation";
 import { getAuthErrorMessage } from "../utils/authErrors";
 import "../styling/LoginPage.css";
 
+// creates initial sign in/up page which the user starts at
+// **will move instantly to homepage if browser cached sign in information**
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +20,7 @@ function LoginPage({ onLogin }) {
 
   const navigate = useNavigate();
 
+  // validates that the email and password enter meet the standards
   const validateInputs = () => {
     const errors = [];
 
@@ -30,6 +33,7 @@ function LoginPage({ onLogin }) {
     return errors.length ? errors.join("\n") : null;
   };
 
+  // authenticates the user actions
   const runAuthAction = async (actionName, authFunction) => {
     try {
       setLoadingAction(actionName);
@@ -46,10 +50,12 @@ function LoginPage({ onLogin }) {
     }
   };
 
+  // handles when the user clicks to sign in with Google
   const handleGoogle = async () => {
     runAuthAction("google", signInWithGoogle);
   };
 
+  // runs the email authentication
   const handleEmailAuth = async () => {
     const validationError = validateInputs();
     if (validationError) {
@@ -64,6 +70,7 @@ function LoginPage({ onLogin }) {
     }
   };
 
+  // displays the sign in page, or if the user selects sign up, the small change to the sign up page
   return (
     <div className="login-container">
       <div className="login-card">
@@ -124,6 +131,7 @@ function LoginPage({ onLogin }) {
               : "Already have an account?"}
 
             <button
+              // button that links the sign in to the sign up page
               className="link-btn"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             >

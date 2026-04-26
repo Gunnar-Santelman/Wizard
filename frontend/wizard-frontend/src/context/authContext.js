@@ -5,12 +5,14 @@ import { getAllUserInfo } from "../services/userService";
 
 const AuthContext = createContext();
 
+// sets up the various authorizations for user data
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(undefined);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // sets default user data
   const defaults = {
     username: "",
     statistics: new Map(),
@@ -22,6 +24,8 @@ export function AuthProvider({ children }) {
     updatedAt: null,
     completedOnboarding: false
   };
+
+  // takes in the data and updates the user data with the proper syntax
   const normalizeUserData = (data) => {
     return Object.fromEntries(
       Object.entries(defaults).map(([key, defaultValue]) => {
@@ -116,6 +120,7 @@ export function AuthProvider({ children }) {
 
   }, []);
 
+  // returns the user along with their data and the functions to refresh/update the data
   return (
     <AuthContext.Provider
       value={{

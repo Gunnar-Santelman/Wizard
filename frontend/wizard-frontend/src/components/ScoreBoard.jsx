@@ -10,14 +10,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 
+// creates scoreboard to display user scores at the end of the round
 export default function Scoreboard({
   gameId,
-  players = [], // Array of player objects
+  players = [],
   currentRound = 0,
   gameComplete
 }) {
   const [showScoreboard, setShowScoreboard] = useState(false);
 
+  // ensures the scoreboard is shown whenever the round changes
   useEffect(() => {
     if (currentRound !== 0 && currentRound !== 1) {
       setShowScoreboard(true);
@@ -28,6 +30,7 @@ export default function Scoreboard({
     socket.emit("leaveGame", {gameId})
   }
 
+  // creates the exit game button it is the scoreboard of the final round of the game
   function renderExitButton() {
     if (!gameComplete) {
       return (
@@ -41,7 +44,7 @@ export default function Scoreboard({
     }
   }
 
-
+  // keeps the roundCount properly in sync with the players
   const roundCount = players.length > 0 ? Math.max(...players.map(player=>Object.keys(player.roundScores || {}).length)) : 0
   if (!showScoreboard && !gameComplete) {
     return;
@@ -67,7 +70,7 @@ export default function Scoreboard({
         </TableHead>
 
         <TableBody>
-          {/*One row per round*/}
+          {/*One row per round displaying round scores for each player*/}
           {Array.from({ length: roundCount}, (_, roundIndex) => (
             <TableRow>
               <TableCell component = "th" scope="row">
@@ -82,7 +85,7 @@ export default function Scoreboard({
             </TableRow>
           ))}
 
-          {/*Final Total Rows*/}
+          {/*Final Total Row for each player*/}
           <TableRow>
             <TableCell component = "th" scope = "row">
               <h3>Total</h3>

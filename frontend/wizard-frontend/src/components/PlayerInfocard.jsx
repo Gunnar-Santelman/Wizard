@@ -1,4 +1,5 @@
 import "../styling/PlayerInfocard.css"
+// displays game info to the users about player information such as their username, their bid, and how many tricks they've taken
 export default function PlayerInfocard({
   username = "Guest",
   tricksTaken = 2,
@@ -7,19 +8,20 @@ export default function PlayerInfocard({
   showBids = true
 }) {
 
+  // ensures that the default state simply displays as 0
   if (bidsMade === -1) {
     bidsMade = 0;
   }
 
   return (
     <div className="player-infocard">
-
       {/* profile picture */}
       <img
+        // shows avatar url
         height="70px"
         width="70px"
         src={avatarUrl}
-        alt={ "Display showing that " + username + " has taken " + tricksTaken + " of " + bidsMade + " tricks." }
+        alt={ username + "'s profile picture" }
         className="profile-picture"
       />
 

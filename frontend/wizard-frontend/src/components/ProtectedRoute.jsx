@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
+// sets the protected routes throughout the program; can only reach these areas via these routes
 function ProtectedRoute({ children }) {
   const {user, userData, loading} = useAuth();
 

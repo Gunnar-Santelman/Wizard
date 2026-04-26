@@ -2,22 +2,26 @@ import { useState } from "react";
 import socket from "../socket";
 import "../styling/BidSelection.css";
 
+// Creates a popup menu that allows the user to click up and down to view and select their bid for the upcoming round
 export default function BidSelection({ maxBid = 5, gameId }) {
   const [bidAmount, setBidAmount] = useState(0);
   const minBid = 0;
 
+  // increases the bid by 1
   const increaseBid = () => {
     if (bidAmount < maxBid) {
       setBidAmount(bidAmount + 1);
     }
   };
 
+  // decreases the current bid by 1
   const decreaseBid = () => {
     if (bidAmount > minBid) {
       setBidAmount(bidAmount - 1);
     }
   };
 
+  // sets the bid in the backend via WebSockets
   const placeBid = () => {
     console.log(`Bid placed: ${bidAmount}`);
     socket.emit("placeBid", {

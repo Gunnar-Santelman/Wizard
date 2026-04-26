@@ -12,6 +12,7 @@ import {
 import { validateUsername } from "../utils/validation";
 import "../styling/OnboardingPage.css"
 
+// runs the onboarding page from which new users will create their profiles after setting their email and password
 function OnboardingPage() {
   const { user, updateUserData, refreshUserData } = useAuth();
 
@@ -26,6 +27,7 @@ function OnboardingPage() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  // loads all the default profile pictures stored in the database
   useEffect(() => {
     const loadDefaultPictures = async () => {
       try {
@@ -47,6 +49,7 @@ function OnboardingPage() {
     };
   }, [previewURL]);
 
+  // handles when a user submits their information, returning an easy to understand error if pieces of it do not properly match requirements
   const handleSubmit = async () => {
     const usernameError = validateUsername(username);
     if (usernameError) {
@@ -85,6 +88,7 @@ function OnboardingPage() {
     }
   };
 
+  // creates the actual UI of the onboarding page to allow the user to properly manipulate their profile to their liking
   return (
     <div className="onboarding-container">
       <div className="onboarding-card">
@@ -141,6 +145,7 @@ function OnboardingPage() {
               Upload Image
             </button>
             <input
+              // controls the uploading of user chosen images as their profile picture
               className="file-input"
               ref={fileInputRef}
               type="file"
@@ -173,6 +178,7 @@ function OnboardingPage() {
             <div className="preview-section">
               <p>Preview:</p>
               <img
+                // displays an image preview of their uploaded profile picture
                 src={previewURL}
                 className="avatar"
                 alt="preview"

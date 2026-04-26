@@ -11,9 +11,12 @@ import ScoreBoard from "../components/ScoreBoard.jsx";
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 
+// creates the UI for the central game page within which Wizard is played
 export default function GamePage() {
+  // retrieves userData for usernames
   const { userData } = useAuth();
 
+  // various useStates that allow updating of parts of the screen
   const containerRef = useRef(null);
   const [radii, setRadii] = useState({ rx: 300, ry: 200 });
   const { gameId } = useParams();
@@ -28,8 +31,11 @@ export default function GamePage() {
   const [roundNumber, setRoundNumber] = useState(0);
   const [gameComplete, setGameComplete] = useState(false);
   const [showModal, setShowModal] = useState(true);
+  
+  // allows navigation away from the GamePage
   const navigate = useNavigate();
 
+  // retrieves gameState from backend and sets necessary variables
   useEffect(() => {
     socket.emit("requestGameState", { gameId });
 
@@ -54,6 +60,7 @@ export default function GamePage() {
     };
   }, [gameId]);
 
+  // if a player leaves before the game is completed, the game is considered abandoned, and appropriate WebSocket signal is sent
   useEffect(() => {
     socket.on("gameAbandoned", () => {
       alert("A player left the game!");
@@ -69,6 +76,7 @@ export default function GamePage() {
     };
   }, [navigate]);
 
+  // determines size of screen to properly determine opponent card spacing(updates on changes to window size)
   useEffect(() => {
     function updateRadii() {
       if (!containerRef.current) {
@@ -87,6 +95,7 @@ export default function GamePage() {
     return () => window.removeEventListener("resize", updateRadii);
   }, []);
 
+  // displays trick winner popup for 4 seconds following each trick
   useEffect(() => {
     if (!winner) {
       return;
@@ -98,8 +107,10 @@ export default function GamePage() {
     return () => clearTimeout(timer);
   }, [winner]);
 
-  const opponents = players.filter((p) => p.socketId !== socket.id);
 
+  // retrieves opponent data
+  const opponents = players.filter((p) => p.socketId !== socket.id);
+  // calculates the opponents position based on the size of the screen so they are properly arrayed around in a semi-circle
   function getOpponentPosition(index, total, radiusX, radiusY) {
     const angle = (Math.PI / (total - 1)) * index;
     const x = -Math.cos(angle) * radiusX;
@@ -108,6 +119,7 @@ export default function GamePage() {
     return { x, y, angle };
   }
 
+  // renders the opponent card backs, and the opponent's infocard, displaying necessary information
   function renderOpponent(player, index) {
     const cardsPos = getOpponentPosition(
       index,
@@ -156,14 +168,15 @@ export default function GamePage() {
     );
   }
 
+  // renders the trick cards that have currently been played in the center of the table
   function renderTrickCard(card, index) {
     const total = trick.length;
     const spacing = 60;
     const offsetX = (index - (total - 1) / 2) * spacing;
-    const layoutKey = `card-${card.value}-of-${card.suit}-${card.identifier}`
 
     return (
       <motion.div
+        // slight animation to reduce how jarring the card playing is
         key={card.id} 
         layoutId={card.id}
         className="trick-animation"
@@ -193,6 +206,7 @@ export default function GamePage() {
     );
   }
 
+  // renders and animates the trump card display in the top right corner of the screen
   function renderTrumpCard() {
     if (trump !== null) {
       return (
@@ -216,6 +230,7 @@ export default function GamePage() {
     return null;
   }
 
+  // renders and animates the turn notification that appears beside an opponent's hand when it is their turn to play
   function renderTurnNotification() {
     if (isMyTurn) {
       return (
@@ -237,6 +252,7 @@ export default function GamePage() {
     return null;
   }
 
+  // creates the bid popup when it is time for the players to bid, and places it in the center of the screen
   function renderBidPopup() {
     if (isMyTurn && bid === -1) {
       return (
@@ -253,6 +269,7 @@ export default function GamePage() {
     return null;
   }
 
+  // if a trick has just been completed, it renders the winner popup
   function renderWinnerPopup() {
     if (!winner) {
       return null;
@@ -269,6 +286,7 @@ export default function GamePage() {
     );
   }
 
+  // renders the scoreboard that will appear on screen following each round
   function renderScoreBoard() {
     return (
       <motion.div
@@ -288,6 +306,7 @@ export default function GamePage() {
     );
   }
 
+  // at the end of the game, creates a modal popup displaying the overall winner of the game and their score
   function renderFinalWinner() {
     if (!gameComplete) {
       return null;
@@ -315,10 +334,12 @@ export default function GamePage() {
     );
   }
 
+  // handles a user pressing the leave game button prior to the end of the game
   async function handleLeave() {
     socket.emit("abandonGame", { gameId });
   }
 
+  // the core of the page that renders the necessary elements of the table based on the current location of the gameplay
   return (
     <div className="game-container" ref={containerRef}>
       <button onClick={handleLeave}>Leave Game</button>
@@ -350,11 +371,12 @@ export default function GamePage() {
           <div className="player-hand">
             <AnimatePresence>
               {hand.map((card, index) => {
+                // creates the actual player's hand in the bottom center of the screen
                 const middle = hand.length / 2;
                 const rotation = (index - middle) * 4;
-                const layoutKey = `card-${card.value}-of-${card.suit}-${card.identifier}`
                 return (
                   <motion.div
+                    // animates when the player plays a card to make it less jarring
                     key={card.id}
                     layoutId={card.id}
                     exit={{ opacity: 0, y: -20 }}
