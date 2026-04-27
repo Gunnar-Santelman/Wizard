@@ -252,12 +252,18 @@ export default function GamePage() {
 
   // creates the bid popup when it is time for the players to bid, and places it in the center of the screen
   function renderBidPopup() {
-    if (isMyTurn && bid === -1 && !endOfRound && !showTrickWinnerModal && !gameComplete) {
+    if (
+      isMyTurn &&
+      bid === -1 &&
+      !endOfRound &&
+      !showTrickWinnerModal &&
+      !gameComplete
+    ) {
       return (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 3 }}
+          transition={{ duration: 1.5 }}
         >
           <BidSelection maxBid={roundNumber} gameId={gameId} />
         </motion.div>
@@ -291,7 +297,7 @@ export default function GamePage() {
 
   // at the end of the game, creates a modal popup displaying the overall winner of the game and their score
   function renderFinalWinner() {
-    if (!gameComplete || showTrickWinnerModal) {
+    if (!gameComplete || showTrickWinnerModal || !showModal) {
       return null;
     }
 
@@ -300,20 +306,22 @@ export default function GamePage() {
     );
 
     return (
-      <dialog className="modal" open={showModal}>
-        <motion.div
-          initial={{ y: -300, scale: 0.8, opacity: 0 }}
-          animate={{ y: 0, scale: 1, opacity: 1 }}
-        >
-          <p className="modalText">
-            {overallWinner.name} Won the Game With A Score of{" "}
-            {overallWinner.score}!
-          </p>
-        </motion.div>
-        <button className="closeModal" onClick={() => setShowModal(false)}>
-          Close
-        </button>
-      </dialog>
+      <div className="modal-overlay">
+        <div className="game-winner-modal">
+          <motion.div
+            initial={{ y: -300, scale: 0.8, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+          >
+            <p className="modal-text">
+              {overallWinner.name} Won the Game With A Score of{" "}
+              {overallWinner.score}!
+            </p>
+          </motion.div>
+          <button className="modal-btn" onClick={() => setShowModal(false)}>
+            Close
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -389,10 +397,10 @@ export default function GamePage() {
         trickWinner={trickWinner}
         winningCard={winningCard}
         endOfRound={endOfRound}
-        setTrickWinner = {setTrickWinner}
-        setWinningCard = {setWinningCard}
-        setShowScoreboard = {setShowScoreboard}
-        setEndOfRound = {setEndOfRound}
+        setTrickWinner={setTrickWinner}
+        setWinningCard={setWinningCard}
+        setShowScoreboard={setShowScoreboard}
+        setEndOfRound={setEndOfRound}
         setShowTrickWinnerModal={setShowTrickWinnerModal}
         showTrickWinnerModal={showTrickWinnerModal}
       ></TrickWinnerModal>

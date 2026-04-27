@@ -1,5 +1,6 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import "../styling/TrickWinnerModal.css"
 
 export default function TrickWinnerModal({
   trickWinner,
@@ -10,7 +11,7 @@ export default function TrickWinnerModal({
   setShowScoreboard,
   setEndOfRound,
   setShowTrickWinnerModal,
-  showTrickWinnerModal
+  showTrickWinnerModal,
 }) {
   const [lockedWinner, setLockedWinner] = useState(null);
   const [lockedWinningCard, setLockedWinningCard] = useState(null);
@@ -22,6 +23,15 @@ export default function TrickWinnerModal({
       setShowTrickWinnerModal(true);
     }
   }, [trickWinner, winningCard, showTrickWinnerModal]);
+
+  function formatCardValue(value) {
+    if (value === 11) return "Jack";
+    if (value === 12) return "Queen";
+    if (value === 13) return "King";
+    if (value === 14) return "Ace";
+
+    return value;
+  }
 
   if (!lockedWinner || !showTrickWinnerModal || !lockedWinningCard) {
     return null;
@@ -35,35 +45,37 @@ export default function TrickWinnerModal({
   const cardTextDisplay =
     lockedWinningCard.suit === null
       ? specialText
-      : `${lockedWinningCard.value} of ${lockedWinningCard.suit}`;
+      : `${formatCardValue(lockedWinningCard.value)} of ${lockedWinningCard.suit}`;
 
   return (
-    <dialog className="modal" open={showTrickWinnerModal}>
-      <motion.div
-        initial={{ y: -300, scale: 0.8, opacity: 0 }}
-        animate={{ y: 0, scale: 1, opacity: 1 }}
-      >
-        <p className="modal-text">
-          {lockedWinner?.name} won the trick with a {cardTextDisplay}!!
-        </p>
-      </motion.div>
-      <button
-        className="closeModal"
-        onClick={() => {
-          setShowTrickWinnerModal(false);
-          setTrickWinner(null);
-          setLockedWinner(null);
-          setWinningCard(null);
-          setLockedWinningCard(null);
+    <div className="modal-overlay">
+      <dialog className="trick-winner-modal" open={showTrickWinnerModal}>
+        <motion.div
+          initial={{ y: -300, scale: 0.8, opacity: 0 }}
+          animate={{ y: 0, scale: 1, opacity: 1 }}
+        >
+          <p className="modal-text">
+            {lockedWinner?.name} won the trick with a {cardTextDisplay}!!
+          </p>
+        </motion.div>
+        <button
+          className="modal-btn"
+          onClick={() => {
+            setShowTrickWinnerModal(false);
+            setTrickWinner(null);
+            setLockedWinner(null);
+            setWinningCard(null);
+            setLockedWinningCard(null);
 
-          if (endOfRound) {
-            setShowScoreboard(true);
-            setEndOfRound(false);
-          }
-        }}
-      >
-        {endOfRound ? "Show Scoreboard" : "OK"}
-      </button>
-    </dialog>
+            if (endOfRound) {
+              setShowScoreboard(true);
+              setEndOfRound(false);
+            }
+          }}
+        >
+          {endOfRound ? "Show Scoreboard" : "OK"}
+        </button>
+      </dialog>
+    </div>
   );
 }
