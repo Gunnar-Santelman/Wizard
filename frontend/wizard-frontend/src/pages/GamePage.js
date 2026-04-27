@@ -27,6 +27,8 @@ export default function GamePage() {
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [trickWinner, setTrickWinner] = useState(null);
   const [winningCard, setWinningCard] = useState(null);
+  const [lockedWinner, setLockedWinner] = useState(null);
+  const [lockedWinningCard, setLockedWinningCard] = useState(null);
   const [showTrickWinnerModal, setShowTrickWinnerModal] = useState(false);
   const [endOfRound, setEndOfRound] = useState(false);
   const [showScoreboard, setShowScoreboard] = useState(false);
@@ -55,10 +57,8 @@ export default function GamePage() {
         game.players.find((p) => p.socketId === socket.id).tricksTaken,
       );
       setGameComplete(game.status === "complete");
-      if (!endOfRound) {
-        setTrickWinner(game.winner || null);
-        setWinningCard(game.winningCard || null);
-      }
+      setTrickWinner(game.winner || null);
+      setWinningCard(game.winningCard || null);
     }
     socket.on("gameState", handleGameState);
 
@@ -103,16 +103,18 @@ export default function GamePage() {
   }, []);
 
   useEffect(() => {
-    if (trickWinner) {
+    if (trickWinner && !showTrickWinnerModal) {
+      setLockedWinner(trickWinner);
+      setLockedWinningCard(winningCard);
       setShowTrickWinnerModal(true);
     }
-  }, [trickWinner]);
+  }, [trickWinner, winningCard, showTrickWinnerModal]);
 
   useEffect(() => {
-  if (roundNumber !== 0 && roundNumber !== 1) {
-    setEndOfRound(true);
-  }
-}, [roundNumber])
+    if (roundNumber !== 0 && roundNumber !== 1) {
+      setEndOfRound(true);
+    }
+  }, [roundNumber]);
 
   // retrieves opponent data
   const opponents = players.filter((p) => p.socketId !== socket.id);
@@ -277,21 +279,21 @@ export default function GamePage() {
   // if a trick has just been completed, it renders the trick winner popup
   function renderTrickWinnerModal() {
     console.log(trickWinner);
-    console.log(winningCard);
+    console.log(lockedWinningCard);
     console.log(showTrickWinnerModal);
-    if (!trickWinner || !showTrickWinnerModal || !winningCard) {
+    if (!lockedWinner || !showTrickWinnerModal || !lockedWinningCard) {
       return null;
     }
     let specialText = null;
-    if (winningCard.value === 15) {
+    if (lockedWinningCard.value === 15) {
       specialText = "Wizard";
-    } else if (winningCard.value === 1) {
+    } else if (lockedWinningCard.value === 1) {
       specialText = "Jester";
     }
     const cardTextDisplay =
-      winningCard.suit === null
+      lockedWinningCard.suit === null
         ? specialText
-        : `${winningCard.value} of ${winningCard.suit}`;
+        : `${lockedWinningCard.value} of ${lockedWinningCard.suit}`;
 
     return (
       <dialog className="modal" open={showTrickWinnerModal}>
@@ -300,7 +302,7 @@ export default function GamePage() {
           animate={{ y: 0, scale: 1, opacity: 1 }}
         >
           <p className="modal-text">
-            {trickWinner?.name} won the trick with a {cardTextDisplay}!!
+            {lockedWinner?.name} won the trick with a {cardTextDisplay}!!
           </p>
         </motion.div>
         <button
@@ -308,6 +310,9 @@ export default function GamePage() {
           onClick={() => {
             setShowTrickWinnerModal(false);
             setTrickWinner(null);
+            setLockedWinner(null);
+            setWinningCard(null);
+            setLockedWinningCard(null);
 
             if (endOfRound) {
               setShowScoreboard(true);
