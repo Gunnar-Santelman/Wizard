@@ -28,6 +28,7 @@ export default function Card({
   hand = [],
   id = null,
   identifier = null,
+  showTrickWinnerModal = false,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -38,7 +39,7 @@ export default function Card({
 
   // sends the signal that a card has been played to the backend as long as it is the player's turn, their card, etc
   const handleClick = () => {
-    if (!isValidPlay || !inPlayersHand || isBidPhase || isPlaying) {
+    if (!isValidPlay || !inPlayersHand || isBidPhase || isPlaying || showTrickWinnerModal) {
       return;
     }
     setIsPlaying(true);
@@ -64,24 +65,24 @@ export default function Card({
       style={{
         // creates gold border if it can be played
         border:
-          inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn
+          inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn && !showTrickWinnerModal
             ? "thick ridge gold"
             : "thick ridge transparent",
         // shifts the card up when the player hovers over it if the ccard is in the player's hand
         transform: `
                     rotate(${rotation}deg)
                     ${isHovered && inPlayersHand ? "translateY(-30px)" : ""}
-                    ${inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn ? "scale(1.1)" : "scale(1)"}
+                    ${inPlayersHand && isHovered && isValidPlay && !isBidPhase && isMyTurn && !showTrickWinnerModal ? "scale(1.1)" : "scale(1)"}
                 `,
         // shows the card as invalid if the player can't play it from their hand
         filter:
           inPlayersHand &&
           isHovered &&
-          (!isValidPlay || isBidPhase || !isMyTurn)
+          (!isValidPlay || isBidPhase || !isMyTurn || showTrickWinnerModal)
             ? "contrast(50%)"
             : "none",
         cursor:
-          inPlayersHand && isHovered && isValidPlay && !isBidPhase
+          inPlayersHand && isHovered && isValidPlay && !isBidPhase && !showTrickWinnerModal
             ? "pointer"
             : "not-allowed",
       }}

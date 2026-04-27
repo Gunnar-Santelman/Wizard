@@ -10,6 +10,7 @@ import BidSelection from "../components/BidSelection.jsx";
 import ScoreBoard from "../components/ScoreBoard.jsx";
 import PlayerInfocard from "../components/PlayerInfocard.jsx";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
+import TrickWinnerModal from "../components/TrickWinnerModal.jsx";
 
 // creates the UI for the central game page within which Wizard is played
 export default function GamePage() {
@@ -27,9 +28,6 @@ export default function GamePage() {
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [trickWinner, setTrickWinner] = useState(null);
   const [winningCard, setWinningCard] = useState(null);
-  const [lockedWinner, setLockedWinner] = useState(null);
-  const [lockedWinningCard, setLockedWinningCard] = useState(null);
-  const [showTrickWinnerModal, setShowTrickWinnerModal] = useState(false);
   const [endOfRound, setEndOfRound] = useState(false);
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [bid, setBid] = useState(-1);
@@ -37,6 +35,7 @@ export default function GamePage() {
   const [roundNumber, setRoundNumber] = useState(0);
   const [gameComplete, setGameComplete] = useState(false);
   const [showModal, setShowModal] = useState(true);
+  const [showTrickWinnerModal, setShowTrickWinnerModal] = useState(false);
 
   // allows navigation away from the GamePage
   const navigate = useNavigate();
@@ -101,14 +100,6 @@ export default function GamePage() {
     window.addEventListener("resize", updateRadii);
     return () => window.removeEventListener("resize", updateRadii);
   }, []);
-
-  useEffect(() => {
-    if (trickWinner && !showTrickWinnerModal) {
-      setLockedWinner(trickWinner);
-      setLockedWinningCard(winningCard);
-      setShowTrickWinnerModal(true);
-    }
-  }, [trickWinner, winningCard, showTrickWinnerModal]);
 
   useEffect(() => {
     if (roundNumber !== 0 && roundNumber !== 1) {
@@ -243,7 +234,6 @@ export default function GamePage() {
     if (isMyTurn) {
       return (
         <motion.div
-          className={"scoreboard-wrapper"}
           initial={{ y: 200, scale: 0.9, opacity: 0 }}
           animate={{ y: 0, scale: 1, opacity: 1 }}
           transition={{
@@ -262,13 +252,12 @@ export default function GamePage() {
 
   // creates the bid popup when it is time for the players to bid, and places it in the center of the screen
   function renderBidPopup() {
-    if (isMyTurn && bid === -1 && !endOfRound) {
+    if (isMyTurn && bid === -1 && !endOfRound && !showTrickWinnerModal && !gameComplete) {
       return (
         <motion.div
-          className={"scoreboard-wrapper"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 3 }}
         >
           <BidSelection maxBid={roundNumber} gameId={gameId} />
         </motion.div>
@@ -276,58 +265,10 @@ export default function GamePage() {
     }
     return null;
   }
-  // if a trick has just been completed, it renders the trick winner popup
-  function renderTrickWinnerModal() {
-    console.log(trickWinner);
-    console.log(lockedWinningCard);
-    console.log(showTrickWinnerModal);
-    if (!lockedWinner || !showTrickWinnerModal || !lockedWinningCard) {
-      return null;
-    }
-    let specialText = null;
-    if (lockedWinningCard.value === 15) {
-      specialText = "Wizard";
-    } else if (lockedWinningCard.value === 1) {
-      specialText = "Jester";
-    }
-    const cardTextDisplay =
-      lockedWinningCard.suit === null
-        ? specialText
-        : `${lockedWinningCard.value} of ${lockedWinningCard.suit}`;
-
-    return (
-      <dialog className="modal" open={showTrickWinnerModal}>
-        <motion.div
-          initial={{ y: -300, scale: 0.8, opacity: 0 }}
-          animate={{ y: 0, scale: 1, opacity: 1 }}
-        >
-          <p className="modal-text">
-            {lockedWinner?.name} won the trick with a {cardTextDisplay}!!
-          </p>
-        </motion.div>
-        <button
-          className="closeModal"
-          onClick={() => {
-            setShowTrickWinnerModal(false);
-            setTrickWinner(null);
-            setLockedWinner(null);
-            setWinningCard(null);
-            setLockedWinningCard(null);
-
-            if (endOfRound) {
-              setShowScoreboard(true);
-              setEndOfRound(false);
-            }
-          }}
-        >
-          {endOfRound ? "Show Scoreboard" : "OK"}
-        </button>
-      </dialog>
-    );
-  }
 
   // renders the scoreboard that will appear on screen following each round
   function renderScoreBoard() {
+    if (showTrickWinnerModal) return null;
     return (
       <motion.div
         className={"scoreboard-wrapper"}
@@ -350,7 +291,7 @@ export default function GamePage() {
 
   // at the end of the game, creates a modal popup displaying the overall winner of the game and their score
   function renderFinalWinner() {
-    if (!gameComplete) {
+    if (!gameComplete || showTrickWinnerModal) {
       return null;
     }
 
@@ -435,6 +376,7 @@ export default function GamePage() {
                       hand={hand}
                       id={card.id}
                       identifier={card.identifier}
+                      showTrickWinnerModal={showTrickWinnerModal}
                     />
                   </motion.div>
                 );
@@ -443,7 +385,17 @@ export default function GamePage() {
           </div>
         </div>
       </LayoutGroup>
-      {renderTrickWinnerModal()}
+      <TrickWinnerModal
+        trickWinner={trickWinner}
+        winningCard={winningCard}
+        endOfRound={endOfRound}
+        setTrickWinner = {setTrickWinner}
+        setWinningCard = {setWinningCard}
+        setShowScoreboard = {setShowScoreboard}
+        setEndOfRound = {setEndOfRound}
+        setShowTrickWinnerModal={setShowTrickWinnerModal}
+        showTrickWinnerModal={showTrickWinnerModal}
+      ></TrickWinnerModal>
       {renderScoreBoard()}
       {renderFinalWinner()}
     </div>

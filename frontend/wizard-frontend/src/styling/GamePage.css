@@ -170,3 +170,8 @@
   top: 50%;
   left: 50%;
 }
+
+.scoreboard-wrapper {
+  z-index: 9999;
+  position: absolute;
+}
