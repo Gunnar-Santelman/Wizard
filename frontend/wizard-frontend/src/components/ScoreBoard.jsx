@@ -15,16 +15,10 @@ export default function Scoreboard({
   gameId,
   players = [],
   currentRound = 0,
-  gameComplete
+  gameComplete,
+  showScoreboard = false,
+  setShowScoreboard
 }) {
-  const [showScoreboard, setShowScoreboard] = useState(false);
-
-  // ensures the scoreboard is shown whenever the round changes
-  useEffect(() => {
-    if (currentRound !== 0 && currentRound !== 1) {
-      setShowScoreboard(true);
-    }
-  }, [currentRound]) 
 
   function handleExitGame() {
     socket.emit("leaveGame", {gameId})

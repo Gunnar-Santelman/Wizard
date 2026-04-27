@@ -25,13 +25,17 @@ export default function GamePage() {
   const [trick, setTrick] = useState([]);
   const [trump, setTrump] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
-  const [winner, setWinner] = useState(null);
+  const [trickWinner, setTrickWinner] = useState(null);
+  const [winningCard, setWinningCard] = useState(null);
+  const [showTrickWinnerModal, setShowTrickWinnerModal] = useState(false);
+  const [endOfRound, setEndOfRound] = useState(false);
+  const [showScoreboard, setShowScoreboard] = useState(false);
   const [bid, setBid] = useState(-1);
   const [tricksTaken, setTricksTaken] = useState(0);
   const [roundNumber, setRoundNumber] = useState(0);
   const [gameComplete, setGameComplete] = useState(false);
   const [showModal, setShowModal] = useState(true);
-  
+
   // allows navigation away from the GamePage
   const navigate = useNavigate();
 
@@ -45,13 +49,16 @@ export default function GamePage() {
       setTrick(game.trick || []);
       setTrump(game.trumpCard || null);
       setIsMyTurn(game.currentPlayer === socket.id);
-      setWinner(game.winner || null);
       setRoundNumber(game.roundNumber || 0);
       setBid(game.players.find((p) => p.socketId === socket.id).bidAmount);
       setTricksTaken(
         game.players.find((p) => p.socketId === socket.id).tricksTaken,
       );
       setGameComplete(game.status === "complete");
+      if (!endOfRound) {
+        setTrickWinner(game.winner || null);
+        setWinningCard(game.winningCard || null);
+      }
     }
     socket.on("gameState", handleGameState);
 
@@ -95,18 +102,17 @@ export default function GamePage() {
     return () => window.removeEventListener("resize", updateRadii);
   }, []);
 
-  // displays trick winner popup for 4 seconds following each trick
   useEffect(() => {
-    if (!winner) {
-      return;
+    if (trickWinner) {
+      setShowTrickWinnerModal(true);
     }
+  }, [trickWinner]);
 
-    const timer = setTimeout(() => {
-      setWinner(null);
-    }, 4000);
-    return () => clearTimeout(timer);
-  }, [winner]);
-
+  useEffect(() => {
+  if (roundNumber !== 0 && roundNumber !== 1) {
+    setEndOfRound(true);
+  }
+}, [roundNumber])
 
   // retrieves opponent data
   const opponents = players.filter((p) => p.socketId !== socket.id);
@@ -133,10 +139,10 @@ export default function GamePage() {
     return (
       <React.Fragment key={player.socketId}>
         <div
-          className = "opponent-infocard"
+          className="opponent-infocard"
           style={{
             "--x": `${cardsPos.x}px`,
-            "--y": `${cardsPos.y}px`
+            "--y": `${cardsPos.y}px`,
           }}
         >
           <PlayerInfocard
@@ -150,13 +156,13 @@ export default function GamePage() {
           className="opponent-hand"
           style={{
             "--x": `${cardsPos.x}px`,
-            "--y": `${cardsPos.y}px`
+            "--y": `${cardsPos.y}px`,
           }}
         >
           <div
             className="rotation-handler"
             style={{
-              "--rotation": `${rotation}deg`
+              "--rotation": `${rotation}deg`,
             }}
           >
             {Array.from({ length: player.cardCount }).map((_, i) => (
@@ -177,13 +183,13 @@ export default function GamePage() {
     return (
       <motion.div
         // slight animation to reduce how jarring the card playing is
-        key={card.id} 
+        key={card.id}
         layoutId={card.id}
         className="trick-animation"
         style={{
-          zIndex: index
+          zIndex: index,
         }}
-        initial={{opacity: 0, y: 40, scale: 0.9, x: offsetX}}
+        initial={{ opacity: 0, y: 40, scale: 0.9, x: offsetX }}
         animate={{
           opacity: 1,
           y: "-50%",
@@ -254,7 +260,7 @@ export default function GamePage() {
 
   // creates the bid popup when it is time for the players to bid, and places it in the center of the screen
   function renderBidPopup() {
-    if (isMyTurn && bid === -1) {
+    if (isMyTurn && bid === -1 && !endOfRound) {
       return (
         <motion.div
           className={"scoreboard-wrapper"}
@@ -268,21 +274,50 @@ export default function GamePage() {
     }
     return null;
   }
-
-  // if a trick has just been completed, it renders the winner popup
-  function renderWinnerPopup() {
-    if (!winner) {
+  // if a trick has just been completed, it renders the trick winner popup
+  function renderTrickWinnerModal() {
+    console.log(trickWinner);
+    console.log(winningCard);
+    console.log(showTrickWinnerModal);
+    if (!trickWinner || !showTrickWinnerModal || !winningCard) {
       return null;
     }
+    let specialText = null;
+    if (winningCard.value === 15) {
+      specialText = "Wizard";
+    } else if (winningCard.value === 1) {
+      specialText = "Jester";
+    }
+    const cardTextDisplay =
+      winningCard.suit === null
+        ? specialText
+        : `${winningCard.value} of ${winningCard.suit}`;
 
     return (
-      <motion.div
-        className="winner-overlay"
-        initial={{ y: -300, scale: 0.8, opacity: 0 }}
-        animate={{ y: 0, scale: 1, opacity: 1 }}
-      >
-        <div className="winner-popup">{winner?.name} won the trick!!</div>
-      </motion.div>
+      <dialog className="modal" open={showTrickWinnerModal}>
+        <motion.div
+          initial={{ y: -300, scale: 0.8, opacity: 0 }}
+          animate={{ y: 0, scale: 1, opacity: 1 }}
+        >
+          <p className="modal-text">
+            {trickWinner?.name} won the trick with a {cardTextDisplay}!!
+          </p>
+        </motion.div>
+        <button
+          className="closeModal"
+          onClick={() => {
+            setShowTrickWinnerModal(false);
+            setTrickWinner(null);
+
+            if (endOfRound) {
+              setShowScoreboard(true);
+              setEndOfRound(false);
+            }
+          }}
+        >
+          {endOfRound ? "Show Scoreboard" : "OK"}
+        </button>
+      </dialog>
     );
   }
 
@@ -301,6 +336,8 @@ export default function GamePage() {
           players={players}
           currentRound={roundNumber}
           gameComplete={gameComplete}
+          showScoreboard={showScoreboard}
+          setShowScoreboard={setShowScoreboard}
         />
       </motion.div>
     );
@@ -354,9 +391,7 @@ export default function GamePage() {
 
         <div>{renderBidPopup()}</div>
 
-        <div className="trump-card">
-          {renderTrumpCard()}
-        </div>
+        <div className="trump-card">{renderTrumpCard()}</div>
 
         <div className="player-area">
           {renderTurnNotification()}
@@ -403,7 +438,7 @@ export default function GamePage() {
           </div>
         </div>
       </LayoutGroup>
-      {renderWinnerPopup()}
+      {renderTrickWinnerModal()}
       {renderScoreBoard()}
       {renderFinalWinner()}
     </div>

@@ -133,25 +133,6 @@
   transform: translate(-50%, -50%);
 }
 
-.winner-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  bottom: -30%;
-}
-.winner-popup {
-  background: rgba(0,0,0,0.8);
-  color: gold;
-  padding: 20px 35px;
-  border-radius: 16px;
-  font-size: 28px;
-  font-weight: bold;
-  box-shadow: 0 0 20 px rgba(255, 215, 0, 0.4);
-}
-
 .modal {
   position: fixed;
   z-index: 9999;
@@ -160,6 +141,9 @@
   transform: translate(-50%, -50%);
   padding: 2% 1%;
   margin: 0;
+}
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
 }
 .modalText {
   font-weight: bold;

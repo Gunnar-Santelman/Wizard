@@ -32,6 +32,7 @@ export default class Round {
     this.dealCards();
     this.trumpCard = (this.#cutCard !== null) ? new Card(this.#cutCard.suit, this.#cutCard.value) : null;
     this.winner = null;
+    this.winningCard = null;
   }
   get currentPlayer() {
     return this.#currentPlayer;
@@ -182,6 +183,7 @@ export default class Round {
     const result = Rules.determineTrickWinner(this.currentTrick);
     const winner = this.#game.players.find((p) => p.socketId === result.player);
     this.winner = winner;
+    this.winningCard = winner.playedCard;
     winner.incrementTricksTaken();
     this.#currentPlayer = winner;
     this.#trickNumber++;
@@ -203,6 +205,7 @@ export default class Round {
     if (roundNumber <= (60 / this.#game.players.length)) {
       this.#game.currentRound = new Round(roundNumber, this.#game);
       this.#game.currentRound.winner = this.winner;
+      this.#game.currentRound.winningCard = this.winningCard;
     }
     else {
       this.#game.finishGame();
