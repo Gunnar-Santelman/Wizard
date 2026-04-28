@@ -6,6 +6,8 @@ export class WizardGame {
     constructor (gameId, dbid) {
         this.id = gameId;
         this.dbid = dbid;
+        this.resultSaved = false;
+        this.playerIdsAtStart = [];
         this.host = null;
         this.players = [];
         this.maxRounds = 0;
@@ -52,7 +54,8 @@ export class WizardGame {
     startGame() {
         this.status = "running";
         this.maxRounds = 60 / this.players.length;
-        this.currentRound = new Round(1, this);
+        this.currentRound = new Round(20, this);
+        this.playerIdsAtStart = this.players.map(p => p.uid);
     }
 
     isEmpty() {

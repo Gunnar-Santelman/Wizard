@@ -1,6 +1,6 @@
 import Game from '../models/GameSchema.js';
 import GameManager from '../game/GameManager.js';
-import UserService from './UserService.js';
+import { updateGamesWon, updateGamesLost, updateGamesPlayed } from './UserService.js';
 
 export const createGameDB = async () => {
     const newGame = new Game();
@@ -18,26 +18,44 @@ export const startGameDB = async (game) => {
     });
 };
 
-export const abandonGameDB = async (game) => {
-    return await Game.findByIdAndUpdate(game.dbid, {
-        status: "abandoned",
+export const finalSaveGameDB = async (game) => {
+    console.log("Game Status:", game.status);
+    switch (game.status) {
+        case "waiting":
+            return await deleteGameDB(game.dbid);
+        case "running":
+            return await abandonGameDB(game.dbid);
+        case "complete":
+            return await finishGameDB(game);
+        default:
+            return;
+    }
+};
+
+export const deleteGameDB = async (dbid) => {
+    return await Game.findByIdAndDelete(dbid);
+};
+
+export const abandonGameDB = async (dbid) => {
+    return await Game.findByIdAndUpdate(dbid, {
+        status: "abandoned"
     });
 };
 
 export const finishGameDB = async (game) => {
-    const winnerUid = game.gameWinner.uid;
-    const playerUids = game.players.map(p => p.uid);
+    const playerIds = game.playerIdsAtStart;
+    console.log("Player IDs:", playerIds);
+    const winnerId = game.gameWinner.uid;
+    const loser_Ids = playerIds.filter(id => id !== winnerId);
+    console.log("Loser IDs:", loser_Ids);
 
-    await UserService.updateGamesWon(winnerUid);
-    await UserService.updateGamesPlayed(playerUids);
+    await Promise.all([
+        updateGamesPlayed(playerIds),
+        updateGamesWon(winnerId),
+        updateGamesLost(loser_Ids)
+    ]);
 
-    const losers = playerUids.filter(uid => uid !== winnerUid);
-
-    if (losers.length > 0) {
-        await UserService.updateGamesLost(losers);
-    };
-
-    return await Game.findByIdAndUpdate(game.dbid, {
+    return Game.findByIdAndUpdate(game.dbid, {
         status: "finished",
         winner: [game.gameWinner.uid],
         finishedAt: new Date()

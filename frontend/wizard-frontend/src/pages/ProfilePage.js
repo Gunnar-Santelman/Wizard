@@ -16,7 +16,10 @@ export default function ProfilePage() {
 
   const navigate = useNavigate();
 
-  // 🔄 Cleanup preview URL
+  useEffect(() => {
+    refreshUserData();
+  }, []);
+
   useEffect(() => {
     return () => {
       if (previewURL) {
@@ -28,7 +31,6 @@ export default function ProfilePage() {
   if (loading) return <p>Loading...</p>;
   if (!userData) return <p>No user data found.</p>;
 
-  // 🔐 Change Password
   const handleChangePassword = async () => {
     try {
       if (!newPassword || newPassword.length < 6) {
@@ -50,7 +52,6 @@ export default function ProfilePage() {
     }
   };
 
-  // 🖼 Handle file selection + validation
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -66,7 +67,6 @@ export default function ProfilePage() {
       return;
     }
 
-    // Cleanup old preview
     if (previewURL) {
       URL.revokeObjectURL(previewURL);
     }
@@ -76,7 +76,6 @@ export default function ProfilePage() {
     setStatus("");
   };
 
-  // 🖼 Upload Profile Picture
   const handleImageUpload = async () => {
     if (!imageFile) {
       setStatus("Select an image first.");

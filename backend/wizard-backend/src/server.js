@@ -110,7 +110,7 @@ io.on("connection", (socket) => {
 
     game.startGame();
 
-    await GameService.startGameDB(game);
+    GameService.startGameDB(game);
 
     io.to(gameId).emit("gameStarted", { gameId });
   });
@@ -120,8 +120,6 @@ io.on("connection", (socket) => {
     if (!game) {
       return;
     }
-    
-    await GameService.abandonGameDB(game);
 
     io.to(game.id).emit("gameAbandoned");
     GameManager.deleteGame(game.id);
@@ -133,8 +131,6 @@ io.on("connection", (socket) => {
     if (!game) {
       return;
     }
-
-    await GameService.finishGameDB(game);
     
     socket.emit("gameLeft");
     game.removePlayer(socket.id);
@@ -164,18 +160,20 @@ io.on("connection", (socket) => {
 });
 
 function buildGameState(game) {
+  const players = game.players ?? [];
+
   return {
     id: game.id,
     status: game.status,
-    players: game.players.map(p =>({
+    players: players.map(p =>({
       socketId:p.socketId,
       name: p.name,
       profilePicture: p.profilePicture,
-      cardCount: p.hand.length,
-      bidAmount: p.bid,
-      tricksTaken: p.tricksTaken,
+      cardCount: p.hand?.length ?? 0,
+      bidAmount: p.bid ?? -1,
+      tricksTaken: p.tricksTaken ?? 0,
       roundScores: p.roundScores,
-      score: p.score
+      score: p.score ?? 0
     })),
     host: game.host,
     hands: game.players.reduce((acc, p) => {
