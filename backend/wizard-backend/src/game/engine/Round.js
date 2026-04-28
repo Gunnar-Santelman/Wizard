@@ -39,9 +39,6 @@ export default class Round {
   get roundNo() {
     return this.#roundNumber;
   }
-  get currentPlayer() {
-    return this.#currentPlayer;
-  }
   get trump() {
     return Rules.determineTrump(this.#cutCard);
   }
