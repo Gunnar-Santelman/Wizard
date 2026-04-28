@@ -1,30 +1,14 @@
+import "../styling/ScoreCell.css"
+// shows just the basic score that the user received for each round
 export default function ScoreCell({
   score = -20
 }) {
 
   return (
-    <div
-      className="score-cell"
-      style={{
-        minHeight: "50px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-      }}
-    >
+    <div className="score-cell">
 
       {/* score */}
-      <div
-        style={{
-          fontSize: "24px",
-          fontWeight: "bold",
-          textAlign: "center",
-          marginLeft: "auto",
-          marginRight: "auto"
-        }}
-      >
+      <div className="score">
         {score}
       </div>
 

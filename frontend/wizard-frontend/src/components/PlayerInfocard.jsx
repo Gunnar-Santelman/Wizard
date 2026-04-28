@@ -1,3 +1,5 @@
+import "../styling/PlayerInfocard.css"
+// displays game info to the users about player information such as their username, their bid, and how many tricks they've taken
 export default function PlayerInfocard({
   username = "Guest",
   tricksTaken = 2,
@@ -6,61 +8,33 @@ export default function PlayerInfocard({
   showBids = true
 }) {
 
+  // ensures that the default state simply displays as 0
   if (bidsMade === -1) {
     bidsMade = 0;
   }
 
   return (
-    <div
-      className="player-infocard"
-      style={{
-        width: "300px",
-        minHeight: "50px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        backgroundColor: "green",
-        color: "white",
-        gap: "10px",
-        padding: "10px",
-        borderRadius: "50px",
-      }}
-    >
-
+    <div className="player-infocard">
       {/* profile picture */}
       <img
+        // shows avatar url
         height="70px"
         width="70px"
         src={avatarUrl}
-        alt={ "Display showing that " + username + " has taken " + tricksTaken + " of " + bidsMade + " tricks." }
-        style={{
-          borderRadius: "50%",
-          objectFit: "cover",
-        }}
+        alt={ username + "'s profile picture" }
+        className="profile-picture"
       />
 
       {/* username */}
       <span
-        style={{
-          fontSize: "18px",
-          textAlign: "center",
-          marginLeft: "auto",
-        }}
+        className="username"
       >
         {username}
       </span>
 
       {/* bids and tricks, if showBids is true*/}
       {showBids && (
-        <div
-          style={{
-            fontSize: "28px",
-            fontWeight: "bold",
-            marginLeft: "auto",
-          }}
-        >
+        <div className="bid-display">
           {tricksTaken}/{bidsMade}
         </div>
       )}

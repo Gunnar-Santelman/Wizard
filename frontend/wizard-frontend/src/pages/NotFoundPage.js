@@ -2,6 +2,7 @@ import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 import "../styling/NotFoundPage.css";
 
+// displaus simple 404 page if the user tries to navigate somewhere that doesn't exist
 export default function NotFoundPage() {
   const { user } = useAuth();
   const navigate = useNavigate();

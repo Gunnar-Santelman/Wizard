@@ -1,7 +1,8 @@
 import { useState } from "react";
+import "BidScoreCell.css"
 
 // For use in ScoreBoard if you want to display a prior round's bids made/tricks taken in addition to score
-
+// Displays both the score that the player earned, as well as how much they bid, and how many tricks they took
 export default function BidScoreCell({
   tricksTaken = 2,
   bidsMade = 4,
@@ -9,40 +10,15 @@ export default function BidScoreCell({
 }) {
 
   return (
-    <div
-      className="score-cell"
-      style={{
-        width: "300px",
-        minHeight: "50px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "center",
-      }}
-    >
+    <div className="score-cell">
 
       {/* bids */}
-      <div
-        style={{
-          fontSize: "28px",
-          fontWeight: "bold",
-          textAlign: "center",
-          marginLeft: "auto",
-        }}
-      >
+      <div className="bids-display">
         {tricksTaken}/{bidsMade}
       </div>
 
       {/* score */}
-      <div
-        style={{
-          fontSize: "36px",
-          fontWeight: "bold",
-          textAlign: "center",
-          marginLeft: "auto",
-        }}
-      >
+      <div className="score-display">
         {score}
       </div>
 

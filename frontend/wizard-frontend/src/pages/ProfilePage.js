@@ -6,7 +6,9 @@ import { signOut, updatePassword } from "firebase/auth";
 import { uploadProfilePicture } from "../services/profilePictureService";
 import "../styling/ProfilePage.css"
 
+// creates the profile page in which the user can view their statistics and update their profile picture or password
 export default function ProfilePage() {
+  // retrieves user data
   const { user, userData, loading, refreshUserData } = useAuth();
 
   const [newPassword, setNewPassword] = useState("");
@@ -17,6 +19,7 @@ export default function ProfilePage() {
 
   const navigate = useNavigate();
 
+  // the currently chosen statistics to display
   const statLabels = {
     gamesPlayed: "Games Completed",
     gamesWon: "Wins",
@@ -35,6 +38,7 @@ export default function ProfilePage() {
   if (loading) return <p>Loading...</p>;
   if (!userData) return <p>No user data found.</p>;
 
+  // controls whether the new password entered by the user meets our password requirements
   const handleChangePassword = async () => {
     try {
       if (!newPassword || newPassword.length < 6) {
@@ -56,6 +60,7 @@ export default function ProfilePage() {
     }
   };
 
+  // handles a user changing their chosen profile picture; makes sure it meets our specifications
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -81,6 +86,7 @@ export default function ProfilePage() {
     setStatus("");
   };
 
+  // uploads image to database if it is valid
   const handleImageUpload = async () => {
     if (!imageFile) {
       setStatus("Select an image first.");
@@ -110,6 +116,7 @@ export default function ProfilePage() {
     await signOut(auth);
   }
 
+  // displays the various elements of the profile page, allowing the user to manipulate and view their data
   return (
     <div className="profile-container">
       <div className="profile-card">

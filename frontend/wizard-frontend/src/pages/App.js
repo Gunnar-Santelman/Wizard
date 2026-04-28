@@ -12,6 +12,7 @@ import ProtectedRoute from '../components/ProtectedRoute.jsx';
 import PublicRoute from '../components/PublicRoute.jsx';
 import { AuthProvider } from "../context/authContext.js";
 
+// defines the various navigation routes throughout the program
 function App() {
   return (
     <AuthProvider>
