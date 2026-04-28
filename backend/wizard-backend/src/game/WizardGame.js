@@ -54,7 +54,7 @@ export class WizardGame {
     startGame() {
         this.status = "running";
         this.maxRounds = 60 / this.players.length;
-        this.currentRound = new Round(20, this);
+        this.currentRound = new Round(1, this);
         this.playerIdsAtStart = this.players.map(p => p.uid);
     }
 
