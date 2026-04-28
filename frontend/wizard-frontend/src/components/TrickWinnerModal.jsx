@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "../styling/TrickWinnerModal.css"
 
+// modal to display who won the last trick, and with what card
 export default function TrickWinnerModal({
   trickWinner,
   winningCard,
@@ -13,6 +14,7 @@ export default function TrickWinnerModal({
   setShowTrickWinnerModal,
   showTrickWinnerModal,
 }) {
+  // locked is to make sure the modal stays up even if other players play
   const [lockedWinner, setLockedWinner] = useState(null);
   const [lockedWinningCard, setLockedWinningCard] = useState(null);
 
@@ -47,6 +49,7 @@ export default function TrickWinnerModal({
       ? specialText
       : `${formatCardValue(lockedWinningCard.value)} of ${lockedWinningCard.suit}`;
 
+  // closing modal either moves to next trick, or shows scoreboard if it was the last trick of the round
   return (
     <div className="modal-overlay">
       <dialog className="trick-winner-modal" open={showTrickWinnerModal}>

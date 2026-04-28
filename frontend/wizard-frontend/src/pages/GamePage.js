@@ -101,6 +101,7 @@ export default function GamePage() {
     return () => window.removeEventListener("resize", updateRadii);
   }, []);
 
+  // determines if the trick is at the end of the round
   useEffect(() => {
     if (roundNumber !== 0 && roundNumber !== 1) {
       setEndOfRound(true);

@@ -1,33 +1,86 @@
-.score-table {
+.scoreboard-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: color;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 1rem;
+  z-index: 9999;
+}
+
+.scoreboard-modal {
+  background: rgba(0,0,0,0.9);
+  border: 3px solid gold;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.25);
+  max-height: 80vh;
   overflow-y: auto;
-  overflow-x: auto;
-  display: block;
-  z-index: 1000;
+  scrollbar-width: thin;
+  scrollbar-color: gold rgba(0,0,0,0.6);
+}
+.scoreboard-modal::-webkit-scrollbar {
+  width: 10px;
+}
+.scoreboard-modal::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+}
+.scoreboard-modal::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, gold, #c9a000);
+  border-radius: 10px;
+  border: 2px solid rgba(0,0,0,0.6);
+}
+.scoreboard-modal::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffd700, #e6c200);
 }
 
-.exit-cell {
-  position: sticky;
-  top: 0;
-  background-color: color;
-  min-width: 10vw;
-  width: 10vw;
+.score-table {
+  background: transparent !important;
+  color: white;
+}
+.score-table th,
+.score-table td {
+  border-bottom: 2px solid rgba(255,255,255,0.15) !important;
+}
+.score-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.score-table tbody tr:hover {
+  background: rgba(255,215,0,0.08);
+}
+.score-table th h3 {
+  font-size: 16px;
+  color: lightgrey;
+}
+.score-table th:first-child {
+  color: grey;
+  font-weight: bold;
+  width: 120px;
+}
+.score-table th.player-name h3 {
+  color: gold !important;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 26px;
+}
+.score-table td.total-score .score {
+  font-weight: bold;
+  color: gold;
+  font-size: 20px;
 }
 
-.player-name {
-  position: sticky;
-  top: 0;
-  background-color: color;
+.exit-cell button {
+  background: gold;
+  color: black;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
-
-.total-score {
-  min-width: 20vw;
-  width: 20vw;
+.exit-cell button:hover {
+  filter: brightness(1.1);
 }

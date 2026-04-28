@@ -1,16 +1,22 @@
 .score-cell {
-  min-height: 50px;
-  box-sizing: border-box;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 }
 
 .score {
-  font-size: 24px;
-  font-weight: bold;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  min-width: 40px;
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+  font-weight: bold;
+  font-size: 20px;
 }
+.score.positive {
+  color: lightgreen;
+}
+.score.negative {
+  color: lightcoral;
+}
+

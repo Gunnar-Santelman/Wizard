@@ -8,7 +8,7 @@ export default function ScoreCell({
     <div className="score-cell">
 
       {/* score */}
-      <div className="score">
+      <div className={`score ${score>=0 ? "positive" : "negative"}`}>
         {score}
       </div>
 
