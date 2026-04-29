@@ -11,7 +11,7 @@ export const updateUsername = async (userId, username) => {
 export const getUsername = async (userId) => {
     const user = await User.findById(userId, { username: 1 });
     return user.username;
-}
+};
 
 export const getAllUserInfo = async (userId) => {
     const user = await User.findById(userId).populate("profilePicture");
@@ -32,7 +32,28 @@ export const getAllUserInfo = async (userId) => {
         updatedAt: user.updatedAt,
         completedOnboarding: !!(user.username && user.profilePicture)
     };
-}
+};
+
+export const updateGamesPlayed = async (userIds) => {
+    await User.updateMany(
+        { _id: { $in: userIds } },
+        { $inc: { "statistics.gamesPlayed": 1 } }
+    );
+};
+
+export const updateGamesLost = async (userIds) => {
+    await User.updateMany(
+        { _id: { $in: userIds } },
+        { $inc: { "statistics.gamesLost": 1 } }
+    );
+};
+
+export const updateGamesWon = async (userId) => {
+    await User.findByIdAndUpdate(
+        userId,
+        { $inc: { "statistics.gamesWon": 1 } }
+    );
+};
 
 // Returns true if onboarding finished, false if pending
 export const getOnboardingStatus = async (userId) => {
