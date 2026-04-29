@@ -52,11 +52,14 @@ export function AuthProvider({ children }) {
     );
   };
 
-  const refreshUserData = async (currentUser) => {
+  const refreshUserData = async (currentUser = user.uid) => {
 
     if (!currentUser) return;
 
-    setLoading(true);
+    if (!userData) {
+      setLoading(true);
+    }
+    
     const data = await getAllUserInfo();
     console.log("Fetched user data:", data);
     if (!data.userInfo) {

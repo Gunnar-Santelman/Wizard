@@ -17,6 +17,10 @@ export default function ProfilePage() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    refreshUserData();
+  }, []);
+  
   const statLabels = {
     gamesPlayed: "Games Completed",
     gamesWon: "Wins",
@@ -71,7 +75,6 @@ export default function ProfilePage() {
       return;
     }
 
-    // Cleanup old preview
     if (previewURL) {
       URL.revokeObjectURL(previewURL);
     }

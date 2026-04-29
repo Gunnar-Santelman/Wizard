@@ -9,11 +9,15 @@ import "../styling/Home.css"
 import socket from "../socket";
 
 export default function Home() {
-  const { userData } = useAuth();
+  const { userData, refreshUserData } = useAuth();
 
   const [gameId, setGameId] = useState("");
   const navigate = useNavigate();
   const playerName = userData?.username;
+
+  useEffect(() => {
+    refreshUserData();
+  }, []);
 
   async function handleCreate() {
     if (!playerName) return;
