@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export default function PlayerInfocard({
   username = "Guest",
   tricksTaken = 2,

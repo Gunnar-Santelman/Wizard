@@ -20,9 +20,11 @@ export default class Deck{
                 // push all your numbered and face cards
                 this.#cards.push(new Card(suit,i));
             }
-            // push a wizard and a jester for every suit as well
-            this.#cards.push(new Card(null,1));
-            this.#cards.push(new Card(null,15));
+        }
+        // push a wizard and a jester for every suit as well
+        for (let i = 1; i < 5; i++) {
+                this.#cards.push(new Card(null,1, `Jester-${i}`));
+                this.#cards.push(new Card(null,15, `Wizard-${i}`));
         }
         
     }
@@ -40,7 +42,6 @@ export default class Deck{
      * Cuts the top card off the deck, returns it.
      */
     cutCard(){
-        // yes its the last element but does it matter?
         if (this.#cards.length > 0) {
             let cardToReturn = this.#cards.pop();
             return cardToReturn;

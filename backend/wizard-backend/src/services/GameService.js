@@ -57,10 +57,9 @@ export const finishGameDB = async (game) => {
 
     return Game.findByIdAndUpdate(game.dbid, {
         status: "finished",
-        winner: [game.gameWinner.uid],
-        finishedAt: new Date()
+        winner: game.winner
     });
-};
+}
 
 export const updateGameDB = async (gameId, updateData) => {
     const updatedGame = await Game.findByIdAndUpdate(

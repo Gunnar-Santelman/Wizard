@@ -28,11 +28,14 @@ export default class Player {
         this.bid = -1;
         this.tricksTaken = 0;
     }
+    getCardByIndex(index) {
+        return this.hand[index];
+    }
 
     playCard(playedCard) {
         for (let i= 0; i < this.hand.length; i++) {
             const card = this.hand[i];
-            if (playedCard.value === card.value && playedCard.suit === card.suit) {
+            if (playedCard.value === card.value && playedCard.suit === card.suit && playedCard.identifier === card.identifier) {
                 this.hand.splice(i, 1);
                 this.playedCard = playedCard;
                 return;

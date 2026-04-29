@@ -79,24 +79,25 @@
     cursor: pointer;
 }
 
-.icon-btn {
+.quarternary-btn {
     position: absolute;
     top: 15px;
-    right: 15px;
-
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid white;
     color: white;
-
     border-radius: 8px;
     padding: 6px 10px;
     font-size: 12px;
-
     cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease;
 }
-
-.icon-btn:hover {
+.quarternary-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
+}
+#profile {
+    right: 15px;
+}
+#tutorial {
+    left: 15px;
 }

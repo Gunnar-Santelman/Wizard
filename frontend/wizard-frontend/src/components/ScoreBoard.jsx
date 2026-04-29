@@ -1,4 +1,3 @@
-import PlayerInfocard from "./PlayerInfocard.jsx";
 import ScoreCell from "./ScoreCell.jsx";
 import socket from "../socket.js";
 
@@ -25,37 +24,6 @@ export default function Scoreboard({
     }
   }, [currentRound]) 
 
-  function createData(player) {
-    // creates jsx objects for each cell of player data
-    const data = {};
-
-    data.playerInfocard = (
-      <PlayerInfocard
-        username={player.name}
-        showBids={false}
-      />
-    );
-    console.log(player);
-    data.roundScoreCells = [];
-    for (let i = 0; i < currentRound; i++) {
-      data.roundScoreCells.push(<ScoreCell score={player.roundScores[i]} />);
-    }
-
-    data.totalScoreCell = (
-      <ScoreCell score={player.score} />
-    );
-
-    return data;
-  }
-
-  function createRows(players) {
-    const rows = [];
-    for (let i = 0; i < players.length; i++) {
-      rows.push(createData(players[i]));
-    }
-    return rows;
-  }
-
   function handleExitGame() {
     socket.emit("leaveGame", {gameId})
   }
@@ -73,7 +41,7 @@ export default function Scoreboard({
     }
   }
 
-  const rows = createRows(players);
+
   const roundCount = players.length > 0 ? Math.max(...players.map(player=>Object.keys(player.roundScores || {}).length)) : 0
   const color = "rgba(255, 255, 255, 0.97)"
   if (!showScoreboard && !gameComplete) {

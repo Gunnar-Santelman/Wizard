@@ -34,27 +34,6 @@ export const getAllUserInfo = async (userId) => {
     };
 }
 
-export const updateGamesWon = async (userId) => {
-    return await User.updateOne(
-        { _id: userId },
-        { $inc: { "statistics.gamesWon": 1 } }
-    )
-}
-
-export const updateGamesPlayed = async (userIds) => {
-    return await User.updateMany(
-        { _id: { $in: userIds } },
-        { $inc: { "statistics.gamesPlayed": 1 } }
-    );
-};
-
-export const updateGamesLost = async (userIds) => {
-    return await User.updateMany(
-        { _id: { $in: userIds } },
-        { $inc: { "statistics.gamesLost": 1 } }
-    );
-};
-
 // Returns true if onboarding finished, false if pending
 export const getOnboardingStatus = async (userId) => {
     const user = await User.findById(userId, { username: 1, profilePicture: 1 });
