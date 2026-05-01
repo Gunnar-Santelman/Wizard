@@ -1,12 +1,15 @@
 import WizardGame from "./WizardGame.js";
+import { finalSaveGameDB } from '../services/GameService.js';
 import { generateId } from "../utils/IdGenerator.js";
 
+// manages the collection of all currently running games
 class GameManager {
     constructor() {
         this.activeGames = new Map();
         this.socketToGame = {};
     }
 
+    // creates a new gameId for the game
     generateGameId() {
         let id;
         do {
@@ -15,6 +18,7 @@ class GameManager {
         return id;
     }
 
+    // creates a new Wizard game, and adds it into the database
     createGame(dbid) {
         const id = this.generateGameId();
         const newGame = new WizardGame(id, dbid);
@@ -22,18 +26,20 @@ class GameManager {
         return id;
     }
 
+    // retreives game based on its id
     getGame(id) {
         return this.activeGames.get(id);
     }
-    // Does not work since this.activeGames is a Map
-    findGameBySocket(socketId) {
-        return Object.values(this.activeGames)
-            .filter(game => game && game.players)
-            .find(game => game.players.some(player => player.socketId === socketId))
-            || null;
-    }
 
-    deleteGame(id) {
+    async deleteGame(id) {
+        const game = this.activeGames.get(id);
+        if (!game) return;
+
+        if (game.resultSaved) return;
+        game.resultSaved = true;
+
+        await finalSaveGameDB(game);
+
         delete this.activeGames[id];
 
         for (const socketId in this.socketToGame) {

@@ -2,6 +2,7 @@ import express from "express";
 import { authenticate } from "../middleware/auth.js";
 import { updateUsername, getUsername, hasCompletedOnboarding, getAllUserInfo } from "../controllers/UserController.js";
 
+// routes for user information
 const router = express.Router();
 
 router.post("/set-username", authenticate, updateUsername);

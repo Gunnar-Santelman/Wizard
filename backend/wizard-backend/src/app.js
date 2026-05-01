@@ -6,6 +6,7 @@ import profilePictureRoutes from "./routes/ProfilePictureRoutes.js";
 import cors from "cors";
 const app = express();
 
+// sets up basic routes for the Wizard backend to utilize
 app.use(cors());
 app.use(express.json());
 

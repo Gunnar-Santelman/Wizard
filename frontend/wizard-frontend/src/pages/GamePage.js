@@ -51,9 +51,9 @@ export default function GamePage() {
       setTrump(game.trumpCard || null);
       setIsMyTurn(game.currentPlayer === socket.id);
       setRoundNumber(game.roundNumber || 0);
-      setBid(game.players.find((p) => p.socketId === socket.id).bidAmount);
+      setBid(game.players.find((p) => p.socketId === socket.id)?.bidAmount);
       setTricksTaken(
-        game.players.find((p) => p.socketId === socket.id).tricksTaken,
+        game.players.find((p) => p.socketId === socket.id)?.tricksTaken,
       );
       setGameComplete(game.status === "complete");
       setTrickWinner(game.winner || null);

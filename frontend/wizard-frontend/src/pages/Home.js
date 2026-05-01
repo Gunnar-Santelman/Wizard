@@ -10,13 +10,16 @@ import socket from "../socket";
 
 // creates the main landing page of the program, allowing the user to navigate theough the various pages
 export default function Home() {
-  const { userData } = useAuth();
+  const { userData, refreshUserData } = useAuth();
 
   const [gameId, setGameId] = useState("");
   const navigate = useNavigate();
   const playerName = userData?.username;
 
-  // creates a game in the backend via WebSockets, and then navigates to it
+  useEffect(() => {
+    refreshUserData();
+  }, []);
+
   async function handleCreate() {
     if (!playerName) return;
     const game = await createGame();

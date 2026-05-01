@@ -1,4 +1,6 @@
+// models a player of the game
 export default class Player {
+    // sets necessary variables for tracking player performance
     constructor(playerId, uid, name, profilePicture) {
         this.name = name;
         this.profilePicture = profilePicture;
@@ -12,26 +14,30 @@ export default class Player {
         this.playedCard = null;
     }
 
+    // sets the user bid
     setBid(bid) {
         this.bid = bid;
     }
-
+    // sets the hand of the player
     setHand(hand) {
         this.hand = hand;
     }
-
+    // increases the number of tricks taken by one
     incrementTricksTaken() {
         this.tricksTaken++;
     }
 
+    // reset the necessary variables for starting a new round
     resetRoundForPlayer() {
         this.bid = -1;
         this.tricksTaken = 0;
     }
+    // retrieves a card from a player's hand based on its index
     getCardByIndex(index) {
         return this.hand[index];
     }
 
+    // removes the card from a player's hand corresponding to the played card identity
     playCard(playedCard) {
         for (let i= 0; i < this.hand.length; i++) {
             const card = this.hand[i];
@@ -43,6 +49,7 @@ export default class Player {
         }
     }
 
+    // calculates round score at the end of a round based on Wizard's scoring rules
     updateScore(roundNumber) {
         let currScore = 0
         if(this.bid!=this.tricksTaken)

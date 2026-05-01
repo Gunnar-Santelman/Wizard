@@ -1,6 +1,7 @@
 import SUIT from "./Suit.js";
 import Card from "./Card.js";
 
+// models the deck of 60 cards used to play Wizard
 export default class Deck{
     #cards;
     constructor(){
@@ -21,7 +22,7 @@ export default class Deck{
                 this.#cards.push(new Card(suit,i));
             }
         }
-        // push a wizard and a jester for every suit as well
+        // push a wizard and a jester for every suit as well(has additional identifier)
         for (let i = 1; i < 5; i++) {
                 this.#cards.push(new Card(null,1, `Jester-${i}`));
                 this.#cards.push(new Card(null,15, `Wizard-${i}`));
@@ -39,7 +40,7 @@ export default class Deck{
        
     }
     /**
-     * Cuts the top card off the deck, returns it.
+     * Cuts the top card off the deck, returns it, used for drawing cards and setting trump.
      */
     cutCard(){
         if (this.#cards.length > 0) {

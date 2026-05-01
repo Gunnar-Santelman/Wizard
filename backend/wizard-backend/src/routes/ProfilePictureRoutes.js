@@ -8,6 +8,7 @@ import {
     getDefaultProfilePictures
 } from "../controllers/ProfilePictureController.js";
 
+// routes for uploading or retrieving profile pictures
 const router = express.Router();
 
 router.post(

@@ -7,10 +7,9 @@ import GameManager from "./game/GameManager.js";
 import * as GameService from "./services/GameService.js";
 import * as UserService from "./services/UserService.js";
 
+// sets up the various WebSocket receivers
 const PORT = process.env.PORT || 5000;
-
 connectDB();
-
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -21,9 +20,11 @@ const io = new Server(server, {
 });
 app.set("io", io);
 
+// occurs when a user first connects to the Wizard program
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
+  // determines if a user can join a specific game; if they can, they are added in, else an error message is returned to the frontend
   socket.on("joinGame", async ({ gameId, token }) => {
     const uid = await verifyToken(token);
     const userInfo = await UserService.getAllUserInfo(uid);
@@ -53,9 +54,11 @@ io.on("connection", (socket) => {
 
     socket.emit("joinSuccess", { gameId });
 
+    // gets limited elements of the game state necessary for lobby creation
     io.to(gameId).emit("gameState", game.getGameState());
   });
 
+  // retrieves all the elements of the game state to update the frontend
   socket.on("requestGameState", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
@@ -65,6 +68,7 @@ io.on("connection", (socket) => {
     socket.emit("gameState", buildGameState(game));
   });
 
+  // receives signal to play a card from the user's hand, and calls necessary functions
   socket.on("playCard", ({gameId, cardId}) => {
     const game = GameManager.getGame(gameId);
     if (!game || !game.currentRound) {
@@ -75,9 +79,11 @@ io.on("connection", (socket) => {
 
     io.to(gameId).emit("gameState", buildGameState(game));
 
+    // ensure that the winner of a trick is reset at the start of the next hand (ie next backend update)
     game.currentRound.winner = null;
   })
 
+  // receives signal to place a bid from a user, and calls necessary backend functions
   socket.on("placeBid", ({gameId, bidAmount}) => {
     const game = GameManager.getGame(gameId);
     if (!game || !game.currentRound) {
@@ -88,6 +94,7 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameState", buildGameState(game));
   })
 
+  // leaves the lobby, destroying the lobby if they were the only player
   socket.on("leaveLobby", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
@@ -102,6 +109,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // starts up the game at round 1, and sends necessary info to database and frontend
   socket.on("startGame", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
@@ -115,6 +123,7 @@ io.on("connection", (socket) => {
     io.to(gameId).emit("gameStarted", { gameId });
   });
 
+  // signal received if game is left early; game must be ended, kicks all other players back to home screen
   socket.on("abandonGame", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
@@ -126,13 +135,14 @@ io.on("connection", (socket) => {
     return;
   });
 
+  // signal received if game is left at the end of the game; doesn't kick other players to home screen
   socket.on("leaveGame", ({ gameId }) => {
     const game = GameManager.getGame(gameId);
     if (!game) {
       return;
     }
-
-    socket.emit("gameLeft");
+    
+  socket.emit("gameLeft");
     game.removePlayer(socket.id);
     if (game.isEmpty()) {
       GameManager.deleteGame(game.id);
@@ -140,6 +150,7 @@ io.on("connection", (socket) => {
     return;
   });
 
+  // occurs when user closes page, and prevents unnecessary crashes
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
     const gameId = GameManager.socketToGame[socket.id];
@@ -159,19 +170,22 @@ io.on("connection", (socket) => {
   });
 });
 
+// combines all the lements to build the frontend; is returned to frontend whenever a signal is received by the backend to change an element
 function buildGameState(game) {
+  const players = game.players ?? [];
+
   return {
     id: game.id,
     status: game.status,
-    players: game.players.map(p =>({
+    players: players.map(p =>({
       socketId:p.socketId,
       name: p.name,
       profilePicture: p.profilePicture,
-      cardCount: p.hand.length,
-      bidAmount: p.bid,
-      tricksTaken: p.tricksTaken,
+      cardCount: p.hand?.length ?? 0,
+      bidAmount: p.bid ?? -1,
+      tricksTaken: p.tricksTaken ?? 0,
       roundScores: p.roundScores,
-      score: p.score
+      score: p.score ?? 0
     })),
     host: game.host,
     hands: game.players.reduce((acc, p) => {

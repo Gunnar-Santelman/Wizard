@@ -23,36 +23,42 @@ export default class Round {
     this.#trickNumber = 0;
     this.currentTrick = null;
     this.#deck = new Deck();
-    if (roundNumber !== (60 / this.#game.players.length)) {
+    if (roundNumber !== 60 / this.#game.players.length) {
       this.#cutCard = this.#deck.cutCard();
-    }
-    else {
+    } else {
       this.#cutCard = null;
     }
     this.dealCards();
-    this.trumpCard = (this.#cutCard !== null) ? new Card(this.#cutCard.suit, this.#cutCard.value) : null;
+    this.trumpCard =
+      this.#cutCard !== null
+        ? new Card(this.#cutCard.suit, this.#cutCard.value)
+        : null;
     this.winner = null;
     this.winningCard = null;
   }
+
+  // retrieves current player
   get currentPlayer() {
     return this.#currentPlayer;
   }
+  // retrieves round number
   get roundNo() {
     return this.#roundNumber;
   }
-  get currentPlayer() {
-    return this.#currentPlayer;
-  }
+  // retrieves trump value of top card
   get trump() {
     return Rules.determineTrump(this.#cutCard);
   }
+  // retrieves the trump card
   get cutCard() {
     return this.#cutCard;
   }
+  // retrieves the player who is the current dealer
   get dealer() {
-     return this.#dealer; 
-    }
-  get trickNumber(){
+    return this.#dealer;
+  }
+  // retrieves the current trick number for the round
+  get trickNumber() {
     return this.#trickNumber;
   }
 
@@ -98,7 +104,8 @@ export default class Round {
       player?.hand.sort(Card.orderCards);
     }
   }
-  
+
+  // takes in the socket id of a player and the bid that they placed, and links them for the current round, before moving to the next player
   placeBid(socketId, bidAmount) {
     const player = this.#game.players.find((p) => p.socketId === socketId);
     if (!player) {
@@ -122,21 +129,25 @@ export default class Round {
     return [...players.slice(index), ...players.slice(0, index)];
   }
 
+  // determines which cards in a player's hand are currently valid at the moment
   determineValidCards() {
     for (const player of this.#game.players) {
       const hand = player?.hand;
       for (let i = 0; i < hand.length; i++) {
         const card = hand[i];
-        if (card && Rules.isValidPlay(card, hand, this.currentTrick?.ledCard?.suit)) {
+        if (
+          card &&
+          Rules.isValidPlay(card, hand, this.currentTrick?.ledCard?.suit)
+        ) {
           card.isValid = true;
-        }
-        else if (card){
+        } else if (card) {
           card.isValid = false;
         }
       }
     }
   }
 
+  // moves on to the next player in the turn order
   moveToNextPlayer() {
     this.winner = null;
     const players = this.#reorderPlayers(this.#currentPlayer);
@@ -145,6 +156,8 @@ export default class Round {
     this.#currentPlayer = players[nextIndex];
   }
 
+  // as long as the card is valid to be played, then the card is removed from the player's hand, and added to the trick
+  // will set the lead if the first card to be played, or finish a trick if it is the final card. Automatically moves to next player.
   playCard(socketId, cardId) {
     const player = this.#game.players.find((p) => p.socketId === socketId);
     if (!player) {
@@ -154,8 +167,8 @@ export default class Round {
     if (player !== this.#currentPlayer) {
       return;
     }
-    
-    const cardIndex = player.hand.findIndex(c => c.id === cardId);
+
+    const cardIndex = player.hand.findIndex((c) => c.id === cardId);
     const card = player.hand[cardIndex];
     if (!card || !card.isValid) {
       return;
@@ -166,6 +179,7 @@ export default class Round {
     if (!this.currentTrick) {
       this.currentTrick = new Trick(this.trump);
     }
+    // sets lead if its the first card, and isn't a jester card
     if (!this.currentTrick.ledCard && card.value !== 1) {
       this.currentTrick.setLed(card);
     }
@@ -179,6 +193,7 @@ export default class Round {
     this.determineValidCards();
   }
 
+  // completes the current trick, awarding it to the player with the dominant card. Will complete the round if the trick number moves to equal the round number.
   finishTrick() {
     const result = Rules.determineTrickWinner(this.currentTrick);
     const winner = this.#game.players.find((p) => p.socketId === result.player);
@@ -195,6 +210,7 @@ export default class Round {
     this.determineValidCards();
   }
 
+  // completes the current round, updating the score each player, and moving on to the next round, or finishing the game if it was the lasst round.
   finishRound() {
     const roundNumber = this.#roundNumber + 1;
     const players = this.#reorderPlayers(this.#currentPlayer);
@@ -202,7 +218,7 @@ export default class Round {
       player.updateScore(this.#roundNumber - 1);
       player.resetRoundForPlayer();
     }
-    if (roundNumber <= (60 / this.#game.players.length)) {
+    if (roundNumber <= 60 / this.#game.players.length) {
       this.#game.currentRound = new Round(roundNumber, this.#game);
       this.#game.currentRound.winner = this.winner;
       this.#game.currentRound.winningCard = this.winningCard;

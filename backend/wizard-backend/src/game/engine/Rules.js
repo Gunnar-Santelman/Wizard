@@ -40,6 +40,7 @@ export default class Rules {
     return winner;
   }
 
+  // determines which card is more powerful based on the lead suit and trump suit
   static compareCard(a, b, leadSuit) {
     //wizards
     if (a === null || b === null) {
@@ -64,6 +65,7 @@ export default class Rules {
     return a.value - b.value;
   }
 
+  // determines whether or not a card is valid to be played from the player's current hand
   static isValidPlay(card, hand, leadSuit) {
     // you can always play a special card
     if (card?.value == 1 || card?.value == 15) return true;
