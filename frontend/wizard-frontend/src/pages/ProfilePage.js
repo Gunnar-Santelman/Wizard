@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { auth } from "../services/firebase";
 import { signOut, updatePassword } from "firebase/auth";
+import { validatePassword } from "../utils/validation";
 import { uploadProfilePicture } from "../services/profilePictureService";
 import "../styling/ProfilePage.css"
 
@@ -44,8 +45,9 @@ export default function ProfilePage() {
   // controls whether the new password entered by the user meets our password requirements
   const handleChangePassword = async () => {
     try {
-      if (!newPassword || newPassword.length < 6) {
-        setStatus("Password must be at least 6 characters.");
+      const passwordError = validatePassword(newPassword, "update");
+      if (passwordError) {
+        setStatus(passwordError);
         return;
       }
 

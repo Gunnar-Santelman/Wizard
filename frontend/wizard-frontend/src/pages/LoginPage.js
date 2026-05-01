@@ -15,8 +15,8 @@ function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loadingAction, setLoadingAction] = useState(null); // Only use "signin", "signup", "google", or null
-  const [mode, setMode] = useState("signin"); // Only use "signin" or "signup"
+  const [loadingAction, setLoadingAction] = useState(null);
+  const [mode, setMode] = useState("signin");
 
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ function LoginPage({ onLogin }) {
     const emailError = validateEmail(email);
     if (emailError) errors.push(emailError);
 
-    const passwordError = validatePassword(password);
+    const passwordError = validatePassword(password, mode);
     if (passwordError) errors.push(passwordError);
 
     return errors.length ? errors.join("\n") : null;
@@ -104,7 +104,8 @@ function LoginPage({ onLogin }) {
           />
           {mode === "signup" && (
             <p className="password-instruction">
-              **Password must be 8-50 characters.**
+              Password must be 8-50 characters.
+              It must include at least one uppercase letter, number, and special character each.
             </p>
           )}
 
