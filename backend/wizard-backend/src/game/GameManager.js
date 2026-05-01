@@ -1,4 +1,5 @@
 import WizardGame from "./WizardGame.js";
+import { finalSaveGameDB } from '../services/GameService.js';
 import { generateId } from "../utils/IdGenerator.js";
 
 // manages the collection of all currently running games
@@ -30,8 +31,15 @@ class GameManager {
         return this.activeGames.get(id);
     }
 
-    // removes game from list of active games once it has been completed/abandoned
-    deleteGame(id) {
+    async deleteGame(id) {
+        const game = this.activeGames.get(id);
+        if (!game) return;
+
+        if (game.resultSaved) return;
+        game.resultSaved = true;
+
+        await finalSaveGameDB(game);
+
         delete this.activeGames[id];
 
         for (const socketId in this.socketToGame) {

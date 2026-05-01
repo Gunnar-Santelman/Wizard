@@ -41,9 +41,9 @@ export default function GamePage() {
       setIsMyTurn(game.currentPlayer === socket.id);
       setWinner(game.winner || null);
       setRoundNumber(game.roundNumber || 0);
-      setBid(game.players.find((p) => p.socketId === socket.id).bidAmount);
+      setBid(game.players.find((p) => p.socketId === socket.id)?.bidAmount);
       setTricksTaken(
-        game.players.find((p) => p.socketId === socket.id).tricksTaken,
+        game.players.find((p) => p.socketId === socket.id)?.tricksTaken,
       );
       setGameComplete(game.status === "complete");
     }
