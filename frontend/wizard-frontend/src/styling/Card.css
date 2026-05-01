@@ -1,0 +1,9 @@
+.card {
+  width: 120px;
+  height: 168px;
+  border-radius: 5px;
+  transition:
+    transform 0.3s ease,
+    border 0.3s ease,
+    filter 0.3s ease;
+}

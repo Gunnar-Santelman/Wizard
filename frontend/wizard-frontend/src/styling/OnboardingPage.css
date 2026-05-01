@@ -61,6 +61,7 @@
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     object-fit: cover;
+    display: block;
 }
 .avatar:hover {
     transform: scale(1.05);

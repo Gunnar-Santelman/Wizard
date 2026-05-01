@@ -2,10 +2,12 @@ import "../styling/TutorialPage.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// basic tutorial page to introduce new players to the game of Wizard
 export default function TutorialPage() {
   const [pageNumber, setPageNumber] = useState(1);
   const navigate = useNavigate();
 
+  // determines what title to display to the user based on their current page number
   function displayHeader() {
     switch (pageNumber) {
       case 1:
@@ -26,11 +28,15 @@ export default function TutorialPage() {
         return <h1 className="header">Example Scoring</h1>;
     }
   }
+
+  // displays the specific image corresponding to the current page number
   function displayImage() {
     return (
       <img className="image" src={`/tutorial-images/Page_${pageNumber}.png`} alt = {`Tutorial for Page ${pageNumber}`}/>
     );
   }
+
+  // displays the main tutorial body based on what page the user is currently on
   function displayBody() {
     switch (pageNumber) {
       case 1:
@@ -120,6 +126,7 @@ export default function TutorialPage() {
     }
   }
 
+  // controls the display of elements, allowing the user to move through pages and go back to the home page
   return (
     <div className="tutorial-container">
       <div className="tutorial-card">

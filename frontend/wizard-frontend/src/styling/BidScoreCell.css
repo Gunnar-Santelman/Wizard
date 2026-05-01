@@ -1,0 +1,23 @@
+.score-cell {
+  width: 300px;
+  min-height: 50px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.bids-display {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: auto;
+}
+
+.score-display {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: auto;
+}

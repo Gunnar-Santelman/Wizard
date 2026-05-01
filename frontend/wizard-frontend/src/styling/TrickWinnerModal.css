@@ -1,0 +1,46 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0, 0, .55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(6px);
+}
+
+.trick-winner-modal {
+    background: rgba(0,0,0,0.85);
+    border: 3px solid white;
+    border-radius: 18px;
+    padding: 28px 36px;
+    min-width: 320px;
+    max-width: 420px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: center;
+    color:white;
+    box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+.modal-text {
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+}
+
+.modal-btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: gold;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.modal-btn:hover {
+    filter: brightness(1.1);
+}

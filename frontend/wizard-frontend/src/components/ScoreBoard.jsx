@@ -1,6 +1,6 @@
 import ScoreCell from "./ScoreCell.jsx";
 import socket from "../socket.js";
-
+import "../styling/ScoreBoard.css";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,107 +8,97 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
 
+// creates scoreboard to display user scores at the end of the round
 export default function Scoreboard({
   gameId,
-  players = [], // Array of player objects
+  players = [],
   currentRound = 0,
-  gameComplete
+  gameComplete,
+  showScoreboard = false,
+  setShowScoreboard,
 }) {
-  const [showScoreboard, setShowScoreboard] = useState(false);
-
-  useEffect(() => {
-    if (currentRound !== 0 && currentRound !== 1) {
-      setShowScoreboard(true);
-    }
-  }, [currentRound]) 
-
   function handleExitGame() {
-    socket.emit("leaveGame", {gameId})
+    socket.emit("leaveGame", { gameId });
   }
 
+  // creates the exit game button it is the scoreboard of the final round of the game
   function renderExitButton() {
     if (!gameComplete) {
       return (
-        <button onClick={() => setShowScoreboard(false)}>Close Scoreboard</button>
-      )
-    }
-    else {
-      return (
-        <button onClick={handleExitGame}>Exit Game</button>
-      )
+        <button onClick={() => setShowScoreboard(false)}>
+          Close Scoreboard
+        </button>
+      );
+    } else {
+      return <button onClick={handleExitGame}>Exit Game</button>;
     }
   }
 
-
-  const roundCount = players.length > 0 ? Math.max(...players.map(player=>Object.keys(player.roundScores || {}).length)) : 0
-  const color = "rgba(255, 255, 255, 0.97)"
+  // keeps the roundCount properly in sync with the players
+  const roundCount =
+    players.length > 0
+      ? Math.max(
+          ...players.map(
+            (player) => Object.keys(player.roundScores || {}).length,
+          ),
+        )
+      : 0;
   if (!showScoreboard && !gameComplete) {
     return;
   }
 
   return (
-    <div>
-    <TableContainer component={Paper}
-      style={{ position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: color,
-        alignItems: "center",
-        padding: "1rem",
-        overflowY: "auto",
-        overflowX: "auto",
-        display: "block",
-        zIndex: "1000"}}>
-      <Table aria-label="scoreboard table">
-        <TableHead>
-          <TableRow>
-            <TableCell style = {{position: "sticky", top: 0, backgroundColor: color, minWidth:"10vw", width:"10vw"}}>
-              {renderExitButton()}
-            </TableCell>
-
-            {/*Player Headers Across Top */}
-            {players.map((player, index) => (
-              <TableCell align = "center" style = {{position: "sticky", top: 0, backgroundColor: color}}>
-                <h3>{player.name}</h3>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {/*One row per round*/}
-          {Array.from({ length: roundCount}, (_, roundIndex) => (
-            <TableRow>
-              <TableCell component = "th" scope="row">
-                <h3>Round {roundIndex + 1}</h3>
-              </TableCell>
-
-              {players.map((player, playerIndex) => (
-                <TableCell align="center">
-                  <ScoreCell score= {player.roundScores?.[roundIndex]}/>
+    <div className="scoreboard-overlay">
+      <div className="scoreboard-modal">
+        <TableContainer component={Paper} className="score-table">
+          <Table aria-label="scoreboard table">
+            <TableHead>
+              <TableRow>
+                <TableCell className="exit-cell">
+                  {renderExitButton()}
                 </TableCell>
-              ))}
-            </TableRow>
-          ))}
 
-          {/*Final Total Rows*/}
-          <TableRow>
-            <TableCell component = "th" scope = "row">
-              <h3>Total</h3>
-            </TableCell>
-              {players.map((player, index) => (
-                <TableCell align = "center" style = {{minWidth:"20vw", width:"20vw"}}>
-                  <ScoreCell score={player.score}/>
-                </TableCell>
+                {/*Player Headers Across Top */}
+                {players.map((player, index) => (
+                  <TableCell className="player-name" align="center" key={player.socketId}>
+                    <h3>{player.name}</h3>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {/*One row per round displaying round scores for each player*/}
+              {Array.from({ length: roundCount }, (_, roundIndex) => (
+                <TableRow key = {roundIndex}>
+                  <TableCell component="th" scope="row">
+                    <h3>Round {roundIndex + 1}</h3>
+                  </TableCell>
+
+                  {players.map((player, playerIndex) => (
+                    <TableCell align="center" key = {player.socketId}>
+                      <ScoreCell score={player.roundScores?.[roundIndex]} />
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+
+              {/*Final Total Row for each player*/}
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  <h3>Total</h3>
+                </TableCell>
+                {players.map((player, index) => (
+                  <TableCell className="total-score" align="center" key = {player.socketId}>
+                    <ScoreCell score={player.score} />
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 }

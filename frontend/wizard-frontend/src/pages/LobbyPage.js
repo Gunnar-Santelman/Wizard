@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 import "../styling/LobbyPage.css"
 
+// creates and runs the LobbyPage from which players can see the fellow players they are will join with, and from which the host can choose to start the game
 export default function LobbyPage() {
   const { gameId } = useParams();
   const [players, setPlayers] = useState([]);
@@ -11,6 +12,7 @@ export default function LobbyPage() {
   const isHost = host?.socketId === socket.id;
   const navigate = useNavigate();
 
+  // handles the socket calls when a user clicks to leave the game or the host chooses to start the game
   function handleLeave() {
     socket.emit("leaveLobby", { gameId });
     navigate("/");
@@ -19,6 +21,7 @@ export default function LobbyPage() {
     socket.emit("startGame", { gameId });
   }
 
+  // updates the player list whenever a new player joins
   useEffect(() => {
     socket.emit("requestGameState", { gameId });
 
@@ -34,6 +37,7 @@ export default function LobbyPage() {
     };
   }, [gameId]);
 
+  // receives signal from backend that the game has been started, and shifts players to the GamePage
   useEffect(() => {
     function handleStart() {
       navigate(`/game/${gameId}`);
@@ -46,6 +50,8 @@ export default function LobbyPage() {
     };
   }, [navigate, gameId]);
 
+  // creates a simple UI from which player's can view the list of all players currently in the game(1-6), and with buttons to leave the game,
+  // or if the host, then to start the game
   return (
     <div className="lobby-container">
       <div className="lobby-card">

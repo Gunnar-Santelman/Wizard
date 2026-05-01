@@ -201,6 +201,7 @@ function buildGameState(game) {
     trumpCard: game.currentRound?.trumpCard || null,
     currentPlayer: game.currentRound?.currentPlayer?.socketId || null,
     winner: game.currentRound?.winner || null,
+    winningCard: game.currentRound?.winningCard || null,
   };
 }
 

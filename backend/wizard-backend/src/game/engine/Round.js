@@ -34,6 +34,7 @@ export default class Round {
         ? new Card(this.#cutCard.suit, this.#cutCard.value)
         : null;
     this.winner = null;
+    this.winningCard = null;
   }
 
   // retrieves current player
@@ -197,6 +198,7 @@ export default class Round {
     const result = Rules.determineTrickWinner(this.currentTrick);
     const winner = this.#game.players.find((p) => p.socketId === result.player);
     this.winner = winner;
+    this.winningCard = winner.playedCard;
     winner.incrementTricksTaken();
     this.#currentPlayer = winner;
     this.#trickNumber++;
@@ -219,7 +221,9 @@ export default class Round {
     if (roundNumber <= 60 / this.#game.players.length) {
       this.#game.currentRound = new Round(roundNumber, this.#game);
       this.#game.currentRound.winner = this.winner;
-    } else {
+      this.#game.currentRound.winningCard = this.winningCard;
+    }
+    else {
       this.#game.finishGame();
     }
   }

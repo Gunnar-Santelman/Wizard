@@ -1,24 +1,28 @@
 import { useState } from "react";
 import socket from "../socket";
+import "../styling/BidSelection.css";
 
+// Creates a popup menu that allows the user to click up and down to view and select their bid for the upcoming round
 export default function BidSelection({ maxBid = 5, gameId }) {
   const [bidAmount, setBidAmount] = useState(0);
   const minBid = 0;
 
+  // increases the bid by 1
   const increaseBid = () => {
     if (bidAmount < maxBid) {
       setBidAmount(bidAmount + 1);
     }
   };
 
+  // decreases the current bid by 1
   const decreaseBid = () => {
     if (bidAmount > minBid) {
       setBidAmount(bidAmount - 1);
     }
   };
 
+  // sets the bid in the backend via WebSockets
   const placeBid = () => {
-    // Put stuff here!
     console.log(`Bid placed: ${bidAmount}`);
     socket.emit("placeBid", {
       gameId,
@@ -27,20 +31,8 @@ export default function BidSelection({ maxBid = 5, gameId }) {
   };
 
   return (
-    <div>
-      <div style = {{position: "absolute",
-        top: "45%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        padding: "15px",
-        backgroundColor: "white",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-        borderRadius: "15px",
-        zIndex: "100"}}>
+    <div className= "bid-overlay">
+      <div className = "bid-popup">
         <h1>Place Your Bid</h1>
 
         <div>
@@ -48,21 +40,21 @@ export default function BidSelection({ maxBid = 5, gameId }) {
           <button
             onClick={increaseBid}
             disabled={bidAmount >= maxBid}
-            className="w-16 h-16 border-2 border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className= "alter-btn"
           >
-            <span className="w-16 h-16 text-gray-700">▲</span>
+            <span className="symbol">▲</span>
           </button>
 
           {/* Current bid amount */}
-          <div>{bidAmount}</div>
+          <div className="bid-value">{bidAmount}</div>
 
           {/* Down arrow button */}
           <button
             onClick={decreaseBid}
             disabled={bidAmount <= minBid}
-            className="w-16 h-16 border-2 border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className= "alter-btn"
           >
-            <span className="w-16 h-16 text-gray-700">▼</span>
+            <span className="symbol">▼</span>
           </button>
         </div>
 
@@ -73,7 +65,7 @@ export default function BidSelection({ maxBid = 5, gameId }) {
         {/* confirm button */}
         <button
           onClick={placeBid}
-          className="hover:bg-gray-800 transition-colors"
+          className="submit-btn"
         >
           Confirm Bid
         </button>

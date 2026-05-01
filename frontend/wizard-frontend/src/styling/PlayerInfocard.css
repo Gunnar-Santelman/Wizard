@@ -1,0 +1,31 @@
+.player-infocard {
+  width: 300px;
+  min-height: 50px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: green;
+  color: white;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 50px;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 18px;
+  text-align: center;
+  margin-left: auto;
+}
+
+.bid-display {
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: auto;
+}

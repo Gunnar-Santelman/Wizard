@@ -8,6 +8,7 @@ import { createGame } from "../services/gameService";
 import "../styling/Home.css"
 import socket from "../socket";
 
+// creates the main landing page of the program, allowing the user to navigate theough the various pages
 export default function Home() {
   const { userData, refreshUserData } = useAuth();
 
@@ -33,6 +34,7 @@ export default function Home() {
     });
   }
 
+  // joins an existing game lobby as long as the game id is valid
   async function handleJoin() {
     if (!playerName) return;
     socket.emit("joinGame", {
@@ -41,12 +43,14 @@ export default function Home() {
     });
   }
 
+  // useEffect to control what is displayed to the user on either a successful or unsuccessful game join
   useEffect(() => {
     function handleSuccess({ gameId }) {
       navigate(`/lobby/${gameId}`, {
         state: { playerName },
       });
     }
+    // shows specific reason the join failed(ie. game doesn't exit, game is already full, game is already started, etc)
     function handleError(message) {
       alert(message);
     }
@@ -60,10 +64,12 @@ export default function Home() {
     };
   }, [navigate, playerName]);
 
+  // handles when the user presses the logout button
   async function handleLogout() {
     await signOut(auth);
   }
 
+  // renders the primary elements of the page, including the various buttons that allow navigation
   return (
     <div className="home-container">
       <div className="home-card">

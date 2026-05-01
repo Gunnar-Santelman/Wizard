@@ -1,6 +1,8 @@
 import { auth } from "./firebase";
 import { API } from "../api/apiConfig";
+// various functions that allow retrieval/setting of various pieces of user data
 
+// post request to set username
 export const setUsername = async (username) => {
     const token = await auth.currentUser.getIdToken();
 
@@ -16,6 +18,7 @@ export const setUsername = async (username) => {
     return await res.json();
 };
 
+// get request to retrieve username of specific user
 export const getUsername = async () => {
     const token = await auth.currentUser.getIdToken();
 
@@ -30,6 +33,7 @@ export const getUsername = async () => {
     return await res.json();
 };
 
+// get request to retrieve all user data based on the user's token
 export const getAllUserInfo = async () => {
     const token = await auth.currentUser.getIdToken();
 
@@ -44,6 +48,7 @@ export const getAllUserInfo = async () => {
     return await res.json();
 };
 
+// sets profile picture to one of the default options as selected by the user
 export const setDefaultProfilePicture = async (profilePictureId) => {
     const token = await auth.currentUser.getIdToken();
 
@@ -59,6 +64,7 @@ export const setDefaultProfilePicture = async (profilePictureId) => {
     return await res.json();
 };
 
+// checks whether onboarding was properly completed
 export const getOnboardingCompletionStatus = async () => {
     const token = await auth.currentUser.getIdToken();
 
