@@ -1,5 +1,6 @@
 import * as UserService from "../services/UserService.js";
 
+// updates usesrname within the database
 export const updateUsername = async (req, res) => {
     try {
         const { username } = req.body;
@@ -29,6 +30,7 @@ export const updateUsername = async (req, res) => {
     }
 };
 
+// retrieves database from database
 export const getUsername = async (req, res) => {
     try {
         const userId = req.user.uid;
@@ -48,6 +50,7 @@ export const getUsername = async (req, res) => {
     }
 };
 
+// retrieves all user info from database
 export const getAllUserInfo = async (req, res) => {
     try {
         const userId = req.user.uid;
@@ -68,7 +71,7 @@ export const getAllUserInfo = async (req, res) => {
 };
 
 
-
+// checks whether the onboarding has been completed for a user
 export const hasCompletedOnboarding = async (req, res) => {
     try {
         const userId = req.user.uid;

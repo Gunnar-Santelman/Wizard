@@ -2,6 +2,7 @@ import ProfilePicture from "../models/ProfilePictureSchema.js";
 import User from "../models/UserSchema.js";
 import * as CloudinaryService from "./CloudinaryService.js";
 
+// uploads profile picture to Cloudinary database
 export const uploadProfilePicture = async (userId, file) => {
 
     const user = await User.findById(userId).populate("profilePicture");
@@ -31,7 +32,7 @@ export const uploadProfilePicture = async (userId, file) => {
     return newPic;
 };
 
-
+// sets one of the default profile pictures to the user
 export const selectDefaultProfilePicture = async (userId, profilePictureId) => {
 
     const pic = await ProfilePicture.findById(profilePictureId);

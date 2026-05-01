@@ -1,5 +1,6 @@
 import * as ProfilePictureService from "../services/ProfilePictureService.js";
 
+// uploads profile picture to database
 export const uploadProfilePicture = async (req, res) => {
     try {
         const userId = req.user.uid;
@@ -20,7 +21,7 @@ export const uploadProfilePicture = async (req, res) => {
     }
 };
 
-
+// associates one of the existing default profile pictures with a user
 export const selectDefaultProfilePicture = async (req, res) => {
     try {
         const { profilePictureId } = req.body;
@@ -40,7 +41,7 @@ export const selectDefaultProfilePicture = async (req, res) => {
     }
 };
 
-// Only returns URLs
+// Only returns URLs of default profile pictures
 export const getDefaultProfilePictures = async (req, res) => {
     try {
         const pictures = await ProfilePictureService.getDefaultPictureURLs();

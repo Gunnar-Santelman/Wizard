@@ -1,5 +1,6 @@
 import * as AuthService from "../services/AuthService.js";
 
+// syncs user with server
 export const syncUser = async (req, res) => {
     try {
         const { uid } = req.user;

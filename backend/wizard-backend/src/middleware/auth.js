@@ -1,5 +1,6 @@
 import admin from "../config/firebaseAdmin.js";
 
+// authenticates the user token
 export const authenticate = async (req, res, next) => {
     try {
         const header = req.headers.authorization;
@@ -21,6 +22,7 @@ export const authenticate = async (req, res, next) => {
     }
 };
 
+// helper method to authenticate user
 export const verifyToken = async (token) => {
     try {
         const decoded = await admin.auth().verifyIdToken(token);

@@ -2,7 +2,9 @@ import Round from "./engine/Round.js";
 import Card from "./engine/Card.js";
 import Player from "./engine/Player.js";
 
+// main game class that manages overall game state
 export class WizardGame {
+    // creates the necessary class variables the game must track
     constructor (gameId, dbid) {
         this.id = gameId;
         this.dbid = dbid;
@@ -10,11 +12,11 @@ export class WizardGame {
         this.players = [];
         this.maxRounds = 0;
         this.currentRound = null;
-        this.deck = [];
         this.status = "waiting";
         this.gameWinner = null;
     }
 
+    // creates a new player and adds them to the list of current players
     joinGame(playerName, profilePicture, socketId, uid) {
         const alreadyExists = this.players.find(
             p => p.socketId === socketId
@@ -33,6 +35,7 @@ export class WizardGame {
         this.players.push(newPlayer);
     }
 
+    // ends the game, and determines the winner
     finishGame() {
         //Save stats to database
         this.gameWinner = this.players.reduce((prev, current) => (prev.score > current.score) ? prev : current);
@@ -40,6 +43,7 @@ export class WizardGame {
         this.status = "complete";
     }
     
+    // removes a player from the list of players
     removePlayer(socketId) {
         this.players = this.players.filter(
             p => p.socketId !== socketId
@@ -49,6 +53,7 @@ export class WizardGame {
         }
     }
 
+    // begins the game at round 1
     startGame() {
         this.status = "running";
         this.maxRounds = 60 / this.players.length;
@@ -59,6 +64,7 @@ export class WizardGame {
         return this.players.length === 0;
     }
     
+    // basic game state used for lobby information
     getGameState() {
         return  {
             id: this.id,

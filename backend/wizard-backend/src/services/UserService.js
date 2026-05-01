@@ -13,6 +13,7 @@ export const getUsername = async (userId) => {
     return user.username;
 }
 
+// returns all user information retrieved from database
 export const getAllUserInfo = async (userId) => {
     const user = await User.findById(userId).populate("profilePicture");
 

@@ -1,3 +1,4 @@
+// helps store various scoring elements of the game
 export default class Scoring{
     #scores={};
     #game;
@@ -7,6 +8,7 @@ export default class Scoring{
         // initialize our nested map 
         this.initScoreboard();
     }
+    // creates the scoreboard to track player scores across rounds
     initScoreboard(){
         for(const player of this.#game.players)
         {
@@ -18,6 +20,7 @@ export default class Scoring{
             }
         }
     }
+    // updates the score of the players based on their performance in the round
     updateScore(player,bid,taken)
     {
         this.#scores[player.socketId].bids.push(bid);
